@@ -375,21 +375,25 @@
     
   
 
-  <!-- gitment -->
-  <div id="gitmentContainer"></div>
-  
-  <script src="/js/gitment.browser.js"></script>
+  <!-- gitalk -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  <div id="gitalk-container"></div>
   
   <script>
-    var gitment = new Gitment({
-      owner: 'yangswei',
-      repo: 'yangswei.github.io',
-      oauth: {
-        client_id: '0844b01363e9a9909aa0',
-        client_secret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
-      },
-    });
-    gitment.render('gitmentContainer');
+    const gitalk = new Gitalk({
+        clientID: '0844b01363e9a9909aa0',
+        clientSecret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
+        repo: 'yangswei.github.io',
+        owner: 'yangswei',
+        admin: ['yangswei',],
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
   </script>
 
 </section>
