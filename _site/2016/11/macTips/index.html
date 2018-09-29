@@ -293,6 +293,22 @@ The key fingerprint is:
   </section>
 </article>
 
+
+<div id="gitmentContainer"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+  var gitment = new Gitment({
+    owner: 'yangswei',
+    repo: 'yangswei.github.io',
+    oauth: {
+      client_id: '0844b01363e9a9909aa0',
+      client_secret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
+    },
+  });
+  gitment.render('gitmentContainer');
+</script>
+
 <section>
 
             <div class="content-play">
