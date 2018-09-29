@@ -35,21 +35,6 @@
   async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
   </script>  
 
-<!-- gitment -->
-<script src="/js/gitment.browser.js"></script>
-
-<script>
-  var gitment = new Gitment({
-    owner: 'yangswei',
-    repo: 'yangswei.github.io',
-    oauth: {
-      client_id: '0844b01363e9a9909aa0',
-      client_secret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
-    },
-  });
-  gitment.render('gitmentContainer');
-</script>
-
 <!-- 百度统计 -->
   
   <script>
@@ -414,6 +399,23 @@ The key fingerprint is:
     <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
     
   
+
+  <!-- gitment -->
+  <div id="gitmentContainer"></div>
+  
+  <script src="/js/gitment.browser.js"></script>
+  
+  <script>
+    var gitment = new Gitment({
+      owner: 'yangswei',
+      repo: 'yangswei.github.io',
+      oauth: {
+        client_id: '0844b01363e9a9909aa0',
+        client_secret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
+      },
+    });
+    gitment.render('gitmentContainer');
+  </script>
 
 </section>
 
