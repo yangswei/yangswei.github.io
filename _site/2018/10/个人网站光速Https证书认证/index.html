@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>学习搭建个人博客</title>
-  <meta name="description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
+  <title>Nginx+https</title>
+  <meta name="description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
   <meta name="author" content="leopardpan">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="学习搭建个人博客">
-  <meta name="twitter:description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
+  <meta name="twitter:title" content="Nginx+https">
+  <meta name="twitter:description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="学习搭建个人博客">
-  <meta property="og:description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
+  <meta property="og:title" content="Nginx+https">
+  <meta property="og:description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/Blog%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+  <link rel="canonical" href="http://localhost:4000/2018/10/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%85%89%E9%80%9FHttps%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -169,10 +169,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">学习搭建个人博客</h1>
+    <h1 class="post-title">Nginx+https</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-06 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-06</time>  
+      <time datetime="2018-10-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-09</time>  
          
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -180,28 +180,43 @@
   </header>
 
   <section class="post">
-    <h2 id="正文">正文：</h2>
-<p>　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。</p>
-
-<h2 id="配置环境">配置环境</h2>
-
-<h3 id="安装node必须">安装Node（必须）</h3>
-
-<p>作用：用来生成静态页面的
-到Node.js<a href="https://nodejs.org/">官网</a>下载相应平台的最新版本，一路安装即可。</p>
-
-<h3 id="安装git必须">安装Git（必须）</h3>
-<p>安装Xcode就自带有Git，我就不多说了。</p>
-
-<h3 id="申请github必须">申请GitHub（必须）</h3>
-<p>作用：是用来做博客的远程创库、域名、服务器之类的，怎么与本地hexo建立连接等下讲。
-<a href="https://github.com/">github</a>账号我也不再啰嗦了,没有的话直接申请就行了，跟一般的注册账号差不多，SSH Keys，看你自己了，可以不配制，不配置的话以后每次对自己的博客有改动提交的时候就要手动输入账号密码，配置了就不需要了，怎么配置我就不多说了，网上有很多教程。</p>
-
+    <p>##生成免费证书</p>
 <blockquote>
-  <p>问：本地部署成功了，也能预览效果，但使用 username.github.io 访问，<code class="highlighter-rouge">出现 404 </code> .    <br />
-答：首先确认 hexo d 命令执行是否报错，如果没有报错，再查看一下你的 github 的 username.github.io 仓库，你的博客是否已经成功提交了，你的 github 邮箱也要通过验证才行。</p>
+  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)
+生成方法：  <br />
+    curl https://get.acme.sh | SH <br />
+    执行完后，脚本位置在~/.acme.sh/下  <br />
+    acme.sh –issue –nginx -d example.com -d www.example.com -d cp.example.com   <br />
+    执行完之后，屏幕上会显示生成证书的位置</p>
 </blockquote>
 
+<blockquote>
+  <p>配置nginx</p>
+  <ul>
+    <li>默认是https访问，当访问80端口时，指向https
+```
+server {
+  listen  443 ssl;
+  ssl_certificate      ./ssl/youdomain.cer;
+  ssl_certificate_key  ./ssl/youdomain.key;
+  ssl_session_timeout  5m;
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers         HIGH:!aNULL:!MD5;
+  server_name  www.youdomainyoudomain;
+  location / {
+      root   /opt/html;
+      index  index.html index.htm index.php;
+  }
+}</li>
+  </ul>
+</blockquote>
+
+<p>server {
+    listen 80;
+    server_name  www.youdomainyoudomain;
+    rewrite ^(.*)$ https://${server_name}$1 permanent;
+}
+```</p>
 
 
   </section>
@@ -271,11 +286,11 @@
 
        <ul class="pager">
         
-        
-        <li class="next">
-            <a href="/2018/10/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%85%89%E9%80%9FHttps%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81/" data-toggle="tooltip" data-placement="top" title="Nginx+https">下一篇：  <span>Nginx+https</span>
+        <li class="previous">
+            <a href="/2018/10/Blog%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" data-toggle="tooltip" data-placement="top" title="学习搭建个人博客">上一篇：  <span>学习搭建个人博客</span>
             </a>
         </li>
+        
         
     </ul>
 </section>
@@ -287,8 +302,8 @@
     <script>
     
     var disqus_config = function () {
-        this.page.url = "http://localhost:4000/2018/10/Blog%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/";
-        this.page.identifier = "/2018/10/Blog%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/";
+        this.page.url = "http://localhost:4000/2018/10/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%85%89%E9%80%9FHttps%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81/";
+        this.page.identifier = "/2018/10/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%85%89%E9%80%9FHttps%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81/";
     };
     var disqus_shortname = 'yangshiweiblog';
     
