@@ -5,49 +5,51 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Oct 2018 15:02:53 +0800</pubDate>
-    <lastBuildDate>Tue, 09 Oct 2018 15:02:53 +0800</lastBuildDate>
+    <pubDate>Tue, 09 Oct 2018 15:06:24 +0800</pubDate>
+    <lastBuildDate>Tue, 09 Oct 2018 15:06:24 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>Nginx+https</title>
-        <description>&lt;p&gt;##生成免费证书&lt;/p&gt;
+        <description>&lt;h3 id=&quot;生成免费证书&quot;&gt;生成免费证书&lt;/h3&gt;
+
 &lt;blockquote&gt;
-  &lt;p&gt;GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)
-生成方法：  &lt;br /&gt;
+  &lt;p&gt;GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;生成方法：  &lt;br /&gt;
     curl https://get.acme.sh | SH &lt;br /&gt;
     执行完后，脚本位置在~/.acme.sh/下  &lt;br /&gt;
     acme.sh –issue –nginx -d example.com -d www.example.com -d cp.example.com   &lt;br /&gt;
     执行完之后，屏幕上会显示生成证书的位置&lt;/p&gt;
-&lt;/blockquote&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;配置nginx&lt;/p&gt;
-  &lt;ul&gt;
-    &lt;li&gt;默认是https访问，当访问80端口时，指向https
-```
+&lt;h3 id=&quot;配置nginx&quot;&gt;配置nginx&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;默认是https访问，当访问80端口时，指向https&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen  443 ssl;
+    ssl_certificate      ./ssl/youdomain.cer;
+    ssl_certificate_key  ./ssl/youdomain.key;
+    ssl_session_timeout  5m;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    server_name  www.youdomainyoudomain;
+    location / {
+        root   /opt/html;
+        index  index.html index.htm index.php;
+    }
+}
+
 server {
-  listen  443 ssl;
-  ssl_certificate      ./ssl/youdomain.cer;
-  ssl_certificate_key  ./ssl/youdomain.key;
-  ssl_session_timeout  5m;
-  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-  ssl_ciphers         HIGH:!aNULL:!MD5;
-  server_name  www.youdomainyoudomain;
-  location / {
-      root   /opt/html;
-      index  index.html index.htm index.php;
-  }
-}&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;server {
     listen 80;
     server_name  www.youdomainyoudomain;
     rewrite ^(.*)$ https://${server_name}$1 permanent;
 }
-```&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 </description>
         <pubDate>Tue, 09 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%85%89%E9%80%9FHttps%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81/</link>

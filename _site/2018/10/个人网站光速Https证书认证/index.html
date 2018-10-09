@@ -7,16 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>Nginx+https</title>
-  <meta name="description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
+  <meta name="description" content="生成免费证书">
   <meta name="author" content="leopardpan">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Nginx+https">
-  <meta name="twitter:description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
+  <meta name="twitter:description" content="生成免费证书">
   
   <meta property="og:type" content="article">
   <meta property="og:title" content="Nginx+https">
-  <meta property="og:description" content="##生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.s...">
+  <meta property="og:description" content="生成免费证书">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -180,43 +180,45 @@
   </header>
 
   <section class="post">
-    <p>##生成免费证书</p>
+    <h3 id="生成免费证书">生成免费证书</h3>
+
 <blockquote>
-  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)
-生成方法：  <br />
+  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)</p>
+</blockquote>
+
+<p>生成方法：  <br />
     curl https://get.acme.sh | SH <br />
     执行完后，脚本位置在~/.acme.sh/下  <br />
     acme.sh –issue –nginx -d example.com -d www.example.com -d cp.example.com   <br />
     执行完之后，屏幕上会显示生成证书的位置</p>
-</blockquote>
 
-<blockquote>
-  <p>配置nginx</p>
-  <ul>
-    <li>默认是https访问，当访问80端口时，指向https
-```
+<h3 id="配置nginx">配置nginx</h3>
+
+<ul>
+  <li>默认是https访问，当访问80端口时，指向https</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>server {
+    listen  443 ssl;
+    ssl_certificate      ./ssl/youdomain.cer;
+    ssl_certificate_key  ./ssl/youdomain.key;
+    ssl_session_timeout  5m;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    server_name  www.youdomainyoudomain;
+    location / {
+        root   /opt/html;
+        index  index.html index.htm index.php;
+    }
+}
+
 server {
-  listen  443 ssl;
-  ssl_certificate      ./ssl/youdomain.cer;
-  ssl_certificate_key  ./ssl/youdomain.key;
-  ssl_session_timeout  5m;
-  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-  ssl_ciphers         HIGH:!aNULL:!MD5;
-  server_name  www.youdomainyoudomain;
-  location / {
-      root   /opt/html;
-      index  index.html index.htm index.php;
-  }
-}</li>
-  </ul>
-</blockquote>
-
-<p>server {
     listen 80;
     server_name  www.youdomainyoudomain;
     rewrite ^(.*)$ https://${server_name}$1 permanent;
 }
-```</p>
+</code></pre>
+</div>
 
 
   </section>
