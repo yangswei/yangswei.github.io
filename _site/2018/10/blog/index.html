@@ -7,16 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>学习搭建个人博客</title>
-  <meta name="description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
-  <meta name="author" content="leopardpan">
+  <meta name="description" content="环境准备">
+  <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="学习搭建个人博客">
-  <meta name="twitter:description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
+  <meta name="twitter:description" content="环境准备">
   
   <meta property="og:type" content="article">
   <meta property="og:title" content="学习搭建个人博客">
-  <meta property="og:description" content="正文：　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。配置环境">
+  <meta property="og:description" content="环境准备">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -48,18 +48,16 @@
   </script>
   
 
-<!-- google 统计 -->
+<!-- google 统计 >
   
 
-
-
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <script>
   (adsbygoogle = window.adsbygoogle || []).push({
     google_ad_client: "ca-pub-9005224472374751",
     enable_page_level_ads: true
   });
-</script>
+</script-->
 
 </head>
 
@@ -180,28 +178,37 @@
   </header>
 
   <section class="post">
-    <h2 id="正文">正文：</h2>
-<p>　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。</p>
-
-<h2 id="配置环境">配置环境</h2>
-
-<h3 id="安装node必须">安装Node（必须）</h3>
-
-<p>作用：用来生成静态页面的
-到Node.js<a href="https://nodejs.org/">官网</a>下载相应平台的最新版本，一路安装即可。</p>
-
-<h3 id="安装git必须">安装Git（必须）</h3>
-<p>安装Xcode就自带有Git，我就不多说了。</p>
-
-<h3 id="申请github必须">申请GitHub（必须）</h3>
-<p>作用：是用来做博客的远程创库、域名、服务器之类的，怎么与本地hexo建立连接等下讲。
-<a href="https://github.com/">github</a>账号我也不再啰嗦了,没有的话直接申请就行了，跟一般的注册账号差不多，SSH Keys，看你自己了，可以不配制，不配置的话以后每次对自己的博客有改动提交的时候就要手动输入账号密码，配置了就不需要了，怎么配置我就不多说了，网上有很多教程。</p>
+    <h2 id="环境准备">环境准备</h2>
 
 <blockquote>
-  <p>问：本地部署成功了，也能预览效果，但使用 username.github.io 访问，<code class="highlighter-rouge">出现 404 </code> .    <br />
-答：首先确认 hexo d 命令执行是否报错，如果没有报错，再查看一下你的 github 的 username.github.io 仓库，你的博客是否已经成功提交了，你的 github 邮箱也要通过验证才行。</p>
+  <p>说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了<a href="http://yangshiwei.top/#blog">潘柏信</a>的模板 <br />
+搭建过程:  <a href="https://yq.aliyun.com/articles/640926">参考博客</a></p>
 </blockquote>
 
+<ol>
+  <li>首先是github账号</li>
+  <li>准备一个域名</li>
+  <li>挑选一个喜欢的模板:  <a href="http://jekyllthemes.org/?spm=a2c4e.11153940.blogcont640926.12.77189941Qjir4F">主题挑选</a></li>
+  <li>添加评论，统计插件</li>
+</ol>
+
+<h2 id="步骤">步骤</h2>
+
+<p>步骤在参考博客，有非常详细的介绍    <br />
+说下在部署时遇到的几个小问题：</p>
+<ul>
+  <li>提示ruby版本不对:   <a href="https://www.jianshu.com/p/48ad6365f3eb">解决</a>    <br />
+  另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  <br />
+  原因是mac自带的ruby有个默认版本，执行<code class="highlighter-rouge">rvm list</code>查看已经安装的ruby版本，可以通过<code class="highlighter-rouge">rvm remove</code>卸载掉老的版本，或者<code class="highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</li>
+  <li>
+    <p>在github上复制项目以后，会有提示报错，我按下图设置的  <br />
+  <img src="https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png" alt="image" /></p>
+  </li>
+  <li>gittalk评论插件报错  <br />
+  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制</li>
+</ul>
+
+<p>由于是前阵子搭的，其中一些忘记了，如果有碰到就在网上搜索一下，很多都是踩过的坑</p>
 
 
   </section>
@@ -355,11 +362,11 @@
 
         <div class = "footer_div">  
            <p class="copyright text-muted">
-            Copyright &copy; 杨世威 2018 Theme by <a href="http://baixin.io/">leopardpan</a> |
+            Copyright &copy; 杨世威 2018 Theme by <a href="http://yangshiwei.top/">yangshiwei</a> |
             <iframe
                 style="margin-left: 2px; margin-bottom:-5px;"
                 frameborder="0" scrolling="0" width="91px" height="20px"
-                src="https://ghbtns.com/github-btn.html?user=leopardpan&repo=leopardpan.github.io&type=star&count=true" >
+                src="https://ghbtns.com/github-btn.html?user=yangshiwei&repo=yangshiwei.github.io&type=star&count=true" >
             </iframe>
             </p>
         	<div align="right">

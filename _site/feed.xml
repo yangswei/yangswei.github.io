@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Oct 2018 18:08:47 +0800</pubDate>
-    <lastBuildDate>Tue, 09 Oct 2018 18:08:47 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Oct 2018 14:32:40 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Oct 2018 14:32:40 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -18,9 +18,11 @@
 &lt;/blockquote&gt;
 
 &lt;p&gt;生成方法：  &lt;br /&gt;
-    curl https://get.acme.sh | SH &lt;br /&gt;
+    &lt;code class=&quot;highlighter-rouge&quot;&gt;curl https://get.acme.sh | SH&lt;/code&gt; &lt;br /&gt;
     执行完后，脚本位置在~/.acme.sh/下  &lt;br /&gt;
-    acme.sh –issue –nginx -d example.com -d www.example.com -d cp.example.com   &lt;br /&gt;
+    &lt;code class=&quot;highlighter-rouge&quot;&gt;acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com&lt;/code&gt;  &lt;br /&gt;
+    [上面命令是github给出的，我在服务器上执行的是下面的命令行] 
+    ` sh  ~/.acme.sh/acme.sh    –issue –nginx  -d myucloud.com -d www.myucloud.com –force` &lt;br /&gt;
     执行完之后，屏幕上会显示生成证书的位置&lt;/p&gt;
 
 &lt;h3 id=&quot;配置nginx&quot;&gt;配置nginx&lt;/h3&gt;
@@ -62,28 +64,37 @@ server {
     
       <item>
         <title>学习搭建个人博客</title>
-        <description>&lt;h2 id=&quot;正文&quot;&gt;正文：&lt;/h2&gt;
-&lt;p&gt;　这边教程是针对与Mac的，一方面是给自己做笔记，可以提升自己的写作、总结能力。&lt;/p&gt;
-
-&lt;h2 id=&quot;配置环境&quot;&gt;配置环境&lt;/h2&gt;
-
-&lt;h3 id=&quot;安装node必须&quot;&gt;安装Node（必须）&lt;/h3&gt;
-
-&lt;p&gt;作用：用来生成静态页面的
-到Node.js&lt;a href=&quot;https://nodejs.org/&quot;&gt;官网&lt;/a&gt;下载相应平台的最新版本，一路安装即可。&lt;/p&gt;
-
-&lt;h3 id=&quot;安装git必须&quot;&gt;安装Git（必须）&lt;/h3&gt;
-&lt;p&gt;安装Xcode就自带有Git，我就不多说了。&lt;/p&gt;
-
-&lt;h3 id=&quot;申请github必须&quot;&gt;申请GitHub（必须）&lt;/h3&gt;
-&lt;p&gt;作用：是用来做博客的远程创库、域名、服务器之类的，怎么与本地hexo建立连接等下讲。
-&lt;a href=&quot;https://github.com/&quot;&gt;github&lt;/a&gt;账号我也不再啰嗦了,没有的话直接申请就行了，跟一般的注册账号差不多，SSH Keys，看你自己了，可以不配制，不配置的话以后每次对自己的博客有改动提交的时候就要手动输入账号密码，配置了就不需要了，怎么配置我就不多说了，网上有很多教程。&lt;/p&gt;
+        <description>&lt;h2 id=&quot;环境准备&quot;&gt;环境准备&lt;/h2&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;问：本地部署成功了，也能预览效果，但使用 username.github.io 访问，&lt;code class=&quot;highlighter-rouge&quot;&gt;出现 404 &lt;/code&gt; .    &lt;br /&gt;
-答：首先确认 hexo d 命令执行是否报错，如果没有报错，再查看一下你的 github 的 username.github.io 仓库，你的博客是否已经成功提交了，你的 github 邮箱也要通过验证才行。&lt;/p&gt;
+  &lt;p&gt;说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了&lt;a href=&quot;http://yangshiwei.top/#blog&quot;&gt;潘柏信&lt;/a&gt;的模板 &lt;br /&gt;
+搭建过程:  &lt;a href=&quot;https://yq.aliyun.com/articles/640926&quot;&gt;参考博客&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;ol&gt;
+  &lt;li&gt;首先是github账号&lt;/li&gt;
+  &lt;li&gt;准备一个域名&lt;/li&gt;
+  &lt;li&gt;挑选一个喜欢的模板:  &lt;a href=&quot;http://jekyllthemes.org/?spm=a2c4e.11153940.blogcont640926.12.77189941Qjir4F&quot;&gt;主题挑选&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;添加评论，统计插件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;步骤&quot;&gt;步骤&lt;/h2&gt;
+
+&lt;p&gt;步骤在参考博客，有非常详细的介绍    &lt;br /&gt;
+说下在部署时遇到的几个小问题：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;提示ruby版本不对:   &lt;a href=&quot;https://www.jianshu.com/p/48ad6365f3eb&quot;&gt;解决&lt;/a&gt;    &lt;br /&gt;
+  另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  &lt;br /&gt;
+  原因是mac自带的ruby有个默认版本，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm list&lt;/code&gt;查看已经安装的ruby版本，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm remove&lt;/code&gt;卸载掉老的版本，或者&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm use xxx --default&lt;/code&gt;将要使用的版本设置为默认版本&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在github上复制项目以后，会有提示报错，我按下图设置的  &lt;br /&gt;
+  &lt;img src=&quot;https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;gittalk评论插件报错  &lt;br /&gt;
+  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;由于是前阵子搭的，其中一些忘记了，如果有碰到就在网上搜索一下，很多都是踩过的坑&lt;/p&gt;
 </description>
         <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/blog/</link>
