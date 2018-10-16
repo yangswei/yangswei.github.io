@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 16 Oct 2018 15:07:08 +0800</pubDate>
-    <lastBuildDate>Tue, 16 Oct 2018 15:07:08 +0800</lastBuildDate>
+    <pubDate>Tue, 16 Oct 2018 16:28:52 +0800</pubDate>
+    <lastBuildDate>Tue, 16 Oct 2018 16:28:52 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -57,7 +57,7 @@ server {
         <link>http://localhost:4000/2018/10/https/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/10/https/</guid>
         
-        <category>https</category>
+        <category>https证书</category>
         
         
       </item>
@@ -92,15 +92,21 @@ server {
   &lt;/li&gt;
   &lt;li&gt;gittalk评论插件报错  &lt;br /&gt;
   报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制&lt;/li&gt;
+  &lt;li&gt;页面统计延续前作者，用的是不蒜子的页面统计插件,在不蒜子作者的主页有段说明：         &lt;br /&gt;
+  因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
+  所以遇到统计出不了，记得更换一下模板文件中服务的地址    &lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;    &lt;br /&gt;
+  更换为：    &lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;由于是前阵子搭的，其中一些忘记了，如果有碰到就在网上搜索一下，很多都是踩过的坑&lt;/p&gt;
+&lt;p&gt;由于是前阵子搭的，其中一些忘记了&lt;/p&gt;
 </description>
         <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/blog/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/10/blog/</guid>
         
-        <category>博客</category>
+        <category>博客搭建</category>
         
         
       </item>
