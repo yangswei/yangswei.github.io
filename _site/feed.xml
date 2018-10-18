@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 16 Oct 2018 16:28:52 +0800</pubDate>
-    <lastBuildDate>Tue, 16 Oct 2018 16:28:52 +0800</lastBuildDate>
+    <pubDate>Thu, 18 Oct 2018 14:17:01 +0800</pubDate>
+    <lastBuildDate>Thu, 18 Oct 2018 14:17:01 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -67,7 +67,7 @@ server {
         <description>&lt;h2 id=&quot;环境准备&quot;&gt;环境准备&lt;/h2&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了&lt;a href=&quot;http://yangshiwei.top/#blog&quot;&gt;潘柏信&lt;/a&gt;的模板 &lt;br /&gt;
+  &lt;p&gt;说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了[潘柏信]的模板 &lt;br /&gt;
 搭建过程:  &lt;a href=&quot;https://yq.aliyun.com/articles/640926&quot;&gt;参考博客&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
