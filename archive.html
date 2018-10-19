@@ -6,7 +6,14 @@ group: navigation
 ---
 {% include JB/setup %}
 
+<div id="search-container">
+    <input type="text" id="search-input" placeholder="查找文章...">
+    <ul id="results-container"></ul>
+</div>
+
 {% assign posts_collate = site.posts %}
+
 <div class="page card">
 {% include JB/posts_collate %}
 </div>
+
