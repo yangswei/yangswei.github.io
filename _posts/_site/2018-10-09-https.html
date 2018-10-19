@@ -1,0 +1,41 @@
+<h3 id="生成免费证书">生成免费证书</h3>
+
+<blockquote>
+  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)</p>
+</blockquote>
+
+<p>生成方法：  <br />
+    <code class="highlighter-rouge">curl https://get.acme.sh | SH</code> <br />
+    执行完后，脚本位置在~/.acme.sh/下  <br />
+    <code class="highlighter-rouge">acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com</code>  <br />
+    [上面命令是github给出的，我在服务器上执行的是下面的命令行] 
+    ` sh  ~/.acme.sh/acme.sh    –issue –nginx  -d myucloud.com -d www.myucloud.com –force` <br />
+    执行完之后，屏幕上会显示生成证书的位置</p>
+
+<h3 id="配置nginx">配置nginx</h3>
+
+<ul>
+  <li>默认是https访问，当访问80端口时，指向https</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>server {
+    listen  443 ssl;
+    ssl_certificate      ./ssl/youdomain.cer;
+    ssl_certificate_key  ./ssl/youdomain.key;
+    ssl_session_timeout  5m;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    server_name  www.youdomainyoudomain;
+    location / {
+        root   /opt/html;
+        index  index.html index.htm index.php;
+    }
+}
+
+server {
+    listen 80;
+    server_name  www.youdomainyoudomain;
+    rewrite ^(.*)$ https://${server_name}$1 permanent;
+}
+</code></pre>
+</div>
