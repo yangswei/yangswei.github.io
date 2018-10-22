@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>学习搭建个人博客</title>
-  <meta name="description" content="环境准备">
+  <title>百度网盘Svip破解</title>
+  <meta name="description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="学习搭建个人博客">
-  <meta name="twitter:description" content="环境准备">
+  <meta name="twitter:title" content="百度网盘Svip破解">
+  <meta name="twitter:description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="学习搭建个人博客">
-  <meta property="og:description" content="环境准备">
+  <meta property="og:title" content="百度网盘Svip破解">
+  <meta property="og:description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/blog/">
+  <link rel="canonical" href="http://localhost:4000/2018/10/baidudisk/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -167,10 +167,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">学习搭建个人博客</h1>
+    <h1 class="post-title">百度网盘Svip破解</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-06 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-06</time>  
+      <time datetime="2018-10-18 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-18</time>  
          
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -178,55 +178,19 @@
   </header>
 
   <section class="post">
-    <h2 id="环境准备">环境准备</h2>
-
-<blockquote>
-  <p>说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了[潘柏信]的模板 <br />
-搭建过程:  <a href="https://yq.aliyun.com/articles/640926">参考博客</a></p>
+    <blockquote>
+  <p>github开源破解百度限速工具[mac版]
+[github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)</p>
+  <ul>
+    <li>需要本地安装git</li>
+    <li>mac上安装百度网盘</li>
+  </ul>
 </blockquote>
 
-<ol>
-  <li>首先是github账号</li>
-  <li>准备一个域名</li>
-  <li>挑选一个喜欢的模板:  <a href="http://jekyllthemes.org/?spm=a2c4e.11153940.blogcont640926.12.77189941Qjir4F">主题挑选</a></li>
-  <li>添加评论，统计插件</li>
-</ol>
+<p><code class="highlighter-rouge">cd ~/Downloads &amp;&amp; git clone https://github.com/CodeTips/BaiduNetdiskPlugin-macOS.git &amp;&amp; ./BaiduNetdiskPlugin-macOS/Other/Install.sh</code></p>
 
-<h2 id="步骤">步骤</h2>
-
-<p>步骤在参考博客，有非常详细的介绍</p>
-
-<p>说下在部署时遇到的几个小问题：</p>
-
-<ul>
-  <li>
-    <p>提示ruby版本不对:   <a href="https://www.jianshu.com/p/48ad6365f3eb">解决</a>    <br />
-  另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  <br />
-  原因是mac自带的ruby有个默认版本，执行<code class="highlighter-rouge">rvm list</code>查看已经安装的ruby版本，可以通过<code class="highlighter-rouge">rvm remove</code>卸载掉老的版本，或者<code class="highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</p>
-  </li>
-  <li>
-    <p>在github上复制项目以后，会有提示报错，我按下图设置的  <br />
-  <img src="https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png" alt="image" /></p>
-  </li>
-  <li>
-    <p>gittalk评论插件报错  <br />
-  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制</p>
-  </li>
-  <li>
-    <p>统计不出数据
-我的博客用的是模板带的统计，busuanzi,在作者的主页有说明：             <br />
-因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
-所以遇到统计出不了，记得更换一下模板文件中服务的地址    <br />
-<code class="highlighter-rouge">&lt;script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code>    <br />
-更换为：    <br />
-<code class="highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></p>
-  </li>
-  <li>
-    <p>新建评论，跳转链接提示error
-<code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code></p>
-  </li>
-</ul>
-
+<p>一键安装即可完成
+测试了一下，没有提速，但是解除了限速~</p>
 
 
   </section>
@@ -296,11 +260,11 @@
 
        <ul class="pager">
         
-        
-        <li class="next">
-            <a href="/2018/10/https/" data-toggle="tooltip" data-placement="top" title="Nginx+https">下一篇：  <span>Nginx+https</span>
+        <li class="previous">
+            <a href="/2018/10/https/" data-toggle="tooltip" data-placement="top" title="Nginx+https">上一篇：  <span>Nginx+https</span>
             </a>
         </li>
+        
         
     </ul>
 </section>

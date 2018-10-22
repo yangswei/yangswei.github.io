@@ -5,9 +5,34 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 19 Oct 2018 10:27:07 +0800</pubDate>
-    <lastBuildDate>Fri, 19 Oct 2018 10:27:07 +0800</lastBuildDate>
+    <pubDate>Mon, 22 Oct 2018 10:55:23 +0800</pubDate>
+    <lastBuildDate>Mon, 22 Oct 2018 10:55:23 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>百度网盘Svip破解</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;github开源破解百度限速工具[mac版]
+[github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;需要本地安装git&lt;/li&gt;
+    &lt;li&gt;mac上安装百度网盘&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cd ~/Downloads &amp;amp;&amp;amp; git clone https://github.com/CodeTips/BaiduNetdiskPlugin-macOS.git &amp;amp;&amp;amp; ./BaiduNetdiskPlugin-macOS/Other/Install.sh&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;一键安装即可完成
+测试了一下，没有提速，但是解除了限速~&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 Oct 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/10/baidudisk/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/10/baidudisk/</guid>
+        
+        <category>tools</category>
+        
+        
+      </item>
     
       <item>
         <title>Nginx+https</title>
@@ -80,27 +105,39 @@ server {
 
 &lt;h2 id=&quot;步骤&quot;&gt;步骤&lt;/h2&gt;
 
-&lt;p&gt;步骤在参考博客，有非常详细的介绍    &lt;br /&gt;
-说下在部署时遇到的几个小问题：&lt;/p&gt;
+&lt;p&gt;步骤在参考博客，有非常详细的介绍&lt;/p&gt;
+
+&lt;p&gt;说下在部署时遇到的几个小问题：&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;提示ruby版本不对:   &lt;a href=&quot;https://www.jianshu.com/p/48ad6365f3eb&quot;&gt;解决&lt;/a&gt;    &lt;br /&gt;
+  &lt;li&gt;
+    &lt;p&gt;提示ruby版本不对:   &lt;a href=&quot;https://www.jianshu.com/p/48ad6365f3eb&quot;&gt;解决&lt;/a&gt;    &lt;br /&gt;
   另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  &lt;br /&gt;
-  原因是mac自带的ruby有个默认版本，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm list&lt;/code&gt;查看已经安装的ruby版本，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm remove&lt;/code&gt;卸载掉老的版本，或者&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm use xxx --default&lt;/code&gt;将要使用的版本设置为默认版本&lt;/li&gt;
+  原因是mac自带的ruby有个默认版本，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm list&lt;/code&gt;查看已经安装的ruby版本，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm remove&lt;/code&gt;卸载掉老的版本，或者&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm use xxx --default&lt;/code&gt;将要使用的版本设置为默认版本&lt;/p&gt;
+  &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;在github上复制项目以后，会有提示报错，我按下图设置的  &lt;br /&gt;
   &lt;img src=&quot;https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
-  &lt;li&gt;gittalk评论插件报错  &lt;br /&gt;
-  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制&lt;/li&gt;
-  &lt;li&gt;页面统计延续前作者，用的是不蒜子的页面统计插件,在不蒜子作者的主页有段说明：         &lt;br /&gt;
-  因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
-  所以遇到统计出不了，记得更换一下模板文件中服务的地址    &lt;br /&gt;
-  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;    &lt;br /&gt;
-  更换为：    &lt;br /&gt;
-  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;gittalk评论插件报错  &lt;br /&gt;
+  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;统计不出数据
+我的博客用的是模板带的统计，busuanzi,在作者的主页有说明：             &lt;br /&gt;
+因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
+所以遇到统计出不了，记得更换一下模板文件中服务的地址    &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;    &lt;br /&gt;
+更换为：    &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;新建评论，跳转链接提示error
+&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;由于是前阵子搭的，其中一些忘记了&lt;/p&gt;
 </description>
         <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/blog/</link>
