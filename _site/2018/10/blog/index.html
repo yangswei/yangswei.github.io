@@ -222,8 +222,10 @@
 <code class="highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></p>
   </li>
   <li>
-    <p>新建评论，跳转链接提示error
-<code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code></p>
+    <p>新建issue评论，跳转链接提示error
+<code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code>
+ 原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
+ 解决办法，登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="highlighter-rouge">https://www.yangshiwei.top/</code></p>
   </li>
 </ul>
 

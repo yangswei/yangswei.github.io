@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 22 Oct 2018 10:55:23 +0800</pubDate>
-    <lastBuildDate>Mon, 22 Oct 2018 10:55:23 +0800</lastBuildDate>
+    <pubDate>Wed, 24 Oct 2018 13:54:40 +0800</pubDate>
+    <lastBuildDate>Wed, 24 Oct 2018 13:54:40 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -133,8 +133,10 @@ server {
 &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;新建评论，跳转链接提示error
-&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;新建issue评论，跳转链接提示error
+&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch&lt;/code&gt;
+ 原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
+ 解决办法，登录github-&amp;gt;setting-&amp;gt; Developer settings -&amp;gt; Authorization callback URL 修改为当前博客的访问地址即&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
