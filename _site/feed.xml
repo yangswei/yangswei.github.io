@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Oct 2018 15:09:27 +0800</pubDate>
-    <lastBuildDate>Wed, 31 Oct 2018 15:09:27 +0800</lastBuildDate>
+    <pubDate>Wed, 31 Oct 2018 15:21:32 +0800</pubDate>
+    <lastBuildDate>Wed, 31 Oct 2018 15:21:32 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -18,20 +18,21 @@
 
 &lt;p&gt;选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    &lt;br /&gt;
 在github上提供了官方的image地址:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    k8s.gcr.io/elasticsearch:v5.6.4
-    k8s.gcr.io/fluentd-elasticsearch:v2.0.4
-    docker.elastic.co/kibana/kibana:5.6.4
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;k8s.gcr.io/elasticsearch:v5.6.4
+k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+docker.elastic.co/kibana/kibana:5.6.4
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。    &lt;br /&gt;
-另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像    &lt;br /&gt;
-本人在使用时由于要使用额外的plugin，在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像，另外两个镜像则是直接下载官方的再load到本地&lt;/p&gt;
+另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像,如果要使用额外的plugin插件，则在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像。&lt;/p&gt;
 
 &lt;h3 id=&quot;调整文件&quot;&gt;调整文件&lt;/h3&gt;
 
-&lt;p&gt;fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示   设置node节点的标签,只在标记了标签的节点上运行fluentd&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  kubectl get nodes
-  kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
+&lt;p&gt;fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 &lt;br /&gt;
+Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
+设置node节点的标签,只在标记了标签的节点上运行fluentd&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kubectl get nodes
+kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;调整默认kibana的yaml文件，让端口暴露出去
@@ -76,36 +77,36 @@ spec-limits&amp;amp;requests-cpu 按实际的需要来进行调整，k8s中跑�
 &lt;ul&gt;
   &lt;li&gt;rewrite_tag_filter&lt;/li&gt;
   &lt;li&gt;kubernetes_metadata&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;record_transformer&lt;/p&gt;
+  &lt;li&gt;record_transformer
+&lt;img src=&quot;/images/posts/k8s-fek/6.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
-    &lt;p&gt;&lt;img src=&quot;/images/posts/k8s-fek/6.png&quot; alt=&quot;&quot; /&gt; 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;rewrite_tag_filter&lt;/code&gt;插件是从source源匹配的日志中，过滤找到&lt;code class=&quot;highlighter-rouge&quot;&gt;CONTAINER_NAME&lt;/code&gt;以k8s开头的日志打上tag-&amp;gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes.journal.container&lt;/code&gt;    &lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes_metadata&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;record_transformer&lt;/code&gt;分别是将源文件进行格式处理，metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。    &lt;br /&gt;
+&lt;p&gt;插件作用： &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;rewrite_tag_filter&lt;/code&gt;插件是从source源匹配的日志中，过滤找到&lt;code class=&quot;highlighter-rouge&quot;&gt;CONTAINER_NAME&lt;/code&gt;以k8s开头的日志，将过滤出来的日志打上tag。 &lt;br /&gt;
+另外两个插件分别是将源文件进行格式处理。 &lt;br /&gt;
+metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。       &lt;br /&gt;
 最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx）    &lt;br /&gt;
 在kibana中即能够定义&lt;code class=&quot;highlighter-rouge&quot;&gt;Index Patterns&lt;/code&gt;的值为k8s-appname*    &lt;br /&gt;
 &lt;img src=&quot;/images/posts/k8s-fek/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
 
 &lt;h3 id=&quot;检验&quot;&gt;检验&lt;/h3&gt;
 
 &lt;p&gt;查看所有pod启动情况：  &lt;br /&gt;
-  &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
 查看service情况：   &lt;br /&gt;
-  &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;注意&quot;&gt;注意&lt;/h3&gt;
 
-&lt;p&gt;如果els经常报错，可以将els从k8s中移除，单独运行els     &lt;br /&gt;
-  然后在kibana和fluentd中将els的地址修改为启动的地址    &lt;br /&gt;
-  kibana中加上：&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    - name: XPACK_SECURITY_ENABLED       
-        value: &quot;false&quot;       
+&lt;p&gt;如果els经常报错，可以将els相关的组件从k8s中移除，单独运行elasticsearch。
+然后在修改kibana和fluentd中指定的elasticsearch地址，指定elasticsearch的位置。&lt;/p&gt;
+
+&lt;p&gt;kibana中加上：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: XPACK_SECURITY_ENABLED       
+    value: &quot;false&quot;       
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-
-&lt;p&gt;单独启动els的docker-compose文件内容如下：&lt;/p&gt;
+&lt;p&gt;elasticsearch的docker-compose文件&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;version: '2'      
 services:      
   elasticsearch:      
@@ -123,7 +124,7 @@ services:
         soft: -1      
         hard: -1      
     volumes:      
-      - /opt/Elasticsearch/data:/usr/share/elasticsearch/data      
+      - /Elasticsearch/data:/usr/share/elasticsearch/data      
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
