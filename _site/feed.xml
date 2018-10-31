@@ -5,9 +5,152 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 24 Oct 2018 13:54:40 +0800</pubDate>
-    <lastBuildDate>Wed, 24 Oct 2018 13:54:40 +0800</lastBuildDate>
+    <pubDate>Thu, 25 Oct 2018 17:33:01 +0800</pubDate>
+    <lastBuildDate>Thu, 25 Oct 2018 17:33:01 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>K8s集群-fek插件</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;安装插件前准备工作&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;github地址: &lt;a href=&quot;https://github.com/kubernetes/kubernetes&quot;&gt;https://github.com/kubernetes/kubernetes&lt;/a&gt;          &lt;br /&gt;
+&lt;img src=&quot;/images/posts/k8s-fek/1.png&quot; alt=&quot;&quot; /&gt;    &lt;br /&gt;
+如图,选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    &lt;br /&gt;
+在github上提供了官方的image地址:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    k8s.gcr.io/elasticsearch:v5.6.4
+    k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+    docker.elastic.co/kibana/kibana:5.6.4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。    &lt;br /&gt;
+另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像    &lt;br /&gt;
+本人在使用时由于要使用额外的plugin，在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像，另外两个镜像则是直接下载官方的再load到本地&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;执行yaml文件前，一些修改&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其实fek的原理很简单：fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示    &lt;br /&gt;
+第一步：    &lt;br /&gt;
+    设置node节点的标签,只在标记了标签的节点上运行fluentd        &lt;br /&gt;
+    &lt;code class=&quot;highlighter-rouge&quot;&gt;
+        kubectl get nodes
+        kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
+   &lt;/code&gt;    &lt;br /&gt;
+第二步：    &lt;br /&gt;
+    调整默认kibana的yaml文件,使用nodeport模式
+    &lt;img src=&quot;/images/posts/k8s-fek/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;fluentd的configmap&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在kubenetes的github默认的配置文件中对于配置有非常详细的说明，这里我粗略的翻译一下，后面具体讲下当时我们使用的配置项
+config中有三个标签：source,match,filter。source的标签指定数据源，filter的标签对数据匹配处理，match也是匹配，一般作为末尾指定输出&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl status xxx&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u xxx -f&lt;/code&gt;来查看kubernetes服务的日志.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;k8s组件&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;日志内容&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;k8s-apiserver&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;无&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;kube-controller-manager&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;pod扩容或rc&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;kube-scheduler&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;pod扩容或rc&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;kubelet&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;pod周期相关：创建、停止&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;etcd&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;无&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;我们以kubelet日志为例，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u kubelet -f&lt;/code&gt;可以看到传输到fluentd的源日志数据的格式是日期+节点+xx+container名+image名+port+xxx+xxx+&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;apply所有yaml文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;查看所有pod启动情况：&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
+查看service情况： &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在kibana中创建索引&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;按默认的所有日志打到elasticsearch是按默认的带日期tag或者全部打到els的某个索引中。    &lt;br /&gt;
+可以在fluentd中设置，将日志按服务名分别打到els对应的索引中，最后在els中收集到的日志是按服务名索引来建立的    &lt;br /&gt;
+在kibana中按appname* 作为&lt;code class=&quot;highlighter-rouge&quot;&gt;Create Index Pattern&lt;/code&gt;     &lt;br /&gt;
+&lt;img src=&quot;/images/posts/k8s-fek/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;fek主要的是：
+    fluentd中如何定义日志源source
+    将源日志通过match,filter最终按标准输入到elasticsearch中去    &lt;br /&gt;
+从源获取的日志，打上tag，输入到els中，fluentd的configmap中input.conf指定source文件，并打上tag，output.conf中按tag值匹配对应的index_name存入elasticsearch中          &lt;br /&gt;
+另外    &lt;br /&gt;
+      默认的els设置的limits最好调整一下，默认的不够用。els崩会导致kibana中报错。   &lt;br /&gt;
+      如果els经常报错，可以将els从k8s中移除，单独运行els然后在kibana和fluentd中将els的地址修改为启动的地址    &lt;br /&gt;
+    kibana中加上：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    - name: XPACK_SECURITY_ENABLED       
+        value: &quot;false&quot;       
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;els启动文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;version: '2'      
+services:      
+  elasticsearch:      
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2      
+    expose:      
+      - 9200      
+    ports:     
+      - &quot;9200:9200&quot;      
+    environment:      
+      - bootstrap.memory_lock=true      
+      - xpack.security.enabled=false      
+      - &quot;ES_JAVA_OPTS=-Xms8G -Xmx8G&quot;      
+    ulimits:      
+      memlock:      
+        soft: -1      
+        hard: -1      
+    volumes:      
+      - /opt/Elasticsearch/data:/usr/share/elasticsearch/data      
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 24 Oct 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/10/fek/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/10/fek/</guid>
+        
+        <category>k8s</category>
+        
+        
+      </item>
     
       <item>
         <title>百度网盘Svip破解</title>

@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>百度网盘Svip破解</title>
-  <meta name="description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
+  <title>K8s集群-fek插件</title>
+  <meta name="description" content="  安装插件前准备工作">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="百度网盘Svip破解">
-  <meta name="twitter:description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
+  <meta name="twitter:title" content="K8s集群-fek插件">
+  <meta name="twitter:description" content="  安装插件前准备工作">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="百度网盘Svip破解">
-  <meta property="og:description" content="  github开源破解百度限速工具[mac版][github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)      需要本地安装git    mac上安装百度网盘  ">
+  <meta property="og:title" content="K8s集群-fek插件">
+  <meta property="og:description" content="  安装插件前准备工作">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/baidudisk/">
+  <link rel="canonical" href="http://localhost:4000/2018/10/fek/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -167,10 +167,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">百度网盘Svip破解</h1>
+    <h1 class="post-title">K8s集群-fek插件</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-18 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-18</time>  
+      <time datetime="2018-10-24 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-24</time>  
          
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -179,18 +179,136 @@
 
   <section class="post">
     <blockquote>
-  <p>github开源破解百度限速工具[mac版]
-[github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)</p>
-  <ul>
-    <li>需要本地安装git</li>
-    <li>mac上安装百度网盘</li>
-  </ul>
+  <p>安装插件前准备工作</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">cd ~/Downloads &amp;&amp; git clone https://github.com/CodeTips/BaiduNetdiskPlugin-macOS.git &amp;&amp; ./BaiduNetdiskPlugin-macOS/Other/Install.sh</code></p>
+<p>github地址: <a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>          <br />
+<img src="/images/posts/k8s-fek/1.png" alt="" />    <br />
+如图,选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    <br />
+在github上提供了官方的image地址:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>    k8s.gcr.io/elasticsearch:v5.6.4
+    k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+    docker.elastic.co/kibana/kibana:5.6.4
+</code></pre>
+</div>
+<p>这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。    <br />
+另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像    <br />
+本人在使用时由于要使用额外的plugin，在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像，另外两个镜像则是直接下载官方的再load到本地</p>
 
-<p>一键安装即可完成
-测试了一下，没有提速，但是解除了限速~</p>
+<blockquote>
+  <p>执行yaml文件前，一些修改</p>
+</blockquote>
+
+<p>其实fek的原理很简单：fluentd会根据配置文件<code class="highlighter-rouge">fluentd-es-configmap.yaml</code>指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示    <br />
+第一步：    <br />
+    设置node节点的标签,只在标记了标签的节点上运行fluentd        <br />
+    <code class="highlighter-rouge">
+        kubectl get nodes
+        kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
+   </code>    <br />
+第二步：    <br />
+    调整默认kibana的yaml文件,使用nodeport模式
+    <img src="/images/posts/k8s-fek/2.png" alt="" /></p>
+
+<blockquote>
+  <p>fluentd的configmap</p>
+</blockquote>
+
+<p>在kubenetes的github默认的配置文件中对于配置有非常详细的说明，这里我粗略的翻译一下，后面具体讲下当时我们使用的配置项
+config中有三个标签：source,match,filter。source的标签指定数据源，filter的标签对数据匹配处理，match也是匹配，一般作为末尾指定输出</p>
+
+<ul>
+  <li>在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过<code class="highlighter-rouge">systemctl status xxx</code>或<code class="highlighter-rouge">journalctl -u xxx -f</code>来查看kubernetes服务的日志.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>k8s组件</th>
+      <th style="text-align: center">日志内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k8s-apiserver</td>
+      <td style="text-align: center">无</td>
+    </tr>
+    <tr>
+      <td>kube-controller-manager</td>
+      <td style="text-align: center">pod扩容或rc</td>
+    </tr>
+    <tr>
+      <td>kube-scheduler</td>
+      <td style="text-align: center">pod扩容或rc</td>
+    </tr>
+    <tr>
+      <td>kubelet</td>
+      <td style="text-align: center">pod周期相关：创建、停止</td>
+    </tr>
+    <tr>
+      <td>etcd</td>
+      <td style="text-align: center">无</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>我们以kubelet日志为例，执行<code class="highlighter-rouge">journalctl -u kubelet -f</code>可以看到传输到fluentd的源日志数据的格式是日期+节点+xx+container名+image名+port+xxx+xxx+</p>
+
+<blockquote>
+  <p>apply所有yaml文件</p>
+</blockquote>
+
+<p>查看所有pod启动情况：<code class="highlighter-rouge">kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'</code>     <br />
+查看service情况： <code class="highlighter-rouge">kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'</code></p>
+
+<blockquote>
+  <p>在kibana中创建索引</p>
+</blockquote>
+
+<p>按默认的所有日志打到elasticsearch是按默认的带日期tag或者全部打到els的某个索引中。    <br />
+可以在fluentd中设置，将日志按服务名分别打到els对应的索引中，最后在els中收集到的日志是按服务名索引来建立的    <br />
+在kibana中按appname* 作为<code class="highlighter-rouge">Create Index Pattern</code>     <br />
+<img src="/images/posts/k8s-fek/3.png" alt="" /></p>
+
+<blockquote>
+  <p>注意</p>
+</blockquote>
+
+<p>fek主要的是：
+    fluentd中如何定义日志源source
+    将源日志通过match,filter最终按标准输入到elasticsearch中去    <br />
+从源获取的日志，打上tag，输入到els中，fluentd的configmap中input.conf指定source文件，并打上tag，output.conf中按tag值匹配对应的index_name存入elasticsearch中          <br />
+另外    <br />
+      默认的els设置的limits最好调整一下，默认的不够用。els崩会导致kibana中报错。   <br />
+      如果els经常报错，可以将els从k8s中移除，单独运行els然后在kibana和fluentd中将els的地址修改为启动的地址    <br />
+    kibana中加上：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>    - name: XPACK_SECURITY_ENABLED       
+        value: "false"       
+</code></pre>
+</div>
+
+<p>els启动文件：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>version: '2'      
+services:      
+  elasticsearch:      
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2      
+    expose:      
+      - 9200      
+    ports:     
+      - "9200:9200"      
+    environment:      
+      - bootstrap.memory_lock=true      
+      - xpack.security.enabled=false      
+      - "ES_JAVA_OPTS=-Xms8G -Xmx8G"      
+    ulimits:      
+      memlock:      
+        soft: -1      
+        hard: -1      
+    volumes:      
+      - /opt/Elasticsearch/data:/usr/share/elasticsearch/data      
+</code></pre>
+</div>
 
 
   </section>
@@ -261,15 +379,10 @@
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/10/https/" data-toggle="tooltip" data-placement="top" title="Nginx+https">上一篇：  <span>Nginx+https</span>
+            <a href="/2018/10/baidudisk/" data-toggle="tooltip" data-placement="top" title="百度网盘Svip破解">上一篇：  <span>百度网盘Svip破解</span>
             </a>
         </li>
         
-        
-        <li class="next">
-            <a href="/2018/10/fek/" data-toggle="tooltip" data-placement="top" title="K8s集群-fek插件">下一篇：  <span>K8s集群-fek插件</span>
-            </a>
-        </li>
         
     </ul>
 </section>

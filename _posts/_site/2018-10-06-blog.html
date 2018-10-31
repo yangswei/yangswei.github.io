@@ -14,24 +14,38 @@
 
 <h2 id="步骤">步骤</h2>
 
-<p>步骤在参考博客，有非常详细的介绍    <br />
-说下在部署时遇到的几个小问题：</p>
+<p>步骤在参考博客，有非常详细的介绍</p>
+
+<p>说下在部署时遇到的几个小问题：</p>
+
 <ul>
-  <li>提示ruby版本不对:   <a href="https://www.jianshu.com/p/48ad6365f3eb">解决</a>    <br />
+  <li>
+    <p>提示ruby版本不对:   <a href="https://www.jianshu.com/p/48ad6365f3eb">解决</a>    <br />
   另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  <br />
-  原因是mac自带的ruby有个默认版本，执行<code class="highlighter-rouge">rvm list</code>查看已经安装的ruby版本，可以通过<code class="highlighter-rouge">rvm remove</code>卸载掉老的版本，或者<code class="highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</li>
+  原因是mac自带的ruby有个默认版本，执行<code class="highlighter-rouge">rvm list</code>查看已经安装的ruby版本，可以通过<code class="highlighter-rouge">rvm remove</code>卸载掉老的版本，或者<code class="highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</p>
+  </li>
   <li>
     <p>在github上复制项目以后，会有提示报错，我按下图设置的  <br />
   <img src="https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png" alt="image" /></p>
   </li>
-  <li>gittalk评论插件报错  <br />
-  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制</li>
-  <li>页面统计延续前作者，用的是不蒜子的页面统计插件,在不蒜子作者的主页有段说明：         <br />
-  因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
-  所以遇到统计出不了，记得更换一下模板文件中服务的地址    <br />
-  <code class="highlighter-rouge">&lt;script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code>    <br />
-  更换为：    <br />
-  <code class="highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></li>
+  <li>
+    <p>gittalk评论插件报错  <br />
+  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制</p>
+  </li>
+  <li>
+    <p>统计不出数据
+我的博客用的是模板带的统计，busuanzi,在作者的主页有说明：             <br />
+因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
+所以遇到统计出不了，记得更换一下模板文件中服务的地址    <br />
+<code class="highlighter-rouge">&lt;script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code>    <br />
+更换为：    <br />
+<code class="highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></p>
+  </li>
+  <li>
+    <p>新建issue评论，跳转链接提示error
+<code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code>
+ 原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
+ 解决办法，登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="highlighter-rouge">https://www.yangshiwei.top/</code></p>
+  </li>
 </ul>
 
-<p>由于是前阵子搭的，其中一些忘记了</p>
