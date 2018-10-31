@@ -5,19 +5,18 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 25 Oct 2018 17:33:01 +0800</pubDate>
-    <lastBuildDate>Thu, 25 Oct 2018 17:33:01 +0800</lastBuildDate>
+    <pubDate>Wed, 31 Oct 2018 15:09:27 +0800</pubDate>
+    <lastBuildDate>Wed, 31 Oct 2018 15:09:27 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>K8s集群-fek插件</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;安装插件前准备工作&lt;/p&gt;
-&lt;/blockquote&gt;
+        <description>&lt;h2 id=&quot;安装插件前准备工作&quot;&gt;安装插件前准备工作&lt;/h2&gt;
 
 &lt;p&gt;github地址: &lt;a href=&quot;https://github.com/kubernetes/kubernetes&quot;&gt;https://github.com/kubernetes/kubernetes&lt;/a&gt;          &lt;br /&gt;
-&lt;img src=&quot;/images/posts/k8s-fek/1.png&quot; alt=&quot;&quot; /&gt;    &lt;br /&gt;
-如图,选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    &lt;br /&gt;
+路径为kubenetes/cluster/addons/fluentd-elasticsearch&lt;/p&gt;
+
+&lt;p&gt;选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    &lt;br /&gt;
 在github上提供了官方的image地址:&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    k8s.gcr.io/elasticsearch:v5.6.4
     k8s.gcr.io/fluentd-elasticsearch:v2.0.4
@@ -28,31 +27,21 @@
 另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像    &lt;br /&gt;
 本人在使用时由于要使用额外的plugin，在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像，另外两个镜像则是直接下载官方的再load到本地&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;执行yaml文件前，一些修改&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;h3 id=&quot;调整文件&quot;&gt;调整文件&lt;/h3&gt;
 
-&lt;p&gt;其实fek的原理很简单：fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示    &lt;br /&gt;
-第一步：    &lt;br /&gt;
-    设置node节点的标签,只在标记了标签的节点上运行fluentd        &lt;br /&gt;
-    &lt;code class=&quot;highlighter-rouge&quot;&gt;
-        kubectl get nodes
-        kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
-   &lt;/code&gt;    &lt;br /&gt;
-第二步：    &lt;br /&gt;
-    调整默认kibana的yaml文件,使用nodeport模式
-    &lt;img src=&quot;/images/posts/k8s-fek/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示   设置node节点的标签,只在标记了标签的节点上运行fluentd&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  kubectl get nodes
+  kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;调整默认kibana的yaml文件，让端口暴露出去
+&lt;img src=&quot;/images/posts/k8s-fek/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;fluentd的configmap&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;调整elasticsearch的statefulset文件 &lt;br /&gt;
+spec-limits&amp;amp;requests-cpu 按实际的需要来进行调整，k8s中跑了40+左右的服务，els的内存设置为8G左右够用 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;curl ip:9200/_cat/indices?v&lt;/code&gt; 内存不够时，索引的状态会&lt;code class=&quot;highlighter-rouge&quot;&gt;red&lt;/code&gt;,单节点的els索引状态为&lt;code class=&quot;highlighter-rouge&quot;&gt;yellow&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;在kubenetes的github默认的配置文件中对于配置有非常详细的说明，这里我粗略的翻译一下，后面具体讲下当时我们使用的配置项
-config中有三个标签：source,match,filter。source的标签指定数据源，filter的标签对数据匹配处理，match也是匹配，一般作为末尾指定输出&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl status xxx&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u xxx -f&lt;/code&gt;来查看kubernetes服务的日志.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h3 id=&quot;按实际需要调整fluentd的configmap&quot;&gt;按实际需要调整fluentd的configmap&lt;/h3&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -62,10 +51,6 @@ config中有三个标签：source,match,filter。source的标签指定数据源�
     &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;k8s-apiserver&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;无&lt;/td&gt;
-    &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;kube-controller-manager&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;pod扩容或rc&lt;/td&gt;
@@ -78,50 +63,49 @@ config中有三个标签：source,match,filter。source的标签指定数据源�
       &lt;td&gt;kubelet&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;pod周期相关：创建、停止&lt;/td&gt;
     &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;etcd&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;无&lt;/td&gt;
-    &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;我们以kubelet日志为例，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u kubelet -f&lt;/code&gt;可以看到传输到fluentd的源日志数据的格式是日期+节点+xx+container名+image名+port+xxx+xxx+&lt;/p&gt;
+&lt;p&gt;k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u docker -o json-pretty -f&lt;/code&gt;来查看服务的日志. 
+    &lt;img src=&quot;/images/posts/k8s-fek/4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;apply所有yaml文件&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;fluentd-configmap指定源数据，匹配所有系统日志中_COMM值为&lt;code class=&quot;highlighter-rouge&quot;&gt;dockerd-current&lt;/code&gt;的日志记录为源日志数据
+    &lt;img src=&quot;/images/posts/k8s-fek/5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;查看所有pod启动情况：&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
-查看service情况： &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;输出部分说明，我所使用的环境中用到的插件有：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;rewrite_tag_filter&lt;/li&gt;
+  &lt;li&gt;kubernetes_metadata&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;record_transformer&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;在kibana中创建索引&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;按默认的所有日志打到elasticsearch是按默认的带日期tag或者全部打到els的某个索引中。    &lt;br /&gt;
-可以在fluentd中设置，将日志按服务名分别打到els对应的索引中，最后在els中收集到的日志是按服务名索引来建立的    &lt;br /&gt;
-在kibana中按appname* 作为&lt;code class=&quot;highlighter-rouge&quot;&gt;Create Index Pattern&lt;/code&gt;     &lt;br /&gt;
+    &lt;p&gt;&lt;img src=&quot;/images/posts/k8s-fek/6.png&quot; alt=&quot;&quot; /&gt; 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;rewrite_tag_filter&lt;/code&gt;插件是从source源匹配的日志中，过滤找到&lt;code class=&quot;highlighter-rouge&quot;&gt;CONTAINER_NAME&lt;/code&gt;以k8s开头的日志打上tag-&amp;gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes.journal.container&lt;/code&gt;    &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes_metadata&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;record_transformer&lt;/code&gt;分别是将源文件进行格式处理，metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。    &lt;br /&gt;
+最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx）    &lt;br /&gt;
+在kibana中即能够定义&lt;code class=&quot;highlighter-rouge&quot;&gt;Index Patterns&lt;/code&gt;的值为k8s-appname*    &lt;br /&gt;
 &lt;img src=&quot;/images/posts/k8s-fek/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;注意&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;h3 id=&quot;检验&quot;&gt;检验&lt;/h3&gt;
 
-&lt;p&gt;fek主要的是：
-    fluentd中如何定义日志源source
-    将源日志通过match,filter最终按标准输入到elasticsearch中去    &lt;br /&gt;
-从源获取的日志，打上tag，输入到els中，fluentd的configmap中input.conf指定source文件，并打上tag，output.conf中按tag值匹配对应的index_name存入elasticsearch中          &lt;br /&gt;
-另外    &lt;br /&gt;
-      默认的els设置的limits最好调整一下，默认的不够用。els崩会导致kibana中报错。   &lt;br /&gt;
-      如果els经常报错，可以将els从k8s中移除，单独运行els然后在kibana和fluentd中将els的地址修改为启动的地址    &lt;br /&gt;
-    kibana中加上：&lt;/p&gt;
+&lt;p&gt;查看所有pod启动情况：  &lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
+查看service情况：   &lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;注意&quot;&gt;注意&lt;/h3&gt;
+
+&lt;p&gt;如果els经常报错，可以将els从k8s中移除，单独运行els     &lt;br /&gt;
+  然后在kibana和fluentd中将els的地址修改为启动的地址    &lt;br /&gt;
+  kibana中加上：&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    - name: XPACK_SECURITY_ENABLED       
         value: &quot;false&quot;       
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;els启动文件：&lt;/p&gt;
-
+&lt;p&gt;单独启动els的docker-compose文件内容如下：&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;version: '2'      
 services:      
   elasticsearch:      
@@ -225,7 +209,7 @@ server {
         <link>http://localhost:4000/2018/10/https/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/10/https/</guid>
         
-        <category>https证书</category>
+        <category>tools</category>
         
         
       </item>
@@ -250,7 +234,7 @@ server {
 
 &lt;p&gt;步骤在参考博客，有非常详细的介绍&lt;/p&gt;
 
-&lt;p&gt;说下在部署时遇到的几个小问题：&lt;/p&gt;
+&lt;h2 id=&quot;说下在部署时遇到的几个小问题&quot;&gt;说下在部署时遇到的几个小问题：&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -279,16 +263,16 @@ server {
     &lt;p&gt;新建issue评论，跳转链接提示error
 &lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch&lt;/code&gt;
  原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
- 解决办法，登录github-&amp;gt;setting-&amp;gt; Developer settings -&amp;gt; Authorization callback URL 修改为当前博客的访问地址即&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/&lt;/code&gt;&lt;/p&gt;
+ 解决办法，登录github-&amp;gt;setting-&amp;gt; Developer settings -&amp;gt; Authorization callback URL 修改为当前博客的访问地址即&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/&lt;/code&gt;
+ 建议在创建gittalk评论插件时填写的回调地址填github自带的域名&lt;code class=&quot;highlighter-rouge&quot;&gt;youname.github.io&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
-
 </description>
         <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/blog/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/10/blog/</guid>
         
-        <category>博客搭建</category>
+        <category>blog</category>
         
         
       </item>

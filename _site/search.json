@@ -19,7 +19,7 @@
     {
       "title"    : "Nginx+https",
       "category" : "",
-      "tags"     : "https证书",
+      "tags"     : "tools",
       "url"      : "/2018/10/https/",
       "date"     : "2018-10-09 00:00:00 +0800"
     } ,
@@ -27,7 +27,7 @@
     {
       "title"    : "学习搭建个人博客",
       "category" : "",
-      "tags"     : "博客搭建",
+      "tags"     : "blog",
       "url"      : "/2018/10/blog/",
       "date"     : "2018-10-06 00:00:00 +0800"
     } 
