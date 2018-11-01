@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "博客添加live2d",
+      "category" : "",
+      "tags"     : "blog",
+      "url"      : "/2018/11/live2d/",
+      "date"     : "2018-11-01 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "K8s集群-fek插件",
       "category" : "",
       "tags"     : "k8s",

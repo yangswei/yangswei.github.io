@@ -5,9 +5,96 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 01 Nov 2018 10:39:26 +0800</pubDate>
-    <lastBuildDate>Thu, 01 Nov 2018 10:39:26 +0800</lastBuildDate>
+    <pubDate>Thu, 01 Nov 2018 12:11:20 +0800</pubDate>
+    <lastBuildDate>Thu, 01 Nov 2018 12:11:20 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>博客添加live2d</title>
+        <description>&lt;h1 id=&quot;为博客添加女朋友&quot;&gt;为博客添加女朋友&lt;/h1&gt;
+
+&lt;h2 id=&quot;下载live2d-models-库&quot;&gt;下载live2d models 库&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/xiazeyu/live2d-widget-models&quot;&gt;github地址&lt;/a&gt;&lt;br /&gt;
+下载live2d库，&lt;a href=&quot;https://huaji8.top/post/live2d-plugin-2.0/&quot;&gt;查看预览图&lt;/a&gt;&lt;br /&gt;
+选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 
+在live2d-widget-models目录下，npm install live2d-widget-model-z16&lt;/p&gt;
+
+&lt;h2 id=&quot;生成静态的文件&quot;&gt;生成静态的文件&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install hexo-cli -g
+hexo init blog
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;blog
+npm install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;进入blog目录，安装hexo-helper-live2d，&lt;a href=&quot;https://github.com/EYHN/hexo-helper-live2d&quot;&gt;链接&lt;/a&gt;&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;npm install --save hexo-helper-live2d&lt;/code&gt;&lt;br /&gt;
+如果不成功：&lt;code class=&quot;highlighter-rouge&quot;&gt;yarn add hexo-helper-live2d&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;修改_config.xml&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;live2d&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;enable&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;scriptFrom&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;local&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;pluginRootPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;live2dw/&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;pluginJsPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;lib/&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;pluginModelPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;assets/&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;tagMode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;z16&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;display&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;right&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;150&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;300&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;mobile&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;除了model.use的名字，根据选择的model名外，其他的配置保持不变&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;拷贝文件到hexo中&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;blog
+mkdir live2d_models &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;live2d_models &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir z16 
+&lt;span class=&quot;c&quot;&gt;#将live2d-widget-models目录下live2d-widget-model-z16/assets/下的文件拷贝到 blog/live2d_models/z16下&lt;/span&gt;
+hexo serve
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;查看是否已经有了z16&lt;br /&gt;
+在blog目录，执行hexo deploy&lt;br /&gt;
+生成的静态文件在blog/public/live2d下&lt;br /&gt;
+引用文件在index.html中&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;静态文件导入jeklly&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cp blog/public/live2d    jeklly-blog的根目录&lt;/code&gt;
+将hexo的index.html的引用文件添加到jeklly的footer.html中&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;L2Dwidget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginRootPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;live2dw/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginJsPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lib/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginModelPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;assets/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;tagMode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;debug&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;model&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jsonPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/live2dw/assets/z16.model.json&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;display&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;position&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;right&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;width&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;show&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;log&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;完成。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 01 Nov 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/11/live2d/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/11/live2d/</guid>
+        
+        <category>blog</category>
+        
+        
+      </item>
     
       <item>
         <title>K8s集群-fek插件</title>
