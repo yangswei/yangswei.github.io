@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Oct 2018 15:21:32 +0800</pubDate>
-    <lastBuildDate>Wed, 31 Oct 2018 15:21:32 +0800</lastBuildDate>
+    <pubDate>Wed, 31 Oct 2018 16:34:01 +0800</pubDate>
+    <lastBuildDate>Wed, 31 Oct 2018 16:34:01 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -30,17 +30,14 @@ docker.elastic.co/kibana/kibana:5.6.4
 
 &lt;p&gt;fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 &lt;br /&gt;
 Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
-设置node节点的标签,只在标记了标签的节点上运行fluentd&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kubectl get nodes
-kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;调整默认kibana的yaml文件，让端口暴露出去
-&lt;img src=&quot;/images/posts/k8s-fek/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+设置node节点的标签,只在标记了标签的节点上运行fluentd        &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get nodes&lt;/code&gt;        &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;调整elasticsearch的statefulset文件 &lt;br /&gt;
-spec-limits&amp;amp;requests-cpu 按实际的需要来进行调整，k8s中跑了40+左右的服务，els的内存设置为8G左右够用 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;curl ip:9200/_cat/indices?v&lt;/code&gt; 内存不够时，索引的状态会&lt;code class=&quot;highlighter-rouge&quot;&gt;red&lt;/code&gt;,单节点的els索引状态为&lt;code class=&quot;highlighter-rouge&quot;&gt;yellow&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport
+调整elasticsearch的statefulset文件，调整limits&amp;amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）    &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;curl ip:9200/_cat/indices?v&lt;/code&gt;   &lt;br /&gt;
+内存不够时，索引的状态会&lt;strong&gt;red&lt;/strong&gt;,单节点的els索引状态为&lt;strong&gt;yellow&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;按实际需要调整fluentd的configmap&quot;&gt;按实际需要调整fluentd的configmap&lt;/h3&gt;
 
@@ -67,27 +64,121 @@ spec-limits&amp;amp;requests-cpu 按实际的需要来进行调整，k8s中跑�
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u docker -o json-pretty -f&lt;/code&gt;来查看服务的日志. 
-    &lt;img src=&quot;/images/posts/k8s-fek/4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u docker -o json-pretty -f&lt;/code&gt;来查看服务的日志.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__CURSOR&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__REALTIME_TIMESTAMP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__MONOTONIC_TIMESTAMP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_BOOT_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;PRIORITY&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_UID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_GID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_CAP_EFFECTIVE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_SYSTEMD_CGROUP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_MACHINE_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_HOSTNAME&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_TRANSPORT&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;SYSLOG_FACILITY&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_STREAM_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;SYSLOG_IDENTIFIER&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_PID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_COMM&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dockerd-current&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_EXE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_CMDLINE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_SYSTEMD_UNIT&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;MESSAGE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;fluentd-configmap指定源数据，匹配所有系统日志中_COMM值为&lt;code class=&quot;highlighter-rouge&quot;&gt;dockerd-current&lt;/code&gt;的日志记录为源日志数据
-    &lt;img src=&quot;/images/posts/k8s-fek/5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;输出部分说明，我所使用的环境中用到的插件有：&lt;/p&gt;
+输出部分说明，我所使用的环境中用到的插件有：&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;rewrite_tag_filter&lt;/li&gt;
   &lt;li&gt;kubernetes_metadata&lt;/li&gt;
-  &lt;li&gt;record_transformer
-&lt;img src=&quot;/images/posts/k8s-fek/6.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;record_transformer&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;source&amp;gt;
+@type systemd
+path /var/log/journal
+filters [{ &quot;_COMM&quot;: &quot;dockerd-current&quot; }]
+#pos_file /tmp/fluentd/journal.pos
+tag journal
+strip_underscores true
+read_from_head true
+&amp;lt;/source&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;匹配journal的日志数据，将container_name以k8s_开头的日志打上tag标签
+注意：官方的image中没有安装rewrite_tag_filter插件，在dockerfile指定的Gemfile添加
+&lt;code class=&quot;highlighter-rouge&quot;&gt;gem 'fluent-plugin-rewrite-tag-filter','~&amp;gt;2.1.0'&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;match journal&amp;gt;
+@type rewrite_tag_filter
+&amp;lt;rule&amp;gt;
+key CONTAINER_NAME
+pattern ^k8s_
+tag kubernetes.journal.container
+&amp;lt;/rule&amp;gt;
+log_level trace
+&amp;lt;/match&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;根据上文打好的标签，过滤标签，将kubernetes.xx的标签匹配后，
+通过kubernetes_metadata将日志数据格式化&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;filter kubernetes.**&amp;gt;
+@type kubernetes_metadata
+use_journal true
+&amp;lt;/filter&amp;gt;
+同上，匹配标签，使用record_transformer插件，添加topic
+&amp;lt;filter kubernetes.**&amp;gt;
+@type record_transformer
+enable_ruby
+&amp;lt;record&amp;gt;
+topic k8s-${record[&quot;kubernetes&quot;][&quot;container_name&quot;]}
+&amp;lt;/record&amp;gt;
+&amp;lt;/filter&amp;gt;
+最后匹配所有，将日志按index_name保存到els中
+&amp;lt;match **&amp;gt;
+@id elasticsearch
+@type elasticsearch
+@log_level info
+#只有tag_key是topic的日志才会输入到els中
+include_tag_key true
+tag_key topic
+host elasticsearch-logging
+port 9200
+#logstash_format true
+#将日志的topic匹配索引的key[这里key的值定义为topic]，
+#如果日志的topic=索引的key,则将对应的日志打入对应的索引中
+target_index_key topic
+index_name logstash-${topic}
+&amp;lt;buffer&amp;gt;
+@type file
+path /var/log/fluentd-buffers/kubernetes.system.buffer
+flush_mode interval
+retry_type exponential_backoff
+flush_thread_count 2
+flush_interval 5s
+retry_forever
+retry_max_interval 30
+chunk_limit_size 2M
+queue_limit_length 8
+overflow_action block
+&amp;lt;/buffer&amp;gt;
+&amp;lt;/match&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;插件作用： &lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;rewrite_tag_filter&lt;/code&gt;插件是从source源匹配的日志中，过滤找到&lt;code class=&quot;highlighter-rouge&quot;&gt;CONTAINER_NAME&lt;/code&gt;以k8s开头的日志，将过滤出来的日志打上tag。 &lt;br /&gt;
 另外两个插件分别是将源文件进行格式处理。 &lt;br /&gt;
 metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。       &lt;br /&gt;
 最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx）    &lt;br /&gt;
-在kibana中即能够定义&lt;code class=&quot;highlighter-rouge&quot;&gt;Index Patterns&lt;/code&gt;的值为k8s-appname*    &lt;br /&gt;
-&lt;img src=&quot;/images/posts/k8s-fek/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+在kibana中即能够定义&lt;code class=&quot;highlighter-rouge&quot;&gt;Index Patterns&lt;/code&gt;的值为k8s-appname*&lt;/p&gt;
 
 &lt;h3 id=&quot;检验&quot;&gt;检验&lt;/h3&gt;
 

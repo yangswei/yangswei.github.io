@@ -197,17 +197,14 @@ docker.elastic.co/kibana/kibana:5.6.4
 
 <p>fluentd会根据配置文件<code class="highlighter-rouge">fluentd-es-configmap.yaml</code>指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 <br />
 Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
-设置node节点的标签,只在标记了标签的节点上运行fluentd</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>kubectl get nodes
-kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true
-</code></pre>
-</div>
-<p>调整默认kibana的yaml文件，让端口暴露出去
-<img src="/images/posts/k8s-fek/2.png" alt="" /></p>
+设置node节点的标签,只在标记了标签的节点上运行fluentd        <br />
+<code class="highlighter-rouge">kubectl get nodes</code>        <br />
+<code class="highlighter-rouge">kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true</code></p>
 
-<p>调整elasticsearch的statefulset文件 <br />
-spec-limits&amp;requests-cpu 按实际的需要来进行调整，k8s中跑了40+左右的服务，els的内存设置为8G左右够用 
-<code class="highlighter-rouge">curl ip:9200/_cat/indices?v</code> 内存不够时，索引的状态会<code class="highlighter-rouge">red</code>,单节点的els索引状态为<code class="highlighter-rouge">yellow</code></p>
+<p>调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport
+调整elasticsearch的statefulset文件，调整limits&amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）    <br />
+<code class="highlighter-rouge">curl ip:9200/_cat/indices?v</code>   <br />
+内存不够时，索引的状态会<strong>red</strong>,单节点的els索引状态为<strong>yellow</strong></p>
 
 <h3 id="按实际需要调整fluentd的configmap">按实际需要调整fluentd的configmap</h3>
 
@@ -234,27 +231,121 @@ spec-limits&amp;requests-cpu 按实际的需要来进行调整，k8s中跑了40+
   </tbody>
 </table>
 
-<p>k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过<code class="highlighter-rouge">journalctl -u docker -o json-pretty -f</code>来查看服务的日志. 
-    <img src="/images/posts/k8s-fek/4.png" alt="" /></p>
+<p>k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过<code class="highlighter-rouge">journalctl -u docker -o json-pretty -f</code>来查看服务的日志.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+	</span><span class="nt">"__CURSOR"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"__REALTIME_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"__MONOTONIC_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_BOOT_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"PRIORITY"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_UID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_GID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_CAP_EFFECTIVE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_SYSTEMD_CGROUP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_MACHINE_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_HOSTNAME"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_TRANSPORT"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"SYSLOG_FACILITY"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_STREAM_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"SYSLOG_IDENTIFIER"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_PID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_COMM"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"dockerd-current"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_EXE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_CMDLINE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"_SYSTEMD_UNIT"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
+	</span><span class="nt">"MESSAGE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
 
 <p>fluentd-configmap指定源数据，匹配所有系统日志中_COMM值为<code class="highlighter-rouge">dockerd-current</code>的日志记录为源日志数据
-    <img src="/images/posts/k8s-fek/5.png" alt="" /></p>
-
-<p>输出部分说明，我所使用的环境中用到的插件有：</p>
+输出部分说明，我所使用的环境中用到的插件有：</p>
 <ul>
   <li>rewrite_tag_filter</li>
   <li>kubernetes_metadata</li>
-  <li>record_transformer
-<img src="/images/posts/k8s-fek/6.png" alt="" /></li>
+  <li>record_transformer</li>
 </ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;source&gt;
+@type systemd
+path /var/log/journal
+filters [{ "_COMM": "dockerd-current" }]
+#pos_file /tmp/fluentd/journal.pos
+tag journal
+strip_underscores true
+read_from_head true
+&lt;/source&gt;
+</code></pre>
+</div>
+
+<p>匹配journal的日志数据，将container_name以k8s_开头的日志打上tag标签
+注意：官方的image中没有安装rewrite_tag_filter插件，在dockerfile指定的Gemfile添加
+<code class="highlighter-rouge">gem 'fluent-plugin-rewrite-tag-filter','~&gt;2.1.0'</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;match journal&gt;
+@type rewrite_tag_filter
+&lt;rule&gt;
+key CONTAINER_NAME
+pattern ^k8s_
+tag kubernetes.journal.container
+&lt;/rule&gt;
+log_level trace
+&lt;/match&gt;
+</code></pre>
+</div>
+<p>根据上文打好的标签，过滤标签，将kubernetes.xx的标签匹配后，
+通过kubernetes_metadata将日志数据格式化</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;filter kubernetes.**&gt;
+@type kubernetes_metadata
+use_journal true
+&lt;/filter&gt;
+同上，匹配标签，使用record_transformer插件，添加topic
+&lt;filter kubernetes.**&gt;
+@type record_transformer
+enable_ruby
+&lt;record&gt;
+topic k8s-${record["kubernetes"]["container_name"]}
+&lt;/record&gt;
+&lt;/filter&gt;
+最后匹配所有，将日志按index_name保存到els中
+&lt;match **&gt;
+@id elasticsearch
+@type elasticsearch
+@log_level info
+#只有tag_key是topic的日志才会输入到els中
+include_tag_key true
+tag_key topic
+host elasticsearch-logging
+port 9200
+#logstash_format true
+#将日志的topic匹配索引的key[这里key的值定义为topic]，
+#如果日志的topic=索引的key,则将对应的日志打入对应的索引中
+target_index_key topic
+index_name logstash-${topic}
+&lt;buffer&gt;
+@type file
+path /var/log/fluentd-buffers/kubernetes.system.buffer
+flush_mode interval
+retry_type exponential_backoff
+flush_thread_count 2
+flush_interval 5s
+retry_forever
+retry_max_interval 30
+chunk_limit_size 2M
+queue_limit_length 8
+overflow_action block
+&lt;/buffer&gt;
+&lt;/match&gt;
+</code></pre>
+</div>
 
 <p>插件作用： <br />
 <code class="highlighter-rouge">rewrite_tag_filter</code>插件是从source源匹配的日志中，过滤找到<code class="highlighter-rouge">CONTAINER_NAME</code>以k8s开头的日志，将过滤出来的日志打上tag。 <br />
 另外两个插件分别是将源文件进行格式处理。 <br />
 metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。       <br />
 最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx）    <br />
-在kibana中即能够定义<code class="highlighter-rouge">Index Patterns</code>的值为k8s-appname*    <br />
-<img src="/images/posts/k8s-fek/3.png" alt="" /></p>
+在kibana中即能够定义<code class="highlighter-rouge">Index Patterns</code>的值为k8s-appname*</p>
 
 <h3 id="检验">检验</h3>
 
