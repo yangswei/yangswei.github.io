@@ -180,30 +180,32 @@
   <section class="post">
     <h2 id="安装插件前准备工作">安装插件前准备工作</h2>
 
-<p>github地址: <a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a>          <br />
+<p>github地址: <a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a><br />
 路径为kubenetes/cluster/addons/fluentd-elasticsearch</p>
 
-<p>选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。    <br />
+<p>选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。<br />
 在github上提供了官方的image地址:</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>k8s.gcr.io/elasticsearch:v5.6.4
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>k8s.gcr.io/elasticsearch:v5.6.4
 k8s.gcr.io/fluentd-elasticsearch:v2.0.4
 docker.elastic.co/kibana/kibana:5.6.4
 </code></pre>
 </div>
-<p>这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。    <br />
+
+<p>这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。<br />
 另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像,如果要使用额外的plugin插件，则在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像。</p>
 
 <h3 id="调整文件">调整文件</h3>
 
 <p>fluentd会根据配置文件<code class="highlighter-rouge">fluentd-es-configmap.yaml</code>指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 <br />
 Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
-设置node节点的标签,只在标记了标签的节点上运行fluentd        <br />
-<code class="highlighter-rouge">kubectl get nodes</code>        <br />
+设置node节点的标签,只在标记了标签的节点上运行fluentd<br />
+<code class="highlighter-rouge">kubectl get nodes</code><br />
 <code class="highlighter-rouge">kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true</code></p>
 
-<p>调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport
-调整elasticsearch的statefulset文件，调整limits&amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）    <br />
-<code class="highlighter-rouge">curl ip:9200/_cat/indices?v</code>   <br />
+<p>调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport<br />
+调整elasticsearch的statefulset文件，调整limits&amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）<br />
+<code class="highlighter-rouge">curl ip:9200/_cat/indices?v</code><br />
 内存不够时，索引的状态会<strong>red</strong>,单节点的els索引状态为<strong>yellow</strong></p>
 
 <h3 id="按实际需要调整fluentd的configmap">按实际需要调整fluentd的configmap</h3>
@@ -232,7 +234,8 @@ Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
 </table>
 
 <p>k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过<code class="highlighter-rouge">journalctl -u docker -o json-pretty -f</code>来查看服务的日志.</p>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
 	</span><span class="nt">"__CURSOR"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
 	</span><span class="nt">"__REALTIME_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
 	</span><span class="nt">"__MONOTONIC_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
@@ -282,74 +285,76 @@ read_from_head true
 注意：官方的image中没有安装rewrite_tag_filter插件，在dockerfile指定的Gemfile添加
 <code class="highlighter-rouge">gem 'fluent-plugin-rewrite-tag-filter','~&gt;2.1.0'</code></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;match journal&gt;
-@type rewrite_tag_filter
-&lt;rule&gt;
-key CONTAINER_NAME
-pattern ^k8s_
-tag kubernetes.journal.container
-&lt;/rule&gt;
-log_level trace
-&lt;/match&gt;
+<div class="language-yml highlighter-rouge"><pre class="highlight"><code><span class="s">&lt;match journal&gt;</span>
+<span class="err">@</span><span class="s">type rewrite_tag_filter</span>
+<span class="s">&lt;rule&gt;</span>
+<span class="s">key CONTAINER_NAME</span>
+<span class="s">pattern ^k8s_</span>
+<span class="s">tag kubernetes.journal.container</span>
+<span class="s">&lt;/rule&gt;</span>
+<span class="s">log_level trace</span>
+<span class="s">&lt;/match&gt;</span>
 </code></pre>
 </div>
+
 <p>根据上文打好的标签，过滤标签，将kubernetes.xx的标签匹配后，
 通过kubernetes_metadata将日志数据格式化</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;filter kubernetes.**&gt;
-@type kubernetes_metadata
-use_journal true
-&lt;/filter&gt;
-同上，匹配标签，使用record_transformer插件，添加topic
-&lt;filter kubernetes.**&gt;
-@type record_transformer
-enable_ruby
-&lt;record&gt;
-topic k8s-${record["kubernetes"]["container_name"]}
-&lt;/record&gt;
-&lt;/filter&gt;
-最后匹配所有，将日志按index_name保存到els中
-&lt;match **&gt;
-@id elasticsearch
-@type elasticsearch
-@log_level info
-#只有tag_key是topic的日志才会输入到els中
-include_tag_key true
-tag_key topic
-host elasticsearch-logging
-port 9200
-#logstash_format true
-#将日志的topic匹配索引的key[这里key的值定义为topic]，
-#如果日志的topic=索引的key,则将对应的日志打入对应的索引中
-target_index_key topic
-index_name logstash-${topic}
-&lt;buffer&gt;
-@type file
-path /var/log/fluentd-buffers/kubernetes.system.buffer
-flush_mode interval
-retry_type exponential_backoff
-flush_thread_count 2
-flush_interval 5s
-retry_forever
-retry_max_interval 30
-chunk_limit_size 2M
-queue_limit_length 8
-overflow_action block
-&lt;/buffer&gt;
-&lt;/match&gt;
+<div class="language-yml highlighter-rouge"><pre class="highlight"><code><span class="s">&lt;filter kubernetes.**&gt;</span>
+<span class="err">@</span><span class="s">type kubernetes_metadata</span>
+<span class="s">use_journal true</span>
+<span class="s">&lt;/filter&gt;</span>
+<span class="s">同上，匹配标签，使用record_transformer插件，添加topic</span>
+<span class="s">&lt;filter kubernetes.**&gt;</span>
+<span class="err">@</span><span class="s">type record_transformer</span>
+<span class="s">enable_ruby</span>
+<span class="s">&lt;record&gt;</span>
+<span class="s">topic k8s-${record["kubernetes"]["container_name"]}</span>
+<span class="s">&lt;/record&gt;</span>
+<span class="s">&lt;/filter&gt;</span>
+<span class="s">最后匹配所有，将日志按index_name保存到els中</span>
+<span class="s">&lt;match **&gt;</span>
+<span class="err">@</span><span class="s">id elasticsearch</span>
+<span class="err">@</span><span class="s">type elasticsearch</span>
+<span class="err">@</span><span class="s">log_level info</span>
+<span class="c1">#只有tag_key是topic的日志才会输入到els中</span>
+<span class="s">include_tag_key true</span>
+<span class="s">tag_key topic</span>
+<span class="s">host elasticsearch-logging</span>
+<span class="s">port 9200</span>
+<span class="c1">#logstash_format true</span>
+<span class="c1">#将日志的topic匹配索引的key[这里key的值定义为topic]，</span>
+<span class="c1">#如果日志的topic=索引的key,则将对应的日志打入对应的索引中</span>
+<span class="s">target_index_key topic</span>
+<span class="s">index_name logstash-${topic}</span>
+<span class="s">&lt;buffer&gt;</span>
+<span class="err">@</span><span class="s">type file</span>
+<span class="s">path /var/log/fluentd-buffers/kubernetes.system.buffer</span>
+<span class="s">flush_mode interval</span>
+<span class="s">retry_type exponential_backoff</span>
+<span class="s">flush_thread_count 2</span>
+<span class="s">flush_interval 5s</span>
+<span class="s">retry_forever</span>
+<span class="s">retry_max_interval 30</span>
+<span class="s">chunk_limit_size 2M</span>
+<span class="s">queue_limit_length 8</span>
+<span class="s">overflow_action block</span>
+<span class="s">&lt;/buffer&gt;</span>
+<span class="s">&lt;/match&gt;</span>
 </code></pre>
 </div>
 
-<p>插件作用： <br />
-<code class="highlighter-rouge">rewrite_tag_filter</code>插件是从source源匹配的日志中，过滤找到<code class="highlighter-rouge">CONTAINER_NAME</code>以k8s开头的日志，将过滤出来的日志打上tag。 <br />
-另外两个插件分别是将源文件进行格式处理。 <br />
-metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名。       <br />
-最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx）    <br />
+<p>插件作用：
+<code class="highlighter-rouge">rewrite_tag_filter</code>插件是从source源匹配的日志中，过滤找到<code class="highlighter-rouge">CONTAINER_NAME</code>以k8s开头的日志，将过滤出来的日志打上tag
+另外两个插件分别是将源文件进行格式处理
+metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名</p>
+
+<p>最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx)
 在kibana中即能够定义<code class="highlighter-rouge">Index Patterns</code>的值为k8s-appname*</p>
 
 <h3 id="检验">检验</h3>
 
-<p>查看所有pod启动情况：  <br />
+<p>查看所有pod启动情况：
 <code class="highlighter-rouge">kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'</code>     <br />
 查看service情况：   <br />
 <code class="highlighter-rouge">kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'</code></p>
@@ -548,6 +553,9 @@ services:
 
         </div>
         <div>
+        <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300 }, "mobile": { "show": true }, "log": false });</script>
+        
     </footer>
 </section>
 
