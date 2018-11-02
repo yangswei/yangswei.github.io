@@ -1422,3 +1422,9 @@ nav a {
   transform: translateY(-3px);
 }
 /*导航按钮-end*/
+
+@media only screen and (max-width: 767px) {
+  #live2dcanvas {
+    width: 150px;
+  }
+}
