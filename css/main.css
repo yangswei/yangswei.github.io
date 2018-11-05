@@ -1430,6 +1430,6 @@ nav a {
 @media only screen and (max-width: 767px) {
   #live2dcanvas {
     width: 150px;
-    right: 0;
+    right: 0!important;
   }
 }
