@@ -1423,8 +1423,13 @@ nav a {
 }
 /*导航按钮-end*/
 
+#live2dcanvas {
+    right: 200px!important;
+}
+
 @media only screen and (max-width: 767px) {
   #live2dcanvas {
     width: 150px;
+    right: 0;
   }
 }
