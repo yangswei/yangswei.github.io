@@ -23,14 +23,9 @@ title: 关于我
 <p>
 
 在jekyll的官方模板中挑选了潘柏信的博客，作者的博客中有jekyll的搭建过程可以参考
-<a href="http://yangshiwei.top/2016/10/jekyll_tutorials1/"> Jekyll 搭建个人博客 </a>
-教程
+<a href="http://baixin.io/2016/10/jekyll_tutorials1/"> Jekyll 搭建个人博客 </a>教程  
 
-<p>
-
-<p> 
-
-<p> 
+<br>
 
 
 {% include comments.html %}
