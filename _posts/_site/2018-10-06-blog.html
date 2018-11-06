@@ -16,7 +16,7 @@
 
 <p>步骤在参考博客，有非常详细的介绍</p>
 
-<p>说下在部署时遇到的几个小问题：</p>
+<h2 id="说下在部署时遇到的几个小问题">说下在部署时遇到的几个小问题：</h2>
 
 <ul>
   <li>
@@ -45,7 +45,7 @@
     <p>新建issue评论，跳转链接提示error
 <code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code>
  原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
- 解决办法，登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="highlighter-rouge">https://www.yangshiwei.top/</code></p>
+ 解决办法，登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="highlighter-rouge">https://www.yangshiwei.top/</code>
+ 建议在创建gittalk评论插件时填写的回调地址填github自带的域名<code class="highlighter-rouge">youname.github.io</code></p>
   </li>
 </ul>
-

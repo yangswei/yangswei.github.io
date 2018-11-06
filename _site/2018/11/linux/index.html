@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>博客添加live2d</title>
-  <meta name="description" content="为博客添加女朋友">
+  <title>基础企业级Linux优化整理</title>
+  <meta name="description" content="生产环境优化">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="博客添加live2d">
-  <meta name="twitter:description" content="为博客添加女朋友">
+  <meta name="twitter:title" content="基础企业级Linux优化整理">
+  <meta name="twitter:description" content="生产环境优化">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="博客添加live2d">
-  <meta property="og:description" content="为博客添加女朋友">
+  <meta property="og:title" content="基础企业级Linux优化整理">
+  <meta property="og:description" content="生产环境优化">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/11/live2d/">
+  <link rel="canonical" href="http://localhost:4000/2018/11/linux/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -167,10 +167,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">博客添加live2d</h1>
+    <h1 class="post-title">基础企业级Linux优化整理</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-11-01 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-11-01</time>  
+      <time datetime="2018-11-06 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-11-06</time>  
          
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -178,80 +178,183 @@
   </header>
 
   <section class="post">
-    <h1 id="为博客添加女朋友">为博客添加女朋友</h1>
+    <h1 id="生产环境优化">生产环境优化</h1>
 
-<h2 id="下载live2d-models-库">下载live2d models 库</h2>
+<h2 id="开机启动">开机启动</h2>
 
-<p><a href="https://github.com/xiazeyu/live2d-widget-models">github地址</a><br />
-下载live2d库，<a href="https://huaji8.top/post/live2d-plugin-2.0/">查看预览图</a><br />
-选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 
-在live2d-widget-models目录下，npm install live2d-widget-model-z16</p>
+<p><code class="highlighter-rouge">chkconfig --list|grep 3:on</code>查看当前开机开启服务
+<br />
+关闭其他开机启动的服务</p>
 
-<h2 id="生成静态的文件">生成静态的文件</h2>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span>chkconfig --list|grep <span class="s1">'3:on'</span>|awk <span class="s1">'{print $1}'</span>|grep -vE <span class="s2">"crond|network|sshd|rsyslog|sysstat"</span><span class="sb">`</span>;<span class="k">do </span>chkconfig <span class="nv">$i</span> off;done
+<span class="c">#执行完以后再查看一下开机启动的服务</span>
+chkconfig --list|grep 3:on
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>npm install hexo-cli -g
-hexo init blog
-<span class="nb">cd </span>blog
-npm install
+</code></pre>
+</div>
+<p><br />
+其他开机启动服务原则是：只保留使用的服务，清楚系统上每个服务的角色，最小化系统服务。</p>
+
+<h2 id="防火墙">防火墙</h2>
+<p>防火墙个人学习或者企业级高并发高流量服务器一般都不开启，因为开启防火墙会有较大的性能损耗，解决此类问题及在更前端用硬件防火墙进行安全防护
+<br />
+<code class="highlighter-rouge">/etc/init.d/iptables stop</code>
+<br /></p>
+
+<h2 id="远程连接">远程连接</h2>
+
+<ul>
+  <li>linux系统配置修改后恢复比较麻烦，建议修改配置前备份一份，如果容易忘记，则设置一下命令别名
+<br /></li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim /etc/profile
+<span class="c">#在末尾添加一行alias，这样每次vim会自动在vim的目录创建一个备份</span>
+<span class="nb">alias </span><span class="nv">vim</span><span class="o">=</span><span class="s1">'func() { cp -f  $1 $1-bk; vim $1;}; func'</span>
 </code></pre>
 </div>
 
 <ul>
-  <li>进入blog目录，安装hexo-helper-live2d，<a href="https://github.com/EYHN/hexo-helper-live2d">链接</a><br />
-<code class="highlighter-rouge">npm install --save hexo-helper-live2d</code><br />
-如果不成功：<code class="highlighter-rouge">yarn add hexo-helper-live2d</code></li>
-  <li>修改_config.xml</li>
+  <li>修改配置<br />
+<code class="highlighter-rouge">vim /etc/ssh/sshd_config</code></li>
 </ul>
 
-<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">live2d</span><span class="pi">:</span>
-  <span class="s">enable</span><span class="pi">:</span> <span class="s">true</span>
-  <span class="s">scriptFrom</span><span class="pi">:</span> <span class="s">local</span>
-  <span class="s">pluginRootPath</span><span class="pi">:</span> <span class="s">live2dw/</span>
-  <span class="s">pluginJsPath</span><span class="pi">:</span> <span class="s">lib/</span>
-  <span class="s">pluginModelPath</span><span class="pi">:</span> <span class="s">assets/</span>
-  <span class="s">tagMode</span><span class="pi">:</span> <span class="s">false</span>
-  <span class="s">debug</span><span class="pi">:</span> <span class="s">false</span>
-  <span class="s">model</span><span class="pi">:</span>
-    <span class="s">use</span><span class="pi">:</span> <span class="s">z16</span>
-  <span class="s">display</span><span class="pi">:</span>
-    <span class="s">position</span><span class="pi">:</span> <span class="s">right</span>
-    <span class="s">width</span><span class="pi">:</span> <span class="s">150</span>
-    <span class="s">height</span><span class="pi">:</span> <span class="s">300</span>
-  <span class="s">mobile</span><span class="pi">:</span>
-    <span class="s">show</span><span class="pi">:</span> <span class="s">true</span>
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th style="text-align: right">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Port</td>
+      <td style="text-align: right">设置远程连接端口,默认22</td>
+    </tr>
+    <tr>
+      <td>PermitEmptyPasswords</td>
+      <td style="text-align: right">远程用户空密码登录，设置为no</td>
+    </tr>
+    <tr>
+      <td>PermitRootLogin</td>
+      <td style="text-align: right">是否允许root用户直接登录</td>
+    </tr>
+    <tr>
+      <td>UseDNS</td>
+      <td style="text-align: right">是否反向解析ip,默认yes</td>
+    </tr>
+    <tr>
+      <td>GSSAPIAuthentication no</td>
+      <td style="text-align: right">解决慢连接</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="highlighter-rouge">/etc/init.d/sshd reload</code></p>
+
+<h2 id="权限管理">权限管理</h2>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>visudo
+在文件的98行给对应普通用户加权限
+用户名|机器<span class="o">=(</span>授权角色<span class="o">)</span>|可执行命令
+xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: ALL 
+表示xxx 可通过sudo 执行所以系统命令，并不需要密码提示
+最后的ALL表示所有命令，可指定某些命令，用逗号隔开
+xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: vim,cp,find
 </code></pre>
 </div>
 
-<p>除了model.use的名字，根据选择的model名外，其他的配置保持不变</p>
+<h2 id="关键系统文件上锁">关键系统文件上锁</h2>
 
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#上锁</span>
+chattr +i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
+<span class="c">#解锁</span>
+chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
+</code></pre>
+</div>
+
+<h2 id="升级已知漏洞软件版本">升级已知漏洞软件版本</h2>
+<p>升级到最新</p>
 <ul>
-  <li>拷贝文件到hexo中</li>
+  <li>openssl</li>
+  <li>openssh</li>
+  <li>bash</li>
 </ul>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">cd </span>blog
-mkdir live2d_models <span class="o">&amp;&amp;</span> <span class="nb">cd </span>live2d_models <span class="o">&amp;&amp;</span> mkdir z16 
-<span class="c">#将live2d-widget-models目录下live2d-widget-model-z16/assets/下的文件拷贝到 blog/live2d_models/z16下</span>
+<h2 id="内核优化">内核优化</h2>
+<p>内核部分根据实际需要优化</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>net.ipv4.tcp_max_tw_buckets <span class="o">=</span> 6000
+timewait 的数量，默认是180000。
+net.ipv4.ip_local_port_range <span class="o">=</span> 1024 65000
+允许系统打开的端口范围。
+net.ipv4.tcp_tw_recycle <span class="o">=</span> 1
+启用timewait 快速回收。
+net.ipv4.tcp_tw_reuse <span class="o">=</span> 1
+开启重用。允许将TIME-WAIT sockets 重新用于新的TCP 连接。
+net.ipv4.tcp_syncookies <span class="o">=</span> 1
+开启SYN Cookies，当出现SYN 等待队列溢出时，启用cookies 来处理。
+net.core.somaxconn <span class="o">=</span> 262144
+web 应用中listen 函数的backlog 默认会给我们内核参数的net.core.somaxconn 限制到128，而nginx 定义的NGX_LISTEN_BACKLOG 默认为511，所以有必要调整这个值。
+net.core.netdev_max_backlog <span class="o">=</span> 262144
+每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。
+net.ipv4.tcp_max_orphans <span class="o">=</span> 262144
+系统中最多有多少个TCP 套接字不被关联到任何一个用户文件句柄上。如果超过这个数字，孤儿连接将即刻被复位并打印出警告信息。这个限制仅仅是为了防止简单的DoS 攻击，不能过分依靠它或者人为地减小这个值，更应该增加这个值<span class="o">(</span>如果增加了内存之后<span class="o">)</span>。
+net.ipv4.tcp_max_syn_backlog <span class="o">=</span> 262144
+记录的那些尚未收到客户端确认信息的连接请求的最大值。对于有128M 内存的系统而言，缺省值是1024，小内存的系统则是128。
+net.ipv4.tcp_timestamps <span class="o">=</span> 0
+时间戳可以避免序列号的卷绕。一个1Gbps 的链路肯定会遇到以前用过的序列号。时间戳能够让内核接受这种“异常”的数据包。这里需要将其关掉。
+net.ipv4.tcp_synack_retries <span class="o">=</span> 1
+为了打开对端的连接，内核需要发送一个SYN 并附带一个回应前面一个SYN 的ACK。也就是所谓三次握手中的第二次握手。这个设置决定了内核放弃连接之前发送SYN+ACK 包的数量。
+net.ipv4.tcp_syn_retries <span class="o">=</span> 1
+在内核放弃建立连接之前发送SYN 包的数量。
+net.ipv4.tcp_fin_timeout <span class="o">=</span> 1
+如果套接字由本端要求关闭，这个参数决定了它保持在FIN-WAIT-2 状态的时间。对端可以出错并永远不关闭连接，甚至意外当机。缺省值是60 秒。2.2 内核的通常值是180 秒，3你可以按这个设置，但要记住的是，即使你的机器是一个轻载的WEB 服务器，也有因为大量的死套接字而内存溢出的风险，FIN- WAIT-2 的危险性比FIN-WAIT-1 要小，因为它最多只能吃掉1.5K 内存，但是它们的生存期长些。
+net.ipv4.tcp_keepalive_time <span class="o">=</span> 30
+当keepalive 起用的时候，TCP 发送keepalive 消息的频度。缺省是2 小时。
+
+配置方法：
+修改/etc/sysctl.conf文件。
+保存退出后，可以重启机器使参数生效。
+如果想使参数马上生效，也可以执行如下命令：
+    sysctl  -p
+
+完整参数：
+net.ipv4.ip_forward <span class="o">=</span> 0
+net.ipv4.conf.default.rp_filter <span class="o">=</span> 1
+net.ipv4.conf.default.accept_source_route <span class="o">=</span> 0
+kernel.sysrq <span class="o">=</span> 0
+kernel.core_uses_pid <span class="o">=</span> 1
+net.ipv4.tcp_syncookies <span class="o">=</span> 1
+kernel.msgmnb <span class="o">=</span> 65536
+kernel.msgmax <span class="o">=</span> 65536
+kernel.shmmax <span class="o">=</span> 68719476736
+kernel.shmall <span class="o">=</span> 4294967296
+net.ipv4.tcp_max_tw_buckets <span class="o">=</span> 6000
+net.ipv4.tcp_sack <span class="o">=</span> 1
+net.ipv4.tcp_window_scaling <span class="o">=</span> 1
+net.ipv4.tcp_rmem <span class="o">=</span> 4096 87380 4194304
+net.ipv4.tcp_wmem <span class="o">=</span> 4096 16384 4194304
+net.core.wmem_default <span class="o">=</span> 8388608
+net.core.rmem_default <span class="o">=</span> 8388608
+net.core.rmem_max <span class="o">=</span> 16777216
+net.core.wmem_max <span class="o">=</span> 16777216
+net.core.netdev_max_backlog <span class="o">=</span> 262144
+net.core.somaxconn <span class="o">=</span> 262144
+net.ipv4.tcp_max_orphans <span class="o">=</span> 3276800
+net.ipv4.tcp_max_syn_backlog <span class="o">=</span> 262144
+net.ipv4.tcp_timestamps <span class="o">=</span> 0
+net.ipv4.tcp_synack_retries <span class="o">=</span> 1
+net.ipv4.tcp_syn_retries <span class="o">=</span> 1
+net.ipv4.tcp_tw_recycle <span class="o">=</span> 1
+net.ipv4.tcp_tw_reuse <span class="o">=</span> 1
+net.ipv4.tcp_mem <span class="o">=</span> 94500000 915000000 927000000
+net.ipv4.tcp_fin_timeout <span class="o">=</span> 1
+net.ipv4.tcp_keepalive_time <span class="o">=</span> 30
+net.ipv4.ip_local_port_range <span class="o">=</span> 1024 65000
 </code></pre>
 </div>
 
-<p>将目录拷贝到blog的live2d_models下后执行<strong>hexo serve</strong>查看是否已经有了z16<br />
-在blog目录，执行<strong>hexo deploy</strong><br />
-生成的静态文件在blog/public/live2d下<br />
-引用文件在index.html中</p>
-
-<ul>
-  <li>静态文件导入jeklly</li>
-</ul>
-
-<p><code class="highlighter-rouge">cp blog/public/live2d    jeklly-blog的根目录</code>
-将hexo的index.html的引用文件添加到jeklly的footer.html中</p>
-
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script&gt;</span><span class="nx">L2Dwidget</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span><span class="s2">"pluginRootPath"</span><span class="p">:</span><span class="s2">"live2dw/"</span><span class="p">,</span><span class="s2">"pluginJsPath"</span><span class="p">:</span><span class="s2">"lib/"</span><span class="p">,</span><span class="s2">"pluginModelPath"</span><span class="p">:</span><span class="s2">"assets/"</span><span class="p">,</span><span class="s2">"tagMode"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="s2">"debug"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="s2">"model"</span><span class="p">:{</span><span class="s2">"jsonPath"</span><span class="p">:</span><span class="s2">"/live2dw/assets/z16.model.json"</span><span class="p">},</span><span class="s2">"display"</span><span class="p">:{</span><span class="s2">"position"</span><span class="p">:</span><span class="s2">"right"</span><span class="p">,</span><span class="s2">"width"</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="s2">"height"</span><span class="p">:</span><span class="mi">300</span><span class="p">},</span><span class="s2">"mobile"</span><span class="p">:{</span><span class="s2">"show"</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span><span class="s2">"log"</span><span class="p">:</span><span class="kc">false</span><span class="p">});</span><span class="nt">&lt;/script&gt;</span>
-</code></pre>
-</div>
-
-<p>完成。</p>
 
 
   </section>
@@ -322,15 +425,10 @@ mkdir live2d_models <span class="o">&amp;&amp;</span> <span class="nb">cd </span
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/10/fek/" data-toggle="tooltip" data-placement="top" title="K8s集群-fek插件">上一篇：  <span>K8s集群-fek插件</span>
+            <a href="/2018/11/live2d/" data-toggle="tooltip" data-placement="top" title="博客添加live2d">上一篇：  <span>博客添加live2d</span>
             </a>
         </li>
         
-        
-        <li class="next">
-            <a href="/2018/11/linux/" data-toggle="tooltip" data-placement="top" title="基础企业级Linux优化整理">下一篇：  <span>基础企业级Linux优化整理</span>
-            </a>
-        </li>
         
     </ul>
 </section>
