@@ -211,6 +211,7 @@ chkconfig --list|grep 3:on
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim /etc/profile
 <span class="c">#在末尾添加一行alias，这样每次vim会自动在vim的目录创建一个备份</span>
 <span class="nb">alias </span><span class="nv">vim</span><span class="o">=</span><span class="s1">'func() { cp -f  $1 $1-bk; vim $1;}; func'</span>
+<span class="nb">source</span> /etc/profile
 </code></pre>
 </div>
 
@@ -237,11 +238,11 @@ chkconfig --list|grep 3:on
     </tr>
     <tr>
       <td>PermitRootLogin</td>
-      <td style="text-align: right">是否允许root用户直接登录</td>
+      <td style="text-align: right">是否允许root用户直接登录,设置为no</td>
     </tr>
     <tr>
-      <td>UseDNS</td>
-      <td style="text-align: right">是否反向解析ip,默认yes</td>
+      <td>UseDNS no</td>
+      <td style="text-align: right">是否反向解析ip,设置为no</td>
     </tr>
     <tr>
       <td>GSSAPIAuthentication no</td>
@@ -284,74 +285,192 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
 <h2 id="内核优化">内核优化</h2>
 <p>内核部分根据实际需要优化</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>net.ipv4.tcp_max_tw_buckets <span class="o">=</span> 6000
-timewait 的数量，默认是180000。
-net.ipv4.ip_local_port_range <span class="o">=</span> 1024 65000
-允许系统打开的端口范围。
-net.ipv4.tcp_tw_recycle <span class="o">=</span> 1
-启用timewait 快速回收。
-net.ipv4.tcp_tw_reuse <span class="o">=</span> 1
-开启重用。允许将TIME-WAIT sockets 重新用于新的TCP 连接。
-net.ipv4.tcp_syncookies <span class="o">=</span> 1
-开启SYN Cookies，当出现SYN 等待队列溢出时，启用cookies 来处理。
-net.core.somaxconn <span class="o">=</span> 262144
-web 应用中listen 函数的backlog 默认会给我们内核参数的net.core.somaxconn 限制到128，而nginx 定义的NGX_LISTEN_BACKLOG 默认为511，所以有必要调整这个值。
-net.core.netdev_max_backlog <span class="o">=</span> 262144
-每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。
-net.ipv4.tcp_max_orphans <span class="o">=</span> 262144
-系统中最多有多少个TCP 套接字不被关联到任何一个用户文件句柄上。如果超过这个数字，孤儿连接将即刻被复位并打印出警告信息。这个限制仅仅是为了防止简单的DoS 攻击，不能过分依靠它或者人为地减小这个值，更应该增加这个值<span class="o">(</span>如果增加了内存之后<span class="o">)</span>。
-net.ipv4.tcp_max_syn_backlog <span class="o">=</span> 262144
-记录的那些尚未收到客户端确认信息的连接请求的最大值。对于有128M 内存的系统而言，缺省值是1024，小内存的系统则是128。
-net.ipv4.tcp_timestamps <span class="o">=</span> 0
-时间戳可以避免序列号的卷绕。一个1Gbps 的链路肯定会遇到以前用过的序列号。时间戳能够让内核接受这种“异常”的数据包。这里需要将其关掉。
-net.ipv4.tcp_synack_retries <span class="o">=</span> 1
-为了打开对端的连接，内核需要发送一个SYN 并附带一个回应前面一个SYN 的ACK。也就是所谓三次握手中的第二次握手。这个设置决定了内核放弃连接之前发送SYN+ACK 包的数量。
-net.ipv4.tcp_syn_retries <span class="o">=</span> 1
-在内核放弃建立连接之前发送SYN 包的数量。
-net.ipv4.tcp_fin_timeout <span class="o">=</span> 1
-如果套接字由本端要求关闭，这个参数决定了它保持在FIN-WAIT-2 状态的时间。对端可以出错并永远不关闭连接，甚至意外当机。缺省值是60 秒。2.2 内核的通常值是180 秒，3你可以按这个设置，但要记住的是，即使你的机器是一个轻载的WEB 服务器，也有因为大量的死套接字而内存溢出的风险，FIN- WAIT-2 的危险性比FIN-WAIT-1 要小，因为它最多只能吃掉1.5K 内存，但是它们的生存期长些。
-net.ipv4.tcp_keepalive_time <span class="o">=</span> 30
-当keepalive 起用的时候，TCP 发送keepalive 消息的频度。缺省是2 小时。
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th style="text-align: center">默认值</th>
+      <th style="text-align: center">建议值</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tcp_syn_retries</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">对外TCP连接请求时,内核尝试发送syn请求的次数,默认5次大概180秒，对内请求是由参数tcp_retries1控制</td>
+    </tr>
+    <tr>
+      <td>tcp_synack_retries</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">对外TCP的第二步，尝试发送SYN +ACK次数</td>
+    </tr>
+    <tr>
+      <td>tcp_keepalive_time</td>
+      <td style="text-align: center">7200</td>
+      <td style="text-align: center">1800</td>
+      <td style="text-align: left">当网络两端建立了TCP连接之后，闲置tcp_keepalive_time时间后，内核会向客户端发送侦测包判断tcp连接情况</td>
+    </tr>
+    <tr>
+      <td>tcp_keepalive_probes</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">内核会向客户端发送tcp_keepalive_probes次侦测包判断tcp连接情况</td>
+    </tr>
+    <tr>
+      <td>tcp_keepalive_intvl</td>
+      <td style="text-align: center">75</td>
+      <td style="text-align: center">15</td>
+      <td style="text-align: left">内核向客户端发送侦测包未获得响应时,隔tcp_keepalive_intvl时间,再发一次侦测</td>
+    </tr>
+    <tr>
+      <td>tcp_retries1</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">放弃回应一个TCP连接请求前,进行tcp_retries1次重试,最低为3</td>
+    </tr>
+    <tr>
+      <td>tcp_retries2</td>
+      <td style="text-align: center">15</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left">丢弃已建立的tcp前,进行多少次重试</td>
+    </tr>
+    <tr>
+      <td>tcp_orphan_retries</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">在近端丢弃TCP前，重试多少次</td>
+    </tr>
+    <tr>
+      <td>tcp_fin_timeout</td>
+      <td style="text-align: center">60</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">对于本端断开的socket连接，TCP保持的时间</td>
+    </tr>
+    <tr>
+      <td>tcp_max_tw_buckets</td>
+      <td style="text-align: center">180000</td>
+      <td style="text-align: center">36000</td>
+      <td style="text-align: left">系统在同时所处理的最大timewait sockets数目</td>
+    </tr>
+    <tr>
+      <td>tcp_tw_recycle</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">快速TIME-WAIT sockets回收</td>
+    </tr>
+    <tr>
+      <td>tcp_tw_reuse</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">表示是否允许重新应用处于TIME-WAIT状态的socket用于新的TCP连接</td>
+    </tr>
+    <tr>
+      <td>tcp_max_orphans</td>
+      <td style="text-align: center">8192</td>
+      <td style="text-align: center">32768</td>
+      <td style="text-align: left">系统所能处理不属于任何进程的TCP sockets最大数量,超过这个数量﹐那么不属于任何进程的连接会被立即reset，并同时显示警告信息</td>
+    </tr>
+    <tr>
+      <td>tcp_syncookies</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">只有在内核编译时选择了CONFIG_SYNCOOKIES时才会发生作用。当出现syn等候队列出现溢出时象对方发送syncookies。目的是为了防止syn flood攻击</td>
+    </tr>
+    <tr>
+      <td>tcp_max_syn_backlog</td>
+      <td style="text-align: center">1024</td>
+      <td style="text-align: center">16384</td>
+      <td style="text-align: left">对于那些依然还未获得客户端确认的连接请求﹐需要保存在队列中最大数目</td>
+    </tr>
+    <tr>
+      <td>tcp_reordering</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">TCP流中重排序的数据报最大数量</td>
+    </tr>
+    <tr>
+      <td>tcp_retrans_collapse</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: left">对于某些有bug的打印机提供针对其bug的兼容性</td>
+    </tr>
+    <tr>
+      <td>tcp_wmem：mindefaultmax</td>
+      <td style="text-align: center">4096/16384/131072</td>
+      <td style="text-align: center">8192/131072/16777216</td>
+      <td style="text-align: left">发送缓存设置</td>
+    </tr>
+    <tr>
+      <td>tcp_rmem：mindefaultmax</td>
+      <td style="text-align: center">4096/16384/131072</td>
+      <td style="text-align: center">8192/131072/16777216</td>
+      <td style="text-align: left">接收缓存设置</td>
+    </tr>
+    <tr>
+      <td>tcp_mem：mindefaultmax</td>
+      <td style="text-align: center">内存计算</td>
+      <td style="text-align: center">786432/1048576/1572864</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td>ip_local_port_range:minmax</td>
+      <td style="text-align: center">32768/61000</td>
+      <td style="text-align: center">1024/65000</td>
+      <td style="text-align: left">表示用于向外连接的端口范围</td>
+    </tr>
+    <tr>
+      <td>netdev_max_backlog</td>
+      <td style="text-align: center">1024</td>
+      <td style="text-align: center">16384</td>
+      <td style="text-align: left">每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目，对重负载服务器而言，该值需要调高一点</td>
+    </tr>
+    <tr>
+      <td>somaxconn</td>
+      <td style="text-align: center">128</td>
+      <td style="text-align: center">16384</td>
+      <td style="text-align: left">用来限制监听(LISTEN)队列最大数据包的数量，超过这个数量就会导致链接超时或者触发重传机制</td>
+    </tr>
+    <tr>
+      <td>rmem_max</td>
+      <td style="text-align: center">129024</td>
+      <td style="text-align: center">873200</td>
+      <td style="text-align: left">最大的TCP数据接收缓冲</td>
+    </tr>
+    <tr>
+      <td>wmem_max</td>
+      <td style="text-align: center">129024</td>
+      <td style="text-align: center">873200</td>
+      <td style="text-align: left">最大的TCP数据发送缓冲</td>
+    </tr>
+  </tbody>
+</table>
 
-配置方法：
-修改/etc/sysctl.conf文件。
-保存退出后，可以重启机器使参数生效。
-如果想使参数马上生效，也可以执行如下命令：
-    sysctl  -p
-
-完整参数：
-net.ipv4.ip_forward <span class="o">=</span> 0
-net.ipv4.conf.default.rp_filter <span class="o">=</span> 1
-net.ipv4.conf.default.accept_source_route <span class="o">=</span> 0
-kernel.sysrq <span class="o">=</span> 0
-kernel.core_uses_pid <span class="o">=</span> 1
-net.ipv4.tcp_syncookies <span class="o">=</span> 1
-kernel.msgmnb <span class="o">=</span> 65536
-kernel.msgmax <span class="o">=</span> 65536
-kernel.shmmax <span class="o">=</span> 68719476736
-kernel.shmall <span class="o">=</span> 4294967296
-net.ipv4.tcp_max_tw_buckets <span class="o">=</span> 6000
-net.ipv4.tcp_sack <span class="o">=</span> 1
-net.ipv4.tcp_window_scaling <span class="o">=</span> 1
-net.ipv4.tcp_rmem <span class="o">=</span> 4096 87380 4194304
-net.ipv4.tcp_wmem <span class="o">=</span> 4096 16384 4194304
-net.core.wmem_default <span class="o">=</span> 8388608
-net.core.rmem_default <span class="o">=</span> 8388608
-net.core.rmem_max <span class="o">=</span> 16777216
-net.core.wmem_max <span class="o">=</span> 16777216
-net.core.netdev_max_backlog <span class="o">=</span> 262144
-net.core.somaxconn <span class="o">=</span> 262144
-net.ipv4.tcp_max_orphans <span class="o">=</span> 3276800
-net.ipv4.tcp_max_syn_backlog <span class="o">=</span> 262144
-net.ipv4.tcp_timestamps <span class="o">=</span> 0
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>net.ipv4.tcp_syn_retries <span class="o">=</span> 1
 net.ipv4.tcp_synack_retries <span class="o">=</span> 1
-net.ipv4.tcp_syn_retries <span class="o">=</span> 1
+net.ipv4.tcp_keepalive_time <span class="o">=</span> 600
+net.ipv4.tcp_keepalive_probes <span class="o">=</span> 3
+net.ipv4.tcp_keepalive_intvl <span class="o">=</span>15
+net.ipv4.tcp_retries2 <span class="o">=</span> 5
+net.ipv4.tcp_fin_timeout <span class="o">=</span> 2
+net.ipv4.tcp_max_tw_buckets <span class="o">=</span> 36000
 net.ipv4.tcp_tw_recycle <span class="o">=</span> 1
 net.ipv4.tcp_tw_reuse <span class="o">=</span> 1
-net.ipv4.tcp_mem <span class="o">=</span> 94500000 915000000 927000000
-net.ipv4.tcp_fin_timeout <span class="o">=</span> 1
-net.ipv4.tcp_keepalive_time <span class="o">=</span> 30
+net.ipv4.tcp_max_orphans <span class="o">=</span> 32768
+net.ipv4.tcp_syncookies <span class="o">=</span> 1
+net.ipv4.tcp_max_syn_backlog <span class="o">=</span> 16384
+net.ipv4.tcp_wmem <span class="o">=</span> 8192 131072 16777216
+net.ipv4.tcp_rmem <span class="o">=</span> 32768 131072 16777216
+net.ipv4.tcp_mem <span class="o">=</span> 786432 1048576 1572864
 net.ipv4.ip_local_port_range <span class="o">=</span> 1024 65000
+net.ipv4.ip_conntrack_max <span class="o">=</span> 65536
+net.ipv4.netfilter.ip_conntrack_max<span class="o">=</span>65536
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_established<span class="o">=</span>180
+net.core.somaxconn <span class="o">=</span> 16384
+net.core.netdev_max_backlog <span class="o">=</span> 16384
+vm.swappiness<span class="o">=</span>10
 </code></pre>
 </div>
 
