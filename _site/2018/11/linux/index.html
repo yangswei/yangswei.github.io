@@ -93,6 +93,13 @@
                   </a>
                 </i>
             
+                <i class="nav-menu-item">
+
+                  <a href="/links" title="links" class="btn-mobile-menu__icon">
+                      友情链接
+                  </a>
+                </i>
+            
           </nav>
       </div>
     </span>
@@ -145,6 +152,8 @@
                   <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
                 
                   <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+                  <li class="navigation__item"><a href="/links" title="links">友情链接</a></li>
                 
               </ul>
             </nav>
@@ -448,7 +457,9 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
   </tbody>
 </table>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>net.ipv4.tcp_syn_retries <span class="o">=</span> 1
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cat /etc/sysctl.conf 
+
+net.ipv4.tcp_syn_retries <span class="o">=</span> 1
 net.ipv4.tcp_synack_retries <span class="o">=</span> 1
 net.ipv4.tcp_keepalive_time <span class="o">=</span> 600
 net.ipv4.tcp_keepalive_probes <span class="o">=</span> 3
@@ -549,6 +560,11 @@ vm.swappiness<span class="o">=</span>10
         </li>
         
         
+        <li class="next">
+            <a href="/2018/11/netcon/" data-toggle="tooltip" data-placement="top" title="科学上网">下一篇：  <span>科学上网</span>
+            </a>
+        </li>
+        
     </ul>
 </section>
 
@@ -602,13 +618,13 @@ vm.swappiness<span class="o">=</span>10
 
           
 
-          <!-- RSS >
+          <!-- RSS -->
           <li class="navigation__item_social">
             <a href="/feed.xml" rel="author" title="RSS" target="_blank">
               <i class='social fa fa-rss fa-2x'></i>
               <span class="label">RSS</span>
             </a>
-          </li-->
+          </li>
 
           
           <!-- Email -->
@@ -619,6 +635,14 @@ vm.swappiness<span class="o">=</span>10
             </a>
           </li>
           
+
+          <!-- Friend Links -->
+          <li class="navigation__item_social">
+            <a href="/links/" title="Contact me">
+              <i class='social fa fa-link fa-2x'></i>
+              <span class="label">Link</span>
+            </a>
+          </li>
 
           </ul>
         </nav>

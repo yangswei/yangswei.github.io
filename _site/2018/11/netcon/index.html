@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>关于我</title>
-  <meta name="description" content="欢迎来到我的个人站~">
+  <title>科学上网</title>
+  <meta name="description" content="安装：">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="关于我">
-  <meta name="twitter:description" content="欢迎来到我的个人站~">
+  <meta name="twitter:title" content="科学上网">
+  <meta name="twitter:description" content="安装：">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="关于我">
-  <meta property="og:description" content="欢迎来到我的个人站~">
+  <meta property="og:title" content="科学上网">
+  <meta property="og:description" content="安装：">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/about/">
+  <link rel="canonical" href="http://localhost:4000/2018/11/netcon/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -176,38 +176,146 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
+    <h1 class="post-title">科学上网</h1>
     <div class="post-meta">
-      <time datetime="" itemprop="datePublished" class="post-meta__date date"></time>
-      <span class="post-meta__tags tags"></span>
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2018-11-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-11-09</time>  
+         
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
     </div>
-    <h1 class="post-title">关于我</h1>
   </header>
 
   <section class="post">
-    <p>运维菜鸟一枚</p>
-<p>
-刚开始搭建个人博客，准备做知识积累沉淀用
-<p>
-日常运维中，接触一些使用的开源软件zabbix.jenkins.k8s.docker.grafana.fluentd.elasticsearch等
-<p>
-正在学习python方面的知识
+    <h2 id="安装">安装：</h2>
+
+<p>linux服务器服务端(在国外服务器上执行)<br />
+<code class="highlighter-rouge">wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh</code><br />
+执行完成后监听端口为执行过程中的默认端口<br />
+在客户端按脚本输出信息配置连接信息</p>
+
+<p><br /></p>
+
+<p>客户端下载地址:<br />
+<a href="href=&quot;https://freed.ga/ShadowSocksR/ShadowsocksR-4.7.0.zip&quot;">windows</a><br />
+<a href="https://freed.ga/ShadowSocksR/shadowsocksr-release.apk">android</a><br />
+<a href="https://freed.ga/ShadowSocksR/macOS%20Sierra%2010.10.x.zip">mac</a><br />
+ios的到appstore找一个,目前貌似大部分要收费了~<br />
+<br /></p>
+
+<h2 id="原理">原理：</h2>
+
+<p>转自: <a href="https://vc2tea.com/whats-shadowsocks/">https://vc2tea.com/whats-shadowsocks/</a></p>
+
+<ul>
+  <li>很久前，访问google的方式</li>
+</ul>
+
+<p><img src="/images/posts/netcont/1.png" alt="" /></p>
+
+<ul>
+  <li>被墙</li>
+</ul>
+
+<p><img src="/images/posts/netcont/2.png" alt="" /></p>
+
+<ul>
+  <li>初代解决方法,利用海外服务器直接代理</li>
+</ul>
+
+<p><img src="/images/posts/netcont/3.png" alt="" /><br />
+1 首先用户和境外服务器基于ssh建立起一条加密的通道<br />
+2-3 用户通过建立起的隧道进行代理,通过ssh server向真实的服务发起请求<br />
+4-5 服务通过ssh server,再通过创建好的隧道返回给用户<br />
+由于ssh本身就是基于RSA加密技术,所以GFW无法从数据传输的过程中的加密数据内容进行关键词分析,避免了被重置链接的问题,但由于创建隧道和数据传输的过程中,ssh本身的特征是明显的,所以GFW一度通过分析连接的特征进行干扰,导致ssh存在被定向进行干扰的问题</p>
+
+<ul>
+  <li>Shadowsocks原理:</li>
+</ul>
+
+<p><img src="/images/posts/netcont/4.png" alt="" /></p>
+
+<p>简单理解的话,shadowsocks是将原来ssh创建的Socks5协议拆开成server端和client端，所以下面这个原理图基本上和利用ssh tunnel大致类似<br />
+1&amp;6 客户端发出的请求基于Socks5协议跟ss-local端进行通讯,由于这个ss-local一般是本机或路由器或局域网的其他机器,不经过GFW,所以解决了上面被GFW通过特征分析进行干扰的问题<br />
+2&amp;5 ss-local和ss-server两端通过多种可选的加密方法进行通讯,经过GFW的时候是常规的TCP包,没有明显的特征码而且GFW也无法对通讯数据进行解密<br />
+3&amp;4 ss-server将收到的加密数据进行解密,还原原来的请求,再发送到用户需要访问的服务,获取响应原路返回</p>
 
 
-<p>
+  </section>
+</article>
 
-<h3> 关于本篇博客 </h3>  
 
-<p>
+<section>
 
-博客参考的是[潘柏信的博客]
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
 
-<p>
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
 
-在jekyll的官方模板中挑选了潘柏信的博客，作者的博客中有jekyll的搭建过程可以参考
-<a href="http://baixin.io/2016/10/jekyll_tutorials1/"> Jekyll 搭建个人博客 </a>教程  
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
 
-<br />
-
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2018/11/linux/" data-toggle="tooltip" data-placement="top" title="基础企业级Linux优化整理">上一篇：  <span>基础企业级Linux优化整理</span>
+            </a>
+        </li>
+        
+        
+    </ul>
+</section>
 
 <section class="post-comments">
 
@@ -215,7 +323,7 @@
 
   <!-- gitalk -->
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
   <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 
   <div id="gitalk-container"></div>
@@ -236,11 +344,6 @@
 
 </section>
 
-
-</p></p></p></p></p></p>
-
-  </section>
-</article>
 
             <section class="footer">
     <footer>

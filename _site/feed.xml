@@ -5,9 +5,73 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 06 Nov 2018 17:35:53 +0800</pubDate>
-    <lastBuildDate>Tue, 06 Nov 2018 17:35:53 +0800</lastBuildDate>
+    <pubDate>Fri, 09 Nov 2018 17:22:20 +0800</pubDate>
+    <lastBuildDate>Fri, 09 Nov 2018 17:22:20 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>科学上网</title>
+        <description>&lt;h2 id=&quot;安装&quot;&gt;安装：&lt;/h2&gt;
+
+&lt;p&gt;linux服务器服务端(在国外服务器上执行)&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh&lt;/code&gt;&lt;br /&gt;
+执行完成后监听端口为执行过程中的默认端口&lt;br /&gt;
+在客户端按脚本输出信息配置连接信息&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;客户端下载地址:&lt;br /&gt;
+&lt;a href=&quot;href=&amp;quot;https://freed.ga/ShadowSocksR/ShadowsocksR-4.7.0.zip&amp;quot;&quot;&gt;windows&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://freed.ga/ShadowSocksR/shadowsocksr-release.apk&quot;&gt;android&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://freed.ga/ShadowSocksR/macOS%20Sierra%2010.10.x.zip&quot;&gt;mac&lt;/a&gt;&lt;br /&gt;
+ios的到appstore找一个,目前貌似大部分要收费了~&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;原理&quot;&gt;原理：&lt;/h2&gt;
+
+&lt;p&gt;转自: &lt;a href=&quot;https://vc2tea.com/whats-shadowsocks/&quot;&gt;https://vc2tea.com/whats-shadowsocks/&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;很久前，访问google的方式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/netcont/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;被墙&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/netcont/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;初代解决方法,利用海外服务器直接代理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/netcont/3.png&quot; alt=&quot;&quot; /&gt;&lt;br /&gt;
+1 首先用户和境外服务器基于ssh建立起一条加密的通道&lt;br /&gt;
+2-3 用户通过建立起的隧道进行代理,通过ssh server向真实的服务发起请求&lt;br /&gt;
+4-5 服务通过ssh server,再通过创建好的隧道返回给用户&lt;br /&gt;
+由于ssh本身就是基于RSA加密技术,所以GFW无法从数据传输的过程中的加密数据内容进行关键词分析,避免了被重置链接的问题,但由于创建隧道和数据传输的过程中,ssh本身的特征是明显的,所以GFW一度通过分析连接的特征进行干扰,导致ssh存在被定向进行干扰的问题&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Shadowsocks原理:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/netcont/4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;简单理解的话,shadowsocks是将原来ssh创建的Socks5协议拆开成server端和client端，所以下面这个原理图基本上和利用ssh tunnel大致类似&lt;br /&gt;
+1&amp;amp;6 客户端发出的请求基于Socks5协议跟ss-local端进行通讯,由于这个ss-local一般是本机或路由器或局域网的其他机器,不经过GFW,所以解决了上面被GFW通过特征分析进行干扰的问题&lt;br /&gt;
+2&amp;amp;5 ss-local和ss-server两端通过多种可选的加密方法进行通讯,经过GFW的时候是常规的TCP包,没有明显的特征码而且GFW也无法对通讯数据进行解密&lt;br /&gt;
+3&amp;amp;4 ss-server将收到的加密数据进行解密,还原原来的请求,再发送到用户需要访问的服务,获取响应原路返回&lt;/p&gt;
+</description>
+        <pubDate>Fri, 09 Nov 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/11/netcon/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/11/netcon/</guid>
+        
+        <category>tools</category>
+        
+        
+      </item>
     
       <item>
         <title>基础企业级Linux优化整理</title>
@@ -281,7 +345,9 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;net.ipv4.tcp_syn_retries &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat /etc/sysctl.conf 
+
+net.ipv4.tcp_syn_retries &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
 net.ipv4.tcp_synack_retries &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
 net.ipv4.tcp_keepalive_time &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 600
 net.ipv4.tcp_keepalive_probes &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 3
