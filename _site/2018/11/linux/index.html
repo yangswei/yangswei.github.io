@@ -223,8 +223,10 @@ chkconfig --list|grep 3:on
 <span class="nb">source</span> /etc/profile
 </code></pre>
 </div>
-
 <ul>
+  <li>同理的还有其他的一些敏感操作,比如删除文件(linux系统没有回收站,删除后恢复后续博客介绍)
+alias rm=’func() { mv $1 /tmp/$1-bk;}; func’
+一些常用会因为操作导致无法恢复的,均可以类似别名。</li>
   <li>修改配置<br />
 <code class="highlighter-rouge">vim /etc/ssh/sshd_config</code></li>
 </ul>
