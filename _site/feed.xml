@@ -5,13 +5,15 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 15 Nov 2018 11:07:57 +0800</pubDate>
-    <lastBuildDate>Thu, 15 Nov 2018 11:07:57 +0800</lastBuildDate>
+    <pubDate>Wed, 21 Nov 2018 16:03:59 +0800</pubDate>
+    <lastBuildDate>Wed, 21 Nov 2018 16:03:59 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>科学上网</title>
         <description>&lt;h2 id=&quot;安装&quot;&gt;安装：&lt;/h2&gt;
+
+&lt;h3 id=&quot;服务端安装&quot;&gt;服务端安装&lt;/h3&gt;
 
 &lt;p&gt;linux服务器服务端(在国外服务器上执行)&lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh&lt;/code&gt;&lt;br /&gt;
@@ -19,6 +21,8 @@
 在客户端按脚本输出信息配置连接信息&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;客户端安装&quot;&gt;客户端安装&lt;/h3&gt;
 
 &lt;p&gt;客户端下载地址:&lt;br /&gt;
 &lt;a href=&quot;href=&amp;quot;https://freed.ga/ShadowSocksR/ShadowsocksR-4.7.0.zip&amp;quot;&quot;&gt;windows&lt;/a&gt;&lt;br /&gt;
@@ -77,7 +81,7 @@ ios的到appstore找一个,目前貌似大部分要收费了~&lt;br /&gt;
         <title>基础企业级Linux优化整理</title>
         <description>&lt;h1 id=&quot;生产环境优化&quot;&gt;生产环境优化&lt;/h1&gt;
 
-&lt;h2 id=&quot;开机启动&quot;&gt;开机启动&lt;/h2&gt;
+&lt;h3 id=&quot;开机启动&quot;&gt;开机启动&lt;/h3&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;chkconfig --list|grep 3:on&lt;/code&gt;查看当前开机开启服务
 &lt;br /&gt;
@@ -92,13 +96,13 @@ chkconfig --list|grep 3:on
 &lt;p&gt;&lt;br /&gt;
 其他开机启动服务原则是：只保留使用的服务，清楚系统上每个服务的角色，最小化系统服务。&lt;/p&gt;
 
-&lt;h2 id=&quot;防火墙&quot;&gt;防火墙&lt;/h2&gt;
+&lt;h3 id=&quot;防火墙&quot;&gt;防火墙&lt;/h3&gt;
 &lt;p&gt;防火墙个人学习或者企业级高并发高流量服务器一般都不开启，因为开启防火墙会有较大的性能损耗，解决此类问题及在更前端用硬件防火墙进行安全防护
 &lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/init.d/iptables stop&lt;/code&gt;
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;远程连接&quot;&gt;远程连接&lt;/h2&gt;
+&lt;h3 id=&quot;远程连接&quot;&gt;远程连接&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;linux系统配置修改后恢复比较麻烦，建议修改配置前备份一份，如果容易忘记，则设置一下命令别名
@@ -111,10 +115,8 @@ chkconfig --list|grep 3:on
 &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /etc/profile
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;同理的还有其他的一些敏感操作,比如删除文件(linux系统没有回收站,删除后恢复后续博客介绍)
-alias rm=’func() { mv $1 /tmp/$1-bk;}; func’
-一些常用会因为操作导致无法恢复的,均可以类似别名。&lt;/li&gt;
   &lt;li&gt;修改配置&lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/ssh/sshd_config&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -152,7 +154,7 @@ alias rm=’func() { mv $1 /tmp/$1-bk;}; func’
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/init.d/sshd reload&lt;/code&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;权限管理&quot;&gt;权限管理&lt;/h2&gt;
+&lt;h3 id=&quot;权限管理&quot;&gt;权限管理&lt;/h3&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;visudo
 在文件的98行给对应普通用户加权限
@@ -164,7 +166,7 @@ xxx &lt;span class=&quot;nv&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;o&quot
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;关键系统文件上锁&quot;&gt;关键系统文件上锁&lt;/h2&gt;
+&lt;h3 id=&quot;关键系统文件上锁&quot;&gt;关键系统文件上锁&lt;/h3&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#上锁&lt;/span&gt;
 chattr +i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
@@ -173,7 +175,8 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;升级已知漏洞软件版本&quot;&gt;升级已知漏洞软件版本&lt;/h2&gt;
+&lt;h3 id=&quot;升级已知漏洞软件版本&quot;&gt;升级已知漏洞软件版本&lt;/h3&gt;
+
 &lt;p&gt;升级到最新&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;openssl&lt;/li&gt;
@@ -181,7 +184,8 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
   &lt;li&gt;bash&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;内核优化&quot;&gt;内核优化&lt;/h2&gt;
+&lt;h3 id=&quot;内核优化&quot;&gt;内核优化&lt;/h3&gt;
+
 &lt;p&gt;内核部分根据实际需要优化&lt;/p&gt;
 
 &lt;table&gt;
@@ -380,7 +384,7 @@ vm.swappiness&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10
         <link>http://localhost:4000/2018/11/linux/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/11/linux/</guid>
         
-        <category>linux</category>
+        <category>linux,ops</category>
         
         
       </item>
@@ -721,7 +725,7 @@ services:
       </item>
     
       <item>
-        <title>Nginx+https</title>
+        <title>Nginx免费证书加密https</title>
         <description>&lt;h3 id=&quot;生成免费证书&quot;&gt;生成免费证书&lt;/h3&gt;
 
 &lt;blockquote&gt;
@@ -740,6 +744,7 @@ services:
 
 &lt;ul&gt;
   &lt;li&gt;默认是https访问，当访问80端口时，指向https&lt;/li&gt;
+  &lt;li&gt;在nginx/conf.d/下添加conf，只需要指定证书ssl_certificate/ssl_certificate_key位置，将www.xx.com替换成你的域名即可&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
@@ -749,7 +754,7 @@ services:
     ssl_session_timeout  5m;
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
     ssl_ciphers         HIGH:!aNULL:!MD5;
-    server_name  www.youdomainyoudomain;
+    server_name  www.xx.com;
     location / {
         root   /opt/html;
         index  index.html index.htm index.php;
@@ -758,7 +763,7 @@ services:
 
 server {
     listen 80;
-    server_name  www.youdomainyoudomain;
+    server_name  www.xx.com;
     rewrite ^(.*)$ https://${server_name}$1 permanent;
 }
 &lt;/code&gt;&lt;/pre&gt;

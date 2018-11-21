@@ -11,7 +11,7 @@
     {
       "title"    : "基础企业级Linux优化整理",
       "category" : "",
-      "tags"     : "linux",
+      "tags"     : "linux,ops",
       "url"      : "/2018/11/linux/",
       "date"     : "2018-11-06 00:00:00 +0800"
     } ,
@@ -41,7 +41,7 @@
     } ,
   
     {
-      "title"    : "Nginx+https",
+      "title"    : "Nginx免费证书加密https",
       "category" : "",
       "tags"     : "tools",
       "url"      : "/2018/10/https/",
