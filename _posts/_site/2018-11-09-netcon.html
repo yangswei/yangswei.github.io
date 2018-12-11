@@ -1,15 +1,56 @@
-<p>linux服务器服务端(在国外服务器上执行)
-<code class="highlighter-rouge">wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh</code>
-服务管理：</p>
+<h2 id="安装">安装：</h2>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>   启动：/etc/init.d/shadowsocks start
-   停止：/etc/init.d/shadowsocks stop
-   重启：/etc/init.d/shadowsocks restart
-   状态：/etc/init.d/shadowsocks status
-</code></pre>
-</div>
+<h3 id="服务端安装">服务端安装</h3>
 
-<p>客户端下载：
-<a href="href=&quot;https://freed.ga/ShadowSocksR/ShadowsocksR-4.7.0.zip&quot;">windows</a>
-<a href="https://freed.ga/ShadowSocksR/shadowsocksr-release.apk">android</a>
-<a href="https://freed.ga/ShadowSocksR/macOS%20Sierra%2010.10.x.zip">mac</a></p>
+<p>linux服务器服务端(在国外服务器上执行)<br />
+<code class="highlighter-rouge">wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh</code><br />
+执行完成后监听端口为执行过程中的默认端口<br />
+在客户端按脚本输出信息配置连接信息</p>
+
+<p><br /></p>
+
+<h3 id="客户端安装">客户端安装</h3>
+
+<p>客户端下载地址:<br />
+<a href="href=&quot;https://freed.ga/ShadowSocksR/ShadowsocksR-4.7.0.zip&quot;">windows</a><br />
+<a href="https://freed.ga/ShadowSocksR/shadowsocksr-release.apk">android</a><br />
+<a href="https://freed.ga/ShadowSocksR/macOS%20Sierra%2010.10.x.zip">mac</a><br />
+ios的到appstore找一个,目前貌似大部分要收费了~<br />
+<br /></p>
+
+<h2 id="原理">原理：</h2>
+
+<p>转自: <a href="https://vc2tea.com/whats-shadowsocks/">https://vc2tea.com/whats-shadowsocks/</a></p>
+
+<ul>
+  <li>很久前，访问google的方式</li>
+</ul>
+
+<p><img src="/images/posts/netcont/1.png" alt="" /></p>
+
+<ul>
+  <li>被墙</li>
+</ul>
+
+<p><img src="/images/posts/netcont/2.png" alt="" /></p>
+
+<ul>
+  <li>初代解决方法,利用海外服务器直接代理</li>
+</ul>
+
+<p><img src="/images/posts/netcont/3.png" alt="" /><br />
+1 首先用户和境外服务器基于ssh建立起一条加密的通道<br />
+2-3 用户通过建立起的隧道进行代理,通过ssh server向真实的服务发起请求<br />
+4-5 服务通过ssh server,再通过创建好的隧道返回给用户<br />
+由于ssh本身就是基于RSA加密技术,所以GFW无法从数据传输的过程中的加密数据内容进行关键词分析,避免了被重置链接的问题,但由于创建隧道和数据传输的过程中,ssh本身的特征是明显的,所以GFW一度通过分析连接的特征进行干扰,导致ssh存在被定向进行干扰的问题</p>
+
+<ul>
+  <li>Shadowsocks原理:</li>
+</ul>
+
+<p><img src="/images/posts/netcont/4.png" alt="" /></p>
+
+<p>简单理解的话,shadowsocks是将原来ssh创建的Socks5协议拆开成server端和client端，所以下面这个原理图基本上和利用ssh tunnel大致类似<br />
+1&amp;6 客户端发出的请求基于Socks5协议跟ss-local端进行通讯,由于这个ss-local一般是本机或路由器或局域网的其他机器,不经过GFW,所以解决了上面被GFW通过特征分析进行干扰的问题<br />
+2&amp;5 ss-local和ss-server两端通过多种可选的加密方法进行通讯,经过GFW的时候是常规的TCP包,没有明显的特征码而且GFW也无法对通讯数据进行解密<br />
+3&amp;4 ss-server将收到的加密数据进行解密,还原原来的请求,再发送到用户需要访问的服务,获取响应原路返回</p>
