@@ -3,7 +3,7 @@
     {
       "title"    : "Smtp邮件服务详解",
       "category" : "",
-      "tags"     : "linux,smtp",
+      "tags"     : "Linux",
       "url"      : "/2018/12/smtp/",
       "date"     : "2018-12-11 00:00:00 +0800"
     } ,
@@ -11,7 +11,7 @@
     {
       "title"    : "Docker从入门到使用系列",
       "category" : "",
-      "tags"     : "linux,docker",
+      "tags"     : "Docker",
       "url"      : "/2018/12/docker/",
       "date"     : "2018-12-11 00:00:00 +0800"
     } ,
@@ -27,7 +27,7 @@
     {
       "title"    : "科学上网",
       "category" : "",
-      "tags"     : "tools",
+      "tags"     : "Linux",
       "url"      : "/2018/11/netcon/",
       "date"     : "2018-11-09 00:00:00 +0800"
     } ,
@@ -35,7 +35,7 @@
     {
       "title"    : "基础企业级Linux优化整理",
       "category" : "",
-      "tags"     : "linux,ops",
+      "tags"     : "Linux",
       "url"      : "/2018/11/linux/",
       "date"     : "2018-11-06 00:00:00 +0800"
     } ,
@@ -43,7 +43,7 @@
     {
       "title"    : "博客添加live2d",
       "category" : "",
-      "tags"     : "blog",
+      "tags"     : "博客",
       "url"      : "/2018/11/live2d/",
       "date"     : "2018-11-01 00:00:00 +0800"
     } ,
@@ -51,7 +51,7 @@
     {
       "title"    : "K8s集群-fek插件",
       "category" : "",
-      "tags"     : "k8s",
+      "tags"     : "Docker",
       "url"      : "/2018/10/fek/",
       "date"     : "2018-10-24 00:00:00 +0800"
     } ,
@@ -59,7 +59,7 @@
     {
       "title"    : "百度网盘Svip破解",
       "category" : "",
-      "tags"     : "tools",
+      "tags"     : "工具",
       "url"      : "/2018/10/baidudisk/",
       "date"     : "2018-10-18 00:00:00 +0800"
     } ,
@@ -67,7 +67,7 @@
     {
       "title"    : "Nginx免费证书加密https",
       "category" : "",
-      "tags"     : "tools",
+      "tags"     : "工具",
       "url"      : "/2018/10/https/",
       "date"     : "2018-10-09 00:00:00 +0800"
     } ,
@@ -75,7 +75,7 @@
     {
       "title"    : "学习搭建个人博客",
       "category" : "",
-      "tags"     : "blog",
+      "tags"     : "博客",
       "url"      : "/2018/10/blog/",
       "date"     : "2018-10-06 00:00:00 +0800"
     } 
