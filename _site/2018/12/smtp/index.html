@@ -194,9 +194,9 @@
 
 <h3 id="终端测试">终端测试:</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>telnet xxx 25  --&gt;220
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>telnet xxx 25  --&gt;220
 HELO xxx  --&gt;250
-auth login  --&gt;334(等待服务器返回后输入账号密码对应的base64码)[base64加密解密](https://base64.supfree.net/)  
+auth login  --&gt;334<span class="o">(</span>等待服务器返回后输入账号密码对应的base64码<span class="o">)</span>
 mail from: xxx --&gt;250
 rcpt to: xxx, xxx
 data
@@ -208,7 +208,8 @@ xxx
 </code></pre>
 </div>
 
-<p>客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件<br />
+<p><a href="https://base64.supfree.net/">base64加密解密</a><br />
+客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件<br />
 通过nodemail发送失败<br />
 在终端测试的过程中发现,telnet 25端口后等待时间很长才会返回20x的响应码</p>
 
@@ -329,6 +330,11 @@ xxx
             </a>
         </li>
         
+        
+        <li class="next">
+            <a href="/2018/12/redis/" data-toggle="tooltip" data-placement="top" title="Redis集群下的那些事">下一篇：  <span>Redis集群下的那些事</span>
+            </a>
+        </li>
         
     </ul>
 </section>

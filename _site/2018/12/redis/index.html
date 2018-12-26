@@ -1,58 +1,239 @@
----
-layout: post
-title: "Redis集群下的那些事"
-date: 2018-12-18  
-description: "linux redis cluster"
-tag: Linux
----  
+<!DOCTYPE html>
+<html>
 
-> 背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客  
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Redis集群下的那些事</title>
+  <meta name="description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
+  <meta name="author" content="yangshiwei">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Redis集群下的那些事">
+  <meta name="twitter:description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Redis集群下的那些事">
+  <meta property="og:description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/default.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2018/12/redis/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+<!-- 站点统计 -->
+  <!--script    老的不算子过期了
+  async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script-->  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- 百度统计 -->
+  
+  <script>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+  </script>
+  
+
+<!-- google 统计 >
+  
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9005224472374751",
+    enable_page_level_ads: true
+  });
+</script-->
+
+</head>
 
 
-### 集群高可用
+  <body>
 
-以6节点三主三从为例  
-cluster-enabled指定启动集群模式  
-cluster-config-file指定保存节点配置的文件，redis集群启动后会自动创建修改维护这些nodes.conf文件  
+    <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
 
-集群模式的最简节点配置文件如下  
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      文章列表
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
 
-```shell
-port 7000
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      标签
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/links" title="links" class="btn-mobile-menu__icon">
+                      友情链接
+                  </a>
+                </i>
+            
+          </nav>
+      </div>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">            
+            <a href="/#blog" title="前往 杨世威 的主页" class="blog-button">
+                <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+                <div class="info">
+                    <div class="info-back">
+                        <h2> 
+                            
+                                yangshiwei
+                            
+                        </h2>
+                        <p>
+                           
+                                devops
+                            
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 杨世威" class="blog-button">杨世威</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">个人站</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的个人站~</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                  <li class="navigation__item"><a href="/archive" title="archive">文章列表</a></li>
+                
+                  <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
+                
+                  <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+                  <li class="navigation__item"><a href="/links" title="links">友情链接</a></li>
+                
+              </ul>
+            </nav>
+          </div>          
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">Redis集群下的那些事</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2018-12-18 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-12-18</time>  
+         
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <blockquote>
+  <p>背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客</p>
+</blockquote>
+
+<h3 id="集群高可用">集群高可用</h3>
+
+<p>以6节点三主三从为例<br />
+cluster-enabled指定启动集群模式<br />
+cluster-config-file指定保存节点配置的文件，redis集群启动后会自动创建修改维护这些nodes.conf文件</p>
+
+<p>集群模式的最简节点配置文件如下</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>port 7000
 cluster-enabled yes
 cluster-config-file nodes.conf
 cluster-node-timeout 5000
 appendonly yes
-```
+</code></pre>
+</div>
 
-可以添加一些配置指定数据文件，日志等  
+<p>可以添加一些配置指定数据文件，日志等</p>
 
-```bash  
-pidfile /var/run/redis/redis.pid
-bind 127.0.0.1 xxx.xxx.xxx.xxx
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pidfile /var/run/redis/redis.pid
+<span class="nb">bind </span>127.0.0.1 xxx.xxx.xxx.xxx
 loglevel notice
 logfile /xxx/log/redis/redis.log
 dir /xxx/db/redis/
-```
+</code></pre>
+</div>
 
-另外还有一些配置，例如负载很大的服务修改**tcp-backlog、tcp-keepalive**参数等  
+<p>另外还有一些配置，例如负载很大的服务修改<strong>tcp-backlog、tcp-keepalive</strong>参数等</p>
 
-按上面方法，通过修改监听端口启动的不同节点的redis实例，但还不是集群  
-**redis-trib 位于Redis源码的src文件夹中,它是一个Ruby程序**  
+<p>按上面方法，通过修改监听端口启动的不同节点的redis实例，但还不是集群<br />
+<strong>redis-trib 位于Redis源码的src文件夹中,它是一个Ruby程序</strong></p>
 
-```shell
-./redis-trib.rb create --replicas 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
-```
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>./redis-trib.rb create --replicas 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
+</code></pre>
+</div>
 
-`replicas 1`这个参数指定在6个节点中为每个主节点创建一个从节点，则执行完后会生成对应的三主三从节点配置。
+<p><code class="highlighter-rouge">replicas 1</code>这个参数指定在6个节点中为每个主节点创建一个从节点，则执行完后会生成对应的三主三从节点配置。</p>
 
-### 哨兵高可用
+<h3 id="哨兵高可用">哨兵高可用</h3>
 
-以一主两从三节点介绍  
-redis节点的默认配置文件:
+<p>以一主两从三节点介绍<br />
+redis节点的默认配置文件:</p>
 
-```redis-default.conf
-daemonize yes
+<pre><code class="language-redis-default.conf">daemonize yes
 pidfile /var/run/redis/redis.pid
 port 6379
 tcp-backlog 2048
@@ -99,105 +280,126 @@ client-output-buffer-limit slave 256mb 64mb 60
 client-output-buffer-limit pubsub 32mb 8mb 60
 hz 10
 aof-rewrite-incremental-fsync yes
-```
+</code></pre>
 
-如果加密的话  
+<p>如果加密的话</p>
 
-```redis加密
-requirepass  xxxxx  　　#设置redis登录密码
+<pre><code class="language-redis加密">requirepass  xxxxx  　　#设置redis登录密码
 masterauth   xxxxx　　  #主从认证密码，否则主从不能同步
-```
+</code></pre>
 
-一主两从，主节点使用上面默认配置启动  
-从节点在主节点配置基础上增加一条`slaveof 127.0.0.1 6380`  其中ip和端口写主节点的ip和端口  
-entinel 哨兵(执行文件和redis-server同目录下)  
-每个节点创建一个sentinel.conf文件，在默认的配置上只需修改port,其他的配置三个节点保持一致  
+<p>一主两从，主节点使用上面默认配置启动<br />
+从节点在主节点配置基础上增加一条<code class="highlighter-rouge">slaveof 127.0.0.1 6380</code>  其中ip和端口写主节点的ip和端口<br />
+entinel 哨兵(执行文件和redis-server同目录下)<br />
+每个节点创建一个sentinel.conf文件，在默认的配置上只需修改port,其他的配置三个节点保持一致</p>
 
-```sentinel-default.conf
-port 26379
+<pre><code class="language-sentinel-default.conf">port 26379
 dir /tmp  
 sentinel monitor mymaster 192.168.248.131 6379 2  
 sentinel down-after-milliseconds mymaster 30000  
 sentinel parallel-syncs mymaster 1  
 sentinel failover-timeout mymaster 180000  
-```
+</code></pre>
 
-如果redis需要密码的话加上auth-pass  
+<p>如果redis需要密码的话加上auth-pass</p>
 
-```redis加密
-sentinel auth-pass mymaster xxxx
-```
+<pre><code class="language-redis加密">sentinel auth-pass mymaster xxxx
+</code></pre>
 
-启动redis主从和哨兵
-`redis-server redis.conf &`(如果不在一个文件夹下注意路径)  
-`redis-sentinel sentinel.conf &`启动sentinel  
+<p>启动redis主从和哨兵
+<code class="highlighter-rouge">redis-server redis.conf &amp;</code>(如果不在一个文件夹下注意路径)<br />
+<code class="highlighter-rouge">redis-sentinel sentinel.conf &amp;</code>启动sentinel</p>
 
-### 集群高可用和哨兵高可用对比
+<h3 id="集群高可用和哨兵高可用对比">集群高可用和哨兵高可用对比</h3>
 
-|  |单节点|集群模式|哨兵模式  
-| - | - | - |  
-| 运作模式 | 单节点，宕机则停止服务 |无中心节点，多节点服务 |由哨兵处理故障转移存在性能瓶颈|  
-| 分片 | 单实例 |按槽分配，每个节点分配不同的槽，控制每个节点的请求和数据量|每个主分担1/N|  
-| 可用性 | 无容错性 |集群节点内置了高可用和复制性能|配置sentinel实现复制和高可用|
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>单节点</th>
+      <th>集群模式</th>
+      <th>哨兵模式</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>运作模式</td>
+      <td>单节点，宕机则停止服务</td>
+      <td>无中心节点，多节点服务</td>
+      <td>由哨兵处理故障转移存在性能瓶颈</td>
+    </tr>
+    <tr>
+      <td>分片</td>
+      <td>单实例</td>
+      <td>按槽分配，每个节点分配不同的槽，控制每个节点的请求和数据量</td>
+      <td>每个主分担1/N</td>
+    </tr>
+    <tr>
+      <td>可用性</td>
+      <td>无容错性</td>
+      <td>集群节点内置了高可用和复制性能</td>
+      <td>配置sentinel实现复制和高可用</td>
+    </tr>
+  </tbody>
+</table>
 
-### 其他
+<h3 id="其他">其他</h3>
 
-还存在一个问题，如果程序中写死了写缓存的地址，但是当masterdown掉之后新的master的地址可能是发生变化的，所以此时我们需要keepalived来实现地址的漂移。  
-最好是基于sentinel的keepalived  
-[哨兵+keepalived，请参考](https://blog.csdn.net/huangyimo/article/details/76618532)  
-参考方法中也提到了局限性，包括不受控网络以及云主机环境，无法提供虚拟ip等情况  
+<p>还存在一个问题，如果程序中写死了写缓存的地址，但是当masterdown掉之后新的master的地址可能是发生变化的，所以此时我们需要keepalived来实现地址的漂移。<br />
+最好是基于sentinel的keepalived<br />
+<a href="https://blog.csdn.net/huangyimo/article/details/76618532">哨兵+keepalived，请参考</a><br />
+参考方法中也提到了局限性，包括不受控网络以及云主机环境，无法提供虚拟ip等情况</p>
 
-另外可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法    
+<p>另外可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法</p>
 
-```bash
-#!/bin/bash
-#要求1: /etc/hosts里面写入 "1.1.1.1 redis-tb" 的解析规则
-#要求2: 该脚本要有读写/etc/hosts的权限，建议用root
-hostlist=('1.1.1.1' '2.2.2.2' '3.3.3.3')
-flag=0
-echo $nowhost
-checkismaster(){
-  timeout 3 ismaster=`echo info |timeout 2 redis-cli -h $1| grep 'role'| awk -F ':' '{print $2}'|grep -w "master"|wc -l`
-  [ $? -eq 0 ] || ismaster=0
-  if [ $ismaster -eq 1 ]
-  then
-     echo "nowhost is master"
-  else
-   echo "nowhost not master"
-    flag=1
-  fi
-}
-while true
-do
-  nowhost=`cat /etc/hosts | grep 'redis-tb'| awk '{print $1}'`
-  checkismaster $nowhost
-  [ $flag -eq 1 ] && {
-   for i in ${hostlist[@]}
-   do
-    echo "now is finding master in hostlist"
-    echo "checking ip --  $i"
-    timeout 3 checkmaster=`echo info |timeout 2 redis-cli -h $i| grep 'role'| awk -F ':' '{print $2}'|grep -w "master"|wc -l`
-    [ $? -eq 0 ] || checkmaster=0
-    echo "when checkip is master, then checkmaster=1 ---  $checkmaster"
-    if [ $checkmaster -eq 1 ]
-    then
-     echo "now changeing nowhost to master = $nowhost to $i"
-     sed -i 's/'"$nowhost"'/'"$i"'/g' /etc/hosts
-    fi
-    flag=0
-   done
-  }
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#要求1: /etc/hosts里面写入 "1.1.1.1 redis-tb" 的解析规则</span>
+<span class="c">#要求2: 该脚本要有读写/etc/hosts的权限，建议用root</span>
+<span class="nv">hostlist</span><span class="o">=(</span><span class="s1">'1.1.1.1'</span> <span class="s1">'2.2.2.2'</span> <span class="s1">'3.3.3.3'</span><span class="o">)</span>
+<span class="nv">flag</span><span class="o">=</span>0
+<span class="nb">echo</span> <span class="nv">$nowhost</span>
+checkismaster<span class="o">(){</span>
+  timeout 3 <span class="nv">ismaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli -h <span class="nv">$1</span>| grep <span class="s1">'role'</span>| awk -F <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep -w <span class="s2">"master"</span>|wc -l<span class="sb">`</span>
+  <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">ismaster</span><span class="o">=</span>0
+  <span class="k">if</span> <span class="o">[</span> <span class="nv">$ismaster</span> -eq 1 <span class="o">]</span>
+  <span class="k">then
+     </span><span class="nb">echo</span> <span class="s2">"nowhost is master"</span>
+  <span class="k">else
+   </span><span class="nb">echo</span> <span class="s2">"nowhost not master"</span>
+    <span class="nv">flag</span><span class="o">=</span>1
+  <span class="k">fi</span>
+<span class="o">}</span>
+<span class="k">while </span><span class="nb">true
+</span><span class="k">do
+  </span><span class="nv">nowhost</span><span class="o">=</span><span class="sb">`</span>cat /etc/hosts | grep <span class="s1">'redis-tb'</span>| awk <span class="s1">'{print $1}'</span><span class="sb">`</span>
+  checkismaster <span class="nv">$nowhost</span>
+  <span class="o">[</span> <span class="nv">$flag</span> -eq 1 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
+   <span class="k">for </span>i <span class="k">in</span> <span class="k">${</span><span class="nv">hostlist</span><span class="p">[@]</span><span class="k">}</span>
+   <span class="k">do
+    </span><span class="nb">echo</span> <span class="s2">"now is finding master in hostlist"</span>
+    <span class="nb">echo</span> <span class="s2">"checking ip --  </span><span class="nv">$i</span><span class="s2">"</span>
+    timeout 3 <span class="nv">checkmaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli -h <span class="nv">$i</span>| grep <span class="s1">'role'</span>| awk -F <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep -w <span class="s2">"master"</span>|wc -l<span class="sb">`</span>
+    <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">checkmaster</span><span class="o">=</span>0
+    <span class="nb">echo</span> <span class="s2">"when checkip is master, then checkmaster=1 ---  </span><span class="nv">$checkmaster</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$checkmaster</span> -eq 1 <span class="o">]</span>
+    <span class="k">then
+     </span><span class="nb">echo</span> <span class="s2">"now changeing nowhost to master = </span><span class="nv">$nowhost</span><span class="s2"> to </span><span class="nv">$i</span><span class="s2">"</span>
+     sed -i <span class="s1">'s/'</span><span class="s2">"</span><span class="nv">$nowhost</span><span class="s2">"</span><span class="s1">'/'</span><span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span><span class="s1">'/g'</span> /etc/hosts
+    <span class="k">fi
+    </span><span class="nv">flag</span><span class="o">=</span>0
+   <span class="k">done</span>
+  <span class="o">}</span>
   sleep 2
-done
-```
+<span class="k">done</span>
+</code></pre>
+</div>
 
-nohup sh xx.sh &  
-将脚本放后台执行，这个脚本会将三个节点的主写到hosts中，并且每两秒检测一次，在应用中写上hosts指定的master地址  
+<p>nohup sh xx.sh &amp;<br />
+将脚本放后台执行，这个脚本会将三个节点的主写到hosts中，并且每两秒检测一次，在应用中写上hosts指定的master地址</p>
 
-### 附件1：redis配置详解 
+<h3 id="附件1redis配置详解">附件1：redis配置详解</h3>
 
-```redis配置详解
-# Redis configuration file example.
+<pre><code class="language-redis配置详解"># Redis configuration file example.
 # ./redis-server /path/to/redis.conf
 
 ################################## INCLUDES ###################################
@@ -281,10 +483,10 @@ dir /var/lib/redis
 
 ################################# REPLICATION #################################
 #复制选项，slave复制对应的master。
-# slaveof <masterip> <masterport>
+# slaveof &lt;masterip&gt; &lt;masterport&gt;
 
 #如果master设置了requirepass，那么slave要连上master，需要有master的密码才行。masterauth就是用来配置master的密码，这样可以在连上master后进行认证。
-# masterauth <master-password>
+# masterauth &lt;master-password&gt;
 
 #当从库同主机失去连接或者复制正在进行，从机库有两种运行方式：1) 如果slave-serve-stale-data设置为yes(默认设置)，从库会继续响应客户端的请求。2) 如果slave-serve-stale-data设置为no，除去INFO和SLAVOF命令之外的任何请求都会返回一个错误”SYNC with master in progress”。
 slave-serve-stale-data yes
@@ -342,7 +544,7 @@ slave-priority 100
 # maxclients 10000
 
 #redis配置的最大内存容量。当内存满了，需要配合maxmemory-policy策略进行处理。注意slave的输出缓冲区是不计算在maxmemory内的。所以为了防止主机内存使用完，建议设置的maxmemory需要更小一些。
-# maxmemory <bytes>
+# maxmemory &lt;bytes&gt;
 
 #内存容量超过maxmemory后的处理策略。
 #volatile-lru：利用LRU算法移除设置过过期时间的key。
@@ -474,14 +676,13 @@ hz 10
 
 #在aof重写的时候，如果打开了aof-rewrite-incremental-fsync开关，系统会每32MB执行一次fsync。这对于把文件写入磁盘是有帮助的，可以避免过大的延迟峰值。
 aof-rewrite-incremental-fsync yes
-```
+</code></pre>
 
-### 附件2：哨兵配置详解  
+<h3 id="附件2哨兵配置详解">附件2：哨兵配置详解</h3>
 
-sentinel.conf配置介绍-[原文地址](原文：https://blog.csdn.net/u012441222/article/details/80751390)  
+<p>sentinel.conf配置介绍-<a href="原文：https://blog.csdn.net/u012441222/article/details/80751390">原文地址</a></p>
 
-```txt
-# Example sentinel.conf  
+<pre><code class="language-txt"># Example sentinel.conf  
 # 哨兵sentinel实例运行的端口 默认26379  
 port 26379  
 
@@ -491,23 +692,23 @@ dir /tmp  
 # 哨兵sentinel监控的redis主节点的 ip port  
 # master-name  可以自己命名的主节点名字 只能由字母A-z、数字0-9 、这三个字符".-_"组成。  
 # quorum 指定多少个哨兵认为master失联时，确认主节点失联，开始主节点飘移  
-# sentinel monitor <master-name> <ip> <redis-port> <quorum>  
+# sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt;  
   sentinel monitor mymaster 127.0.0.1 6379 2  
   
 # 当在Redis实例中开启了授权密码，这样所有连接Redis实例的客户端都要提供密码  
 # 设置哨兵sentinel 连接主从的密码 注意必须为主从设置一样的验证密码  
-# sentinel auth-pass <master-name> <password>  
+# sentinel auth-pass &lt;master-name&gt; &lt;password&gt;  
 sentinel auth-pass mymaster MySUPER--secret-0123passw0rd  
   
 # 指定多少毫秒之后 主节点没有应答哨兵sentinel 此时 哨兵主观上认为主节点下线 默认30秒  
-# sentinel down-after-milliseconds <master-name> <milliseconds>  
+# sentinel down-after-milliseconds &lt;master-name&gt; &lt;milliseconds&gt;  
 sentinel down-after-milliseconds mymaster 30000  
   
 # 这个配置项指定了在发生failover主备切换时最多可以有多少个slave同时对新的master进行 同步，  
 这个数字越小，完成failover所需的时间就越长，  
 但是如果这个数字越大，就意味着越 多的slave因为replication而不可用。  
 可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。  
-# sentinel parallel-syncs <master-name> <numslaves>  
+# sentinel parallel-syncs &lt;master-name&gt; &lt;numslaves&gt;  
 sentinel parallel-syncs mymaster 1  
   
 # 故障转移的超时时间 failover-timeout 可以用在以下这些方面：  
@@ -516,7 +717,7 @@ sentinel parallel-syncs mymaster 1  
 #3.当想要取消一个正在进行的failover所需要的时间。  
 #4.当进行failover时，配置所有slaves指向新的master所需的最大时间。不过，即使过了这个超时，slaves依然会被正确配置为指向master，但是就不按parallel-syncs所配置的规则来了  
 # 默认三分钟  
-# sentinel failover-timeout <master-name> <milliseconds>  
+# sentinel failover-timeout &lt;master-name&gt; &lt;milliseconds&gt;  
 sentinel failover-timeout mymaster 180000  
   
 # SCRIPTS EXECUTION  
@@ -533,17 +734,225 @@ sentinel failover-timeout mymaster 180000  
 一个是事件的描述。  
 如果sentinel.conf配置文件中配置了这个脚本路径，那么必须保证这个脚本存在于这个路径，并且是可执行的，否则sentinel无法正常启动成功。  
 #通知脚本  
-# sentinel notification-script <master-name> <script-path>  
+# sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;  
   sentinel notification-script mymaster /var/redis/notify.sh  
   
 # 客户端重新配置主节点参数脚本  
 # 当一个master由于failover而发生改变时，这个脚本将会被调用，通知相关的客户端关于master地址已经发生改变的信息。  
 # 以下参数将会在调用脚本时传给脚本:  
-# <master-name> <role> <state> <from-ip> <from-port> <to-ip> <to-port>  
-# 目前<state>总是“failover”,  
-# <role>是“leader”或者“observer”中的一个。  
+# &lt;master-name&gt; &lt;role&gt; &lt;state&gt; &lt;from-ip&gt; &lt;from-port&gt; &lt;to-ip&gt; &lt;to-port&gt;  
+# 目前&lt;state&gt;总是“failover”,  
+# &lt;role&gt;是“leader”或者“observer”中的一个。  
 # 参数 from-ip, from-port, to-ip, to-port是用来和旧的master和新的master(即旧的slave)通信的  
 # 这个脚本应该是通用的，能被多次调用，不是针对性的。  
-# sentinel client-reconfig-script <master-name> <script-path>  
+# sentinel client-reconfig-script &lt;master-name&gt; &lt;script-path&gt;  
  sentinel client-reconfig-script mymaster /var/redis/reconfig.sh  
-```
+</code></pre>
+
+
+  </section>
+</article>
+
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2018/12/smtp/" data-toggle="tooltip" data-placement="top" title="Smtp邮件服务详解">上一篇：  <span>Smtp邮件服务详解</span>
+            </a>
+        </li>
+        
+        
+    </ul>
+</section>
+
+<section class="post-comments">
+
+  
+
+  <!-- gitalk -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  <div id="gitalk-container"></div>
+  
+  <script>
+    const gitalk = new Gitalk({
+        clientID: '0844b01363e9a9909aa0',
+        clientSecret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
+        repo: 'yangswei.github.io',
+        owner: 'yangswei',
+        admin: ['yangswei',],
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+  </script>
+
+</section>
+
+
+            <section class="footer">
+    <footer>
+        <div class = "footer_div">  
+        <nav class="cover-navigation navigation--social">
+          <ul class="navigation">
+
+          
+
+          
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/yangswei" title="@yangswei 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+          
+          
+          
+
+          
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:ysw5056@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+          <!-- Friend Links -->
+          <li class="navigation__item_social">
+            <a href="/links/" title="Contact me">
+              <i class='social fa fa-link fa-2x'></i>
+              <span class="label">Link</span>
+            </a>
+          </li>
+
+          </ul>
+        </nav>
+
+        </div>
+
+        <div class = "footer_div">  
+        	<div align="right">
+    			<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+          <!-- 访问统计 -->
+          <!-- pv的方式，单个用户连续点击n篇文章，记录n次访问量 -->
+          <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+          </span>
+
+        </div>
+        <div>
+        <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
+        
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script src="https://unpkg.com/simple-jekyll-search@1.5.0/dest/simple-jekyll-search.min.js"></script>
+<script>
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('results-container'),
+        json: '/search.json',
+        searchResultTemplate: '<li><a href="{url}" title="{desc}">{title}</a></li>', // 文章列表模板
+        noResultsText: '没有搜索到文章', // 无搜索数据提示语
+        limit: 20, // 返回最大文章数
+        fuzzy: false // 是否模糊匹配
+    })
+</script>
+
+
+
+    
+  </body>
+
+</html>

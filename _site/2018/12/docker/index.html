@@ -189,9 +189,9 @@
   <section class="post">
     <h1 id="get-started-with-docker">Get Started with Docker</h1>
 
-<p>我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker
-从nginx的官网docker镜像入门,理解docker
-<a href="https://hub.docker.com/_/nginx/">Nginx-Docker镜像地址</a>
+<p>我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker<br />
+从nginx的官网docker镜像入门,理解docker<br />
+<a href="https://hub.docker.com/_/nginx/">Nginx-Docker镜像地址</a><br />
 能看到,有很多tag的镜像版本：</p>
 
 <ul>
@@ -199,8 +199,8 @@
   <li>标注了基础镜像版本：stretch(debain)和alpine</li>
 </ul>
 
-<p>主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标明这个dockerfile是在什么镜像的基础上编写的。
-作为最底层的基础镜像,就像虚拟机里面的操作系统。
+<p>主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标明这个dockerfile是在什么镜像的基础上编写的<br />
+作为最底层的基础镜像,就像虚拟机里面的操作系统<br />
 Alpine:优点 小,快,安全</p>
 
 <ul>
@@ -216,8 +216,9 @@ Alpine:优点 小,快,安全</p>
   <li>DNS问题</li>
 </ul>
 
-<p>alpine仓库中很多<code class="highlighter-rouge">已经编译好的二进制服务的软件包</code>是依赖于alpine的musl libc库,安装这些服务包只需要<code class="highlighter-rouge">apk add xxx </code>直接安装
-仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库</p>
+<p>alpine仓库中很多<strong>已经编译好的二进制服务的软件包</strong>是依赖于alpine的musl libc库<br />
+安装这些服务包只需要<code class="highlighter-rouge">apk add xxx </code>直接安装<br />
+仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库  gs</p>
 
 <div class="language-shell highlighter-rouge"><pre class="highlight"><code>RUN apk --no-cache add ca-certificates <span class="o">&amp;&amp;</span> <span class="se">\</span>
     wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub <span class="o">&amp;&amp;</span> <span class="se">\</span>
@@ -227,11 +228,15 @@ Alpine:优点 小,快,安全</p>
 </div>
 
 <p>Dns问题官方给出的解释还是和musl libc库有关系<br />
-总结下来就是<code class="highlighter-rouge">musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置</code><br />
-<a href="https://github.com/gliderlabs/docker-alpine/blob/master/docs/caveats.md#dns">github官方解释</a><br />
-一是在使用dns作为服务发现时<br />
-二是在使用并行的dns服务器时,不能确保前一个一直作为默认的dns服务器 <code class="highlighter-rouge">--dns xxx1 --dns xxx2</code><br />
-推荐使用dnsmasq,运行时使用<code class="highlighter-rouge">--server /consul/10.0.0.1</code>这个参数</p>
+总结下来就是<strong>musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置</strong><br />
+<a href="https://github.com/gliderlabs/docker-alpine/blob/master/docs/caveats.md#dns">github官方解释</a></p>
+
+<ul>
+  <li>一是在使用dns作为服务发现时</li>
+  <li>二是在使用并行的dns服务器时,不能确保前一个一直作为默认的dns服务器 <strong>–dns xxx1 –dns xxx2</strong></li>
+</ul>
+
+<p>推荐使用dnsmasq,运行时使用<strong>–server /consul/10.0.0.1</strong>这个参数</p>
 
 <div class="language-shell highlighter-rouge"><pre class="highlight"><code>FROM alpine:edge
 RUN apk --no-cache add dnsmasq
@@ -249,160 +254,36 @@ ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span clas
 <span class="s">ENV NGINX_VERSION 1.14.2</span>
 
 <span class="s">RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">CONFIG="\</span>
-<span class="err">		</span><span class="s">--prefix=/etc/nginx \</span>
-<span class="err">		</span><span class="s">--sbin-path=/usr/sbin/nginx \</span>
-<span class="err">		</span><span class="s">--modules-path=/usr/lib/nginx/modules \</span>
-<span class="err">		</span><span class="s">--conf-path=/etc/nginx/nginx.conf \</span>
-<span class="err">		</span><span class="s">--error-log-path=/var/log/nginx/error.log \</span>
-<span class="err">		</span><span class="s">--http-log-path=/var/log/nginx/access.log \</span>
-<span class="err">		</span><span class="s">--pid-path=/var/run/nginx.pid \</span>
-<span class="err">		</span><span class="s">--lock-path=/var/run/nginx.lock \</span>
-<span class="err">		</span><span class="s">--http-client-body-temp-path=/var/cache/nginx/client_temp \</span>
-<span class="err">		</span><span class="s">--http-proxy-temp-path=/var/cache/nginx/proxy_temp \</span>
-<span class="err">		</span><span class="s">--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \</span>
-<span class="err">		</span><span class="s">--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \</span>
-<span class="err">		</span><span class="s">--http-scgi-temp-path=/var/cache/nginx/scgi_temp \</span>
-<span class="err">		</span><span class="s">--user=nginx \</span>
-<span class="err">		</span><span class="s">--group=nginx \</span>
-<span class="err">		</span><span class="s">--with-http_ssl_module \</span>
-<span class="err">		</span><span class="s">--with-http_realip_module \</span>
-<span class="err">		</span><span class="s">--with-http_addition_module \</span>
-<span class="err">		</span><span class="s">--with-http_sub_module \</span>
-<span class="err">		</span><span class="s">--with-http_dav_module \</span>
-<span class="err">		</span><span class="s">--with-http_flv_module \</span>
-    <span class="s">--with-http_mp4_module \</span>
-<span class="err">		</span><span class="s">--with-http_gunzip_module \</span>
-<span class="err">		</span><span class="s">--with-http_gzip_static_module \</span>
-<span class="err">		</span><span class="s">--with-http_random_index_module \</span>
-<span class="err">		</span><span class="s">--with-http_secure_link_module \</span>
-<span class="err">		</span><span class="s">--with-http_stub_status_module \</span>
-<span class="err">		</span><span class="s">--with-http_auth_request_module \</span>
-<span class="err">		</span><span class="s">--with-http_xslt_module=dynamic \</span>
-<span class="err">		</span><span class="s">--with-http_image_filter_module=dynamic \</span>
-<span class="err">		</span><span class="s">--with-http_geoip_module=dynamic \</span>
-<span class="err">		</span><span class="s">--with-threads \</span>
-<span class="err">		</span><span class="s">--with-stream \</span>
-<span class="err">		</span><span class="s">--with-stream_ssl_module \</span>
-<span class="err">		</span><span class="s">--with-stream_ssl_preread_module \</span>
-<span class="err">		</span><span class="s">--with-stream_realip_module \</span>
-<span class="err">		</span><span class="s">--with-stream_geoip_module=dynamic \</span>
-<span class="err">		</span><span class="s">--with-http_slice_module \</span>
-<span class="err">		</span><span class="s">--with-mail \</span>
-<span class="err">		</span><span class="s">--with-mail_ssl_module \</span>
-<span class="err">		</span><span class="s">--with-compat \</span>
-<span class="err">		</span><span class="s">--with-file-aio \</span>
-<span class="err">		</span><span class="s">--with-http_v2_module \</span>
-<span class="err">	</span><span class="s2">"</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">addgroup</span><span class="nv"> </span><span class="s">-S</span><span class="nv"> </span><span class="s">nginx</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">adduser</span><span class="nv"> </span><span class="s">-D</span><span class="nv"> </span><span class="s">-S</span><span class="nv"> </span><span class="s">-h</span><span class="nv"> </span><span class="s">/var/cache/nginx</span><span class="nv"> </span><span class="s">-s</span><span class="nv"> </span><span class="s">/sbin/nologin</span><span class="nv"> </span><span class="s">-G</span><span class="nv"> </span><span class="s">nginx</span><span class="nv"> </span><span class="s">nginx</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">apk</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">--no-cache</span><span class="nv"> </span><span class="s">--virtual</span><span class="nv"> </span><span class="s">.build-deps</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">gcc</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">libc-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">make</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">openssl-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">pcre-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">zlib-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">linux-headers</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">curl</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">gnupg1</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">libxslt-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">gd-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">		</span><span class="s">geoip-dev</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">curl</span><span class="nv"> </span><span class="s">-fSL</span><span class="nv"> </span><span class="s">https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">nginx.tar.gz</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">curl</span><span class="nv"> </span><span class="s">-fSL</span><span class="nv"> </span><span class="s">https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc</span><span class="nv">  </span><span class="s">-o</span><span class="nv"> </span><span class="s">nginx.tar.gz.asc</span><span class="nv"> </span><span class="se">\
-</span><span class="err">	</span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">export</span><span class="nv"> </span><span class="s">GNUPGHOME="$(mktemp -d)" \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">found=''; \</span>
-<span class="err">	</span><span class="s">for server in \</span>
-<span class="err">		</span><span class="s">ha.pool.sks-keyservers.net \</span>
-<span class="err">		</span><span class="s">hkp://keyserver.ubuntu.com:80 \</span>
-<span class="err">		</span><span class="s">hkp://p80.pool.sks-keyservers.net:80 \</span>
-<span class="err">		</span><span class="s">pgp.mit.edu \</span>
-<span class="err">	</span><span class="s">; do \</span>
-<span class="err">		</span><span class="s">echo "Fetching GPG key $GPG_KEYS from $server"; \</span>
-<span class="err">		</span><span class="s">gpg --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$GPG_KEYS" &amp;&amp; found=yes &amp;&amp; break; \</span>
-<span class="err">	</span><span class="s">done; \</span>
-<span class="err">	</span><span class="s">test -z "$found" &amp;&amp; echo &gt;&amp;2 "error</span><span class="pi">:</span> <span class="s">failed to fetch GPG key $GPG_KEYS" &amp;&amp; exit 1; \</span>
-<span class="err">	</span><span class="s">gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">rm -rf "$GNUPGHOME" nginx.tar.gz.asc \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mkdir -p /usr/src \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">tar -zxC /usr/src -f nginx.tar.gz \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">rm nginx.tar.gz \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">cd /usr/src/nginx-$NGINX_VERSION \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">./configure $CONFIG --with-debug \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">make -j$(getconf _NPROCESSORS_ONLN) \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv objs/nginx objs/nginx-debug \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv objs/ngx_http_image_filter_module.so objs/ngx_http_image_filter_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">./configure $CONFIG \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">make -j$(getconf _NPROCESSORS_ONLN) \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">make install \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">rm -rf /etc/nginx/html/ \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mkdir /etc/nginx/conf.d/ \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mkdir -p /usr/share/nginx/html/ \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m644 html/index.html /usr/share/nginx/html/ \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m644 html/50x.html /usr/share/nginx/html/ \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m755 objs/nginx-debug /usr/sbin/nginx-debug \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m755 objs/ngx_http_xslt_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_xslt_filter_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m755 objs/ngx_http_image_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_image_filter_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m755 objs/ngx_http_geoip_module-debug.so /usr/lib/nginx/modules/ngx_http_geoip_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">strip /usr/sbin/nginx* \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">strip /usr/lib/nginx/modules/*.so \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">rm -rf /usr/src/nginx-$NGINX_VERSION \</span>
-<span class="err">	</span><span class="s">\</span>
-<span class="err">	</span><span class="c1"># Bring in gettext so we can get `envsubst`, then throw</span>
-<span class="err">	</span><span class="c1"># the rest away. To do this, we need to install `gettext`</span>
-<span class="err">	</span><span class="c1"># then move `envsubst` out of the way so `gettext` can</span>
-<span class="err">	</span><span class="c1"># be deleted completely, then move `envsubst` back.</span>
-<span class="err">	&amp;&amp;</span> <span class="s">apk add --no-cache --virtual .gettext gettext \</span>
-<span class="err">	&amp;&amp;</span> <span class="s">mv /usr/bin/envsubst /tmp/ \</span>
-<span class="err">	</span><span class="s">\</span>
-<span class="err">	&amp;&amp;</span> <span class="s">runDeps="$( \</span>
-<span class="err">		</span><span class="s">scanelf --needed --nobanner --format '%n#p' /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \</span>
-<span class="err">			</span><span class="pi">|</span> <span class="err">tr</span> <span class="err">','</span> <span class="err">'\n'</span> <span class="err">\</span>
-<span class="err">	</span><span class="no">		| sort -u \</span>
-<span class="err">	</span><span class="no">		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \</span>
-<span class="err">	</span><span class="no">)" \</span>
-<span class="err">	</span><span class="no">&amp;&amp; apk add --no-cache --virtual .nginx-rundeps $runDeps \</span>
-<span class="err">	</span><span class="no">&amp;&amp; apk del .build-deps \</span>
-<span class="err">	</span><span class="no">&amp;&amp; apk del .gettext \</span>
-<span class="err">	</span><span class="no">&amp;&amp; mv /tmp/envsubst /usr/local/bin/ \</span>
-<span class="err">	</span><span class="no">\</span>
-<span class="err">	</span><span class="no"># Bring in tzdata so users could set the timezones through the environment</span>
-<span class="err">	</span><span class="no"># variables</span>
-<span class="err">	</span><span class="no">&amp;&amp; apk add --no-cache tzdata \</span>
-<span class="err">	</span><span class="no">\</span>
-<span class="err">	</span><span class="no"># forward request and error logs to docker log collector</span>
-<span class="err">	</span><span class="no">&amp;&amp; ln -sf /dev/stdout /var/log/nginx/access.log \</span>
-<span class="err">	</span><span class="no">&amp;&amp; ln -sf /dev/stderr /var/log/nginx/error.log</span>
+<span class="err">	***</span>
+<span class="err">	&amp;&amp;</span> <span class="s">ln -sf /dev/stderr /var/log/nginx/error.log</span>
 
-<span class="err">C</span><span class="no">OPY nginx.conf /etc/nginx/nginx.conf</span>
-<span class="err">C</span><span class="no">OPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf</span>
+<span class="s">COPY nginx.conf /etc/nginx/nginx.conf</span>
+<span class="s">COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf</span>
 
-<span class="err">E</span><span class="no">XPOSE 80</span>
+<span class="s">EXPOSE 80</span>
 
-<span class="err">S</span><span class="no">TOPSIGNAL SIGTERM</span>
+<span class="s">STOPSIGNAL SIGTERM</span>
 
-<span class="err">C</span><span class="no">MD ["nginx", "-g", "daemon off;"]</span>
+<span class="s">CMD ["nginx", "-g", "daemon off;"]</span>
 
 </code></pre>
 </div>
 
-<p>FROM: 前面已经说了,声明基础镜像,声明这个dockerfile是基于哪个镜像来生成的
-LABEL: 没啥作用,标注作者用的
-ENV: 环境变量声明,类似语言中申明变量一样
-中间可以看到有很长的连接符,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,连接的好处也是减少最终镜像的大小。<br />
-RUN: 运行命令,一般用户构建过程中的指令
-CP: 将宿主机的文件拷贝到镜像内
-EXPOSE: 指定镜像端口
-CMD: 最后运行指定,多个时以最后一个为准,CMD只会执行一条</p>
+<p>上文dockerfile，RUN部分的代码省略了,下面做命令的简单解释:<br />
+<strong>RUN命令用<code class="highlighter-rouge">\ &amp;&amp;</code>连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN</strong></p>
 
-<p>dockerfile打包的规则是打出尽量小的镜像,<code class="highlighter-rouge">多指令通过连接符</code>、<code class="highlighter-rouge">--no-cache</code>,<code class="highlighter-rouge">删除过程文件</code>均是为了最小化镜像<br />
-在docker17.05之后,docker支持了多阶段构建的-<code class="highlighter-rouge">multi-stage build</code><br />
+<ul>
+  <li>FROM: 前面已经说了,声明基础镜像,声明这个dockerfile是基于哪个镜像来生成的</li>
+  <li>LABEL: 没啥作用,标注作者用的</li>
+  <li>ENV: 环境变量声明,类似语言中申明变量一样</li>
+  <li>RUN: 运行命令,一般用户构建过程中的指令,RUN执行的命令是在构建镜像过程中,在基于FROM的基础镜像的系统上执行的命令,所以RUN里面的命令风格要和FROM指定的基础镜像一致,比如上面基于alpine的nginx安装时,RUN时安装包则用<strong>apk add</strong></li>
+  <li>CP: 将宿主机的文件拷贝到镜像内</li>
+  <li>EXPOSE: 指定镜像端口</li>
+  <li>CMD: 最后运行指定,多个时以最后一个为准,CMD只会执行最后一条</li>
+</ul>
+
+<p>dockerfile打包的规则是打出尽量小的镜像,<strong>多指令通过连接符、–no-cache,删除过程文件</strong>均是为了最小化镜像<br />
+在docker17.05之后,docker支持了多阶段构建的-<strong>multi-stage build</strong><br />
 通过多阶段构建,解决依赖构建过程,造成镜像包大的问题,因为安装的构建服务只会使用一次<br />
 使用也很简单</p>
 
@@ -420,9 +301,13 @@ CMD ["./app"]
 </code></pre>
 </div>
 
-<p>可以看到多阶段构建第一阶段即进行依赖构建<br />
-第二阶段拷贝依赖,启动服务。</p>
+<p>可以看到多阶段构建<br />
+第一阶段即进行依赖构建,将构建好的依赖包拷贝出来<br />
+第二阶段将打好包的依赖CP进去,启动服务</p>
 
+<p>这样最终生成的镜像仅包含第二阶段的内容,而没有仅仅打包时需要安装的一些库。从而更加精简了docker镜像<br />
+日常使用下来,真正需要手动编写的dockerfile很少,大部分是基于docker官方镜像仓库编好的镜像进行改写<br />
+比如在编写好的nginx增加一个插件,FROM nginx:xxx 然后安装插件,即可</p>
 
 
   </section>

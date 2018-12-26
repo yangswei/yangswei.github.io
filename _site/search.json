@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "Redis集群下的那些事",
+      "category" : "",
+      "tags"     : "Linux",
+      "url"      : "/2018/12/redis/",
+      "date"     : "2018-12-18 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "Smtp邮件服务详解",
       "category" : "",
       "tags"     : "Linux",

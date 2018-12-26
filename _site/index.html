@@ -179,8 +179,29 @@
   <ol class="post-list">
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/12/redis/" title="访问 Redis集群下的那些事">Redis集群下的那些事</a></h2>
+      <p class="excerpt">  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客集群高可用以6节点三主三从为例cluster-enabled指定启动集群模式cluster-config-file指定保存节点配置的文件，redis集群启动后会自动创建修改维护这些nodes.conf文件集群模式的最简节点配置文件如下port 7000cluster-enabled yescluster-config-file nodes...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-12-18 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-12-18</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/12/redis/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/12/smtp/" title="访问 Smtp邮件服务详解">Smtp邮件服务详解</a></h2>
-      <p class="excerpt">  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题终端测试:telnet xxx 25  --&gt;220HELO xxx  --&gt;250auth login  --&gt;334(等待服务器返回后输入账号密码对应的base64码)[base64加密解密](https://base64.supfree.net/)  mail from: xxx --&g...&hellip;</p>
+      <p class="excerpt">  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题终端测试:telnet xxx 25  --&gt;220HELO xxx  --&gt;250auth login  --&gt;334(等待服务器返回后输入账号密码对应的base64码)mail from: xxx --&gt;250rcpt to: xxx, xxxdataSubject: xxxHello...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-12-11 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -367,27 +388,6 @@
       <hr class="post-list__divider" />
     </li>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/10/blog/" title="访问 学习搭建个人博客">学习搭建个人博客</a></h2>
-      <p class="excerpt">环境准备  说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了[潘柏信]的模板 搭建过程:  参考博客  首先是github账号  准备一个域名  挑选一个喜欢的模板:  主题挑选  添加评论，统计插件步骤步骤在参考博客，有非常详细的介绍说下在部署时遇到的几个小问题：      提示ruby版本不对:   解决      另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。    原因是mac自带的ruby有个默认版本，执行rvm list查看已...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-10-06 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-10-06</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">博客</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/10/blog/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider " />
@@ -399,7 +399,9 @@
 	</script>
 	
     
-    <span class="pagination__page-number">1 / 1</span>
+    <span class="pagination__page-number">1 / 2</span>
+    
+        <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/2/#blog">更早 &rarr;</a>
     
 </nav>
 

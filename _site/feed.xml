@@ -5,9 +5,582 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 11 Dec 2018 17:50:58 +0800</pubDate>
-    <lastBuildDate>Tue, 11 Dec 2018 17:50:58 +0800</lastBuildDate>
+    <pubDate>Wed, 26 Dec 2018 17:40:25 +0800</pubDate>
+    <lastBuildDate>Wed, 26 Dec 2018 17:40:25 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Redis集群下的那些事</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;集群高可用&quot;&gt;集群高可用&lt;/h3&gt;
+
+&lt;p&gt;以6节点三主三从为例&lt;br /&gt;
+cluster-enabled指定启动集群模式&lt;br /&gt;
+cluster-config-file指定保存节点配置的文件，redis集群启动后会自动创建修改维护这些nodes.conf文件&lt;/p&gt;
+
+&lt;p&gt;集群模式的最简节点配置文件如下&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;可以添加一些配置指定数据文件，日志等&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pidfile /var/run/redis/redis.pid
+&lt;span class=&quot;nb&quot;&gt;bind &lt;/span&gt;127.0.0.1 xxx.xxx.xxx.xxx
+loglevel notice
+logfile /xxx/log/redis/redis.log
+dir /xxx/db/redis/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;另外还有一些配置，例如负载很大的服务修改&lt;strong&gt;tcp-backlog、tcp-keepalive&lt;/strong&gt;参数等&lt;/p&gt;
+
+&lt;p&gt;按上面方法，通过修改监听端口启动的不同节点的redis实例，但还不是集群&lt;br /&gt;
+&lt;strong&gt;redis-trib 位于Redis源码的src文件夹中,它是一个Ruby程序&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./redis-trib.rb create --replicas 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;replicas 1&lt;/code&gt;这个参数指定在6个节点中为每个主节点创建一个从节点，则执行完后会生成对应的三主三从节点配置。&lt;/p&gt;
+
+&lt;h3 id=&quot;哨兵高可用&quot;&gt;哨兵高可用&lt;/h3&gt;
+
+&lt;p&gt;以一主两从三节点介绍&lt;br /&gt;
+redis节点的默认配置文件:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-redis-default.conf&quot;&gt;daemonize yes
+pidfile /var/run/redis/redis.pid
+port 6379
+tcp-backlog 2048
+bind 127.0.0.1 xxx.xxx.xxx.xxx
+timeout 0
+tcp-keepalive 60
+loglevel notice
+logfile /xxx/xxx/redis.log
+databases 16
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir /xxx/xxx/redis/
+slave-serve-stale-data yes
+slave-read-only yes
+repl-disable-tcp-nodelay no
+slave-priority 100
+appendonly no
+appendfilename &quot;appendonly.aof&quot;
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events &quot;&quot;
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+activerehashing yes
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync yes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果加密的话&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-redis加密&quot;&gt;requirepass  xxxxx  　　#设置redis登录密码
+masterauth   xxxxx　　  #主从认证密码，否则主从不能同步
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一主两从，主节点使用上面默认配置启动&lt;br /&gt;
+从节点在主节点配置基础上增加一条&lt;code class=&quot;highlighter-rouge&quot;&gt;slaveof 127.0.0.1 6380&lt;/code&gt;  其中ip和端口写主节点的ip和端口&lt;br /&gt;
+entinel 哨兵(执行文件和redis-server同目录下)&lt;br /&gt;
+每个节点创建一个sentinel.conf文件，在默认的配置上只需修改port,其他的配置三个节点保持一致&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-sentinel-default.conf&quot;&gt;port 26379
+dir /tmp  
+sentinel monitor mymaster 192.168.248.131 6379 2  
+sentinel down-after-milliseconds mymaster 30000  
+sentinel parallel-syncs mymaster 1  
+sentinel failover-timeout mymaster 180000  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果redis需要密码的话加上auth-pass&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-redis加密&quot;&gt;sentinel auth-pass mymaster xxxx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;启动redis主从和哨兵
+&lt;code class=&quot;highlighter-rouge&quot;&gt;redis-server redis.conf &amp;amp;&lt;/code&gt;(如果不在一个文件夹下注意路径)&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;redis-sentinel sentinel.conf &amp;amp;&lt;/code&gt;启动sentinel&lt;/p&gt;
+
+&lt;h3 id=&quot;集群高可用和哨兵高可用对比&quot;&gt;集群高可用和哨兵高可用对比&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;单节点&lt;/th&gt;
+      &lt;th&gt;集群模式&lt;/th&gt;
+      &lt;th&gt;哨兵模式&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;运作模式&lt;/td&gt;
+      &lt;td&gt;单节点，宕机则停止服务&lt;/td&gt;
+      &lt;td&gt;无中心节点，多节点服务&lt;/td&gt;
+      &lt;td&gt;由哨兵处理故障转移存在性能瓶颈&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;分片&lt;/td&gt;
+      &lt;td&gt;单实例&lt;/td&gt;
+      &lt;td&gt;按槽分配，每个节点分配不同的槽，控制每个节点的请求和数据量&lt;/td&gt;
+      &lt;td&gt;每个主分担1/N&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可用性&lt;/td&gt;
+      &lt;td&gt;无容错性&lt;/td&gt;
+      &lt;td&gt;集群节点内置了高可用和复制性能&lt;/td&gt;
+      &lt;td&gt;配置sentinel实现复制和高可用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+
+&lt;p&gt;还存在一个问题，如果程序中写死了写缓存的地址，但是当masterdown掉之后新的master的地址可能是发生变化的，所以此时我们需要keepalived来实现地址的漂移。&lt;br /&gt;
+最好是基于sentinel的keepalived&lt;br /&gt;
+&lt;a href=&quot;https://blog.csdn.net/huangyimo/article/details/76618532&quot;&gt;哨兵+keepalived，请参考&lt;/a&gt;&lt;br /&gt;
+参考方法中也提到了局限性，包括不受控网络以及云主机环境，无法提供虚拟ip等情况&lt;/p&gt;
+
+&lt;p&gt;另外可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#要求1: /etc/hosts里面写入 &quot;1.1.1.1 redis-tb&quot; 的解析规则&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#要求2: 该脚本要有读写/etc/hosts的权限，建议用root&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;hostlist&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1.1.1.1'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'2.2.2.2'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'3.3.3.3'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;
+checkismaster&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
+  timeout 3 &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli -h &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;| grep &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| awk -F &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep -w &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc -l&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; -eq 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ismaster&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;then
+     &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nowhost is master&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else
+   &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nowhost not master&quot;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;do
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;nowhost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cat /etc/hosts | grep &lt;span class=&quot;s1&quot;&gt;'redis-tb'&lt;/span&gt;| awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  checkismaster &lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$flag&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;hostlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[@]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;do
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;now is finding master in hostlist&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;checking ip --  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    timeout 3 &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli -h &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;| grep &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| awk -F &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep -w &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc -l&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; -eq 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;when checkip is master, then checkmaster=1 ---  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$checkmaster&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$checkmaster&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;then
+     &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;now changeing nowhost to master = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+     sed -i &lt;span class=&quot;s1&quot;&gt;'s/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/g'&lt;/span&gt; /etc/hosts
+    &lt;span class=&quot;k&quot;&gt;fi
+    &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+   &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  sleep 2
+&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;nohup sh xx.sh &amp;amp;&lt;br /&gt;
+将脚本放后台执行，这个脚本会将三个节点的主写到hosts中，并且每两秒检测一次，在应用中写上hosts指定的master地址&lt;/p&gt;
+
+&lt;h3 id=&quot;附件1redis配置详解&quot;&gt;附件1：redis配置详解&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-redis配置详解&quot;&gt;# Redis configuration file example.
+# ./redis-server /path/to/redis.conf
+
+################################## INCLUDES ###################################
+#这在你有标准配置模板但是每个redis服务器又需要个性设置的时候很有用。
+# include /path/to/local.conf
+# include /path/to/other.conf
+
+################################ GENERAL #####################################
+
+#是否在后台执行，yes：后台运行；no：不是后台运行（老版本默认）
+daemonize yes
+
+  #3.2里的参数，是否开启保护模式，默认开启。要是配置里没有指定bind和密码。开启该参数后，redis只会本地进行访问，拒绝外部访问。要是开启了密码   和bind，可以开启。否   则最好关闭，设置为no。
+  protected-mode yes
+#redis的进程文件
+pidfile /var/run/redis/redis-server.pid
+
+#redis监听的端口号。
+port 6379
+
+#此参数确定了TCP连接中已完成队列(完成三次握手之后)的长度， 当然此值必须不大于Linux系统定义的/proc/sys/net/core/somaxconn值，默认是511，而Linux的默认参数值是128。当系统并发量大并且客户端速度缓慢的时候，可以将这二个参数一起参考设定。该内核参数默认值一般是128，对于负载很大的服务程序来说大大的不够。一般会将它修改为2048或者更大。在/etc/sysctl.conf中添加:net.core.somaxconn = 2048，然后在终端中执行sysctl -p。
+tcp-backlog 511
+
+#指定 redis 只接收来自于该 IP 地址的请求，如果不进行设置，那么将处理所有请求
+bind 127.0.0.1
+
+#配置unix socket来让redis支持监听本地连接。
+# unixsocket /var/run/redis/redis.sock
+#配置unix socket使用文件的权限
+# unixsocketperm 700
+
+# 此参数为设置客户端空闲超过timeout，服务端会断开连接，为0则服务端不会主动断开连接，不能小于0。
+timeout 0
+
+#tcp keepalive参数。如果设置不为0，就使用配置tcp的SO_KEEPALIVE值，使用keepalive有两个好处:检测挂掉的对端。降低中间设备出问题而导致网络看似连接却已经与对端端口的问题。在Linux内核中，设置了keepalive，redis会定时给对端发送ack。检测到对端关闭需要两倍的设置值。
+tcp-keepalive 0
+
+#指定了服务端日志的级别。级别包括：debug（很多信息，方便开发、测试），verbose（许多有用的信息，但是没有debug级别信息多），notice（适当的日志级别，适合生产环境），warn（只有非常重要的信息）
+loglevel notice
+
+#指定了记录日志的文件。空字符串的话，日志会打印到标准输出设备。后台运行的redis标准输出是/dev/null。
+logfile /var/log/redis/redis-server.log
+
+#是否打开记录syslog功能
+# syslog-enabled no
+
+#syslog的标识符。
+# syslog-ident redis
+
+#日志的来源、设备
+# syslog-facility local0
+
+#数据库的数量，默认使用的数据库是DB 0。可以通过”SELECT “命令选择一个db
+databases 16
+
+################################ SNAPSHOTTING ################################
+# 快照配置
+# 注释掉“save”这一行配置项就可以让保存数据库功能失效
+# 设置sedis进行数据库镜像的频率。
+# 900秒（15分钟）内至少1个key值改变（则进行数据库保存--持久化） 
+# 300秒（5分钟）内至少10个key值改变（则进行数据库保存--持久化） 
+# 60秒（1分钟）内至少10000个key值改变（则进行数据库保存--持久化）
+save 900 1
+save 300 10
+save 60 10000
+
+#当RDB持久化出现错误后，是否依然进行继续进行工作，yes：不能进行工作，no：可以继续进行工作，可以通过info中的rdb_last_bgsave_status了解RDB持久化是否有错误
+stop-writes-on-bgsave-error yes
+
+#使用压缩rdb文件，rdb文件压缩使用LZF压缩算法，yes：压缩，但是需要一些cpu的消耗。no：不压缩，需要更多的磁盘空间
+rdbcompression yes
+
+#是否校验rdb文件。从rdb格式的第五个版本开始，在rdb文件的末尾会带上CRC64的校验和。这跟有利于文件的容错性，但是在保存rdb文件的时候，会有大概10%的性能损耗，所以如果你追求高性能，可以关闭该配置。
+rdbchecksum yes
+
+#rdb文件的名称
+dbfilename dump.rdb
+
+#数据目录，数据库的写入会在这个目录。rdb、aof文件也会写在这个目录
+dir /var/lib/redis
+
+################################# REPLICATION #################################
+#复制选项，slave复制对应的master。
+# slaveof &amp;lt;masterip&amp;gt; &amp;lt;masterport&amp;gt;
+
+#如果master设置了requirepass，那么slave要连上master，需要有master的密码才行。masterauth就是用来配置master的密码，这样可以在连上master后进行认证。
+# masterauth &amp;lt;master-password&amp;gt;
+
+#当从库同主机失去连接或者复制正在进行，从机库有两种运行方式：1) 如果slave-serve-stale-data设置为yes(默认设置)，从库会继续响应客户端的请求。2) 如果slave-serve-stale-data设置为no，除去INFO和SLAVOF命令之外的任何请求都会返回一个错误”SYNC with master in progress”。
+slave-serve-stale-data yes
+
+#作为从服务器，默认情况下是只读的（yes），可以修改成NO，用于写（不建议）。
+slave-read-only yes
+
+#是否使用socket方式复制数据。目前redis复制提供两种方式，disk和socket。如果新的slave连上来或者重连的slave无法部分同步，就会执行全量同步，master会生成rdb文件。有2种方式：disk方式是master创建一个新的进程把rdb文件保存到磁盘，再把磁盘上的rdb文件传递给slave。socket是master创建一个新的进程，直接把rdb文件以socket的方式发给slave。disk方式的时候，当一个rdb保存的过程中，多个slave都能共享这个rdb文件。socket的方式就的一个个slave顺序复制。在磁盘速度缓慢，网速快的情况下推荐用socket方式。
+repl-diskless-sync no
+
+#diskless复制的延迟时间，防止设置为0。一旦复制开始，节点不会再接收新slave的复制请求直到下一个rdb传输。所以最好等待一段时间，等更多的slave连上来。
+repl-diskless-sync-delay 5
+
+#slave根据指定的时间间隔向服务器发送ping请求。时间间隔可以通过 repl_ping_slave_period 来设置，默认10秒。
+# repl-ping-slave-period 10
+
+#复制连接超时时间。master和slave都有超时时间的设置。master检测到slave上次发送的时间超过repl-timeout，即认为slave离线，清除该slave信息。slave检测到上次和master交互的时间超过repl-timeout，则认为master离线。需要注意的是repl-timeout需要设置一个比repl-ping-slave-period更大的值，不然会经常检测到超时。
+# repl-timeout 60
+
+#是否禁止复制tcp链接的tcp nodelay参数，可传递yes或者no。默认是no，即使用tcp nodelay。如果master设置了yes来禁止tcp nodelay设置，在把数据复制给slave的时候，会减少包的数量和更小的网络带宽。但是这也可能带来数据的延迟。默认我们推荐更小的延迟，但是在数据量传输很大的场景下，建议选择yes。
+repl-disable-tcp-nodelay no
+
+#复制缓冲区大小，这是一个环形复制缓冲区，用来保存最新复制的命令。这样在slave离线的时候，不需要完全复制master的数据，如果可以执行部分同步，只需要把缓冲区的部分数据复制给slave，就能恢复正常复制状态。缓冲区的大小越大，slave离线的时间可以更长，复制缓冲区只有在有slave连接的时候才分配内存。没有slave的一段时间，内存会被释放出来，默认1m。
+# repl-backlog-size 5mb
+
+#master没有slave一段时间会释放复制缓冲区的内存，repl-backlog-ttl用来设置该时间长度。单位为秒。
+# repl-backlog-ttl 3600
+
+#当master不可用，Sentinel会根据slave的优先级选举一个master。最低的优先级的slave，当选master。而配置成0，永远不会被选举。
+slave-priority 100
+
+#redis提供了可以让master停止写入的方式，如果配置了min-slaves-to-write，健康的slave的个数小于N，mater就禁止写入。master最少得有多少个健康的slave存活才能执行写命令。这个配置虽然不能保证N个slave都一定能接收到master的写操作，但是能避免没有足够健康的slave的时候，master不能写入来避免数据丢失。设置为0是关闭该功能。
+# min-slaves-to-write 3
+
+#延迟小于min-slaves-max-lag秒的slave才认为是健康的slave。
+# min-slaves-max-lag 10
+
+# 设置1或另一个设置为0禁用这个特性。
+# Setting one or the other to 0 disables the feature.
+# By default min-slaves-to-write is set to 0 (feature disabled) and
+# min-slaves-max-lag is set to 10.
+
+################################## SECURITY ###################################
+#requirepass配置可以让用户使用AUTH命令来认证密码，才能使用其他命令。这让redis可以使用在不受信任的网络中。为了保持向后的兼容性，可以注释该命令，因为大部分用户也不需要认证。使用requirepass的时候需要注意，因为redis太快了，每秒可以认证15w次密码，简单的密码很容易被攻破，所以最好使用一个更复杂的密码。
+# requirepass foobared
+
+#把危险的命令给修改成其他名称。比如CONFIG命令可以重命名为一个很难被猜到的命令，这样用户不能使用，而内部工具还能接着使用。
+# rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
+
+#设置成一个空的值，可以禁止一个命令
+# rename-command CONFIG &quot;&quot;
+################################### LIMITS ####################################
+
+# 设置能连上redis的最大客户端连接数量。默认是10000个客户端连接。由于redis不区分连接是客户端连接还是内部打开文件或者和slave连接等，所以maxclients最小建议设置到32。如果超过了maxclients，redis会给新的连接发送’max number of clients reached’，并关闭连接。
+# maxclients 10000
+
+#redis配置的最大内存容量。当内存满了，需要配合maxmemory-policy策略进行处理。注意slave的输出缓冲区是不计算在maxmemory内的。所以为了防止主机内存使用完，建议设置的maxmemory需要更小一些。
+# maxmemory &amp;lt;bytes&amp;gt;
+
+#内存容量超过maxmemory后的处理策略。
+#volatile-lru：利用LRU算法移除设置过过期时间的key。
+#volatile-random：随机移除设置过过期时间的key。
+#volatile-ttl：移除即将过期的key，根据最近过期时间来删除（辅以TTL）
+#allkeys-lru：利用LRU算法移除任何key。
+#allkeys-random：随机移除任何key。
+#noeviction：不移除任何key，只是返回一个写错误。
+#上面的这些驱逐策略，如果redis没有合适的key驱逐，对于写命令，还是会返回错误。redis将不再接收写请求，只接收get请求。写命令包括：set setnx setex append incr decr rpush lpush rpushx lpushx linsert lset rpoplpush sadd sinter sinterstore sunion sunionstore sdiff sdiffstore zadd zincrby zunionstore zinterstore hset hsetnx hmset hincrby incrby decrby getset mset msetnx exec sort。
+# maxmemory-policy noeviction
+
+#lru检测的样本数。使用lru或者ttl淘汰算法，从需要淘汰的列表中随机选择sample个key，选出闲置时间最长的key移除。
+# maxmemory-samples 5
+
+############################## APPEND ONLY MODE ###############################
+#默认redis使用的是rdb方式持久化，这种方式在许多应用中已经足够用了。但是redis如果中途宕机，会导致可能有几分钟的数据丢失，根据save来策略进行持久化，Append Only File是另一种持久化方式，可以提供更好的持久化特性。Redis会把每次写入的数据在接收后都写入 appendonly.aof 文件，每次启动时Redis都会先把这个文件的数据读入内存里，先忽略RDB文件。
+appendonly no
+
+#aof文件名
+appendfilename &quot;appendonly.aof&quot;
+
+#aof持久化策略的配置
+#no表示不执行fsync，由操作系统保证数据同步到磁盘，速度最快。
+#always表示每次写入都执行fsync，以保证数据同步到磁盘。
+#everysec表示每秒执行一次fsync，可能会导致丢失这1s数据。
+appendfsync everysec
+
+# 在aof重写或者写入rdb文件的时候，会执行大量IO，此时对于everysec和always的aof模式来说，执行fsync会造成阻塞过长时间，no-appendfsync-on-rewrite字段设置为默认设置为no。如果对延迟要求很高的应用，这个字段可以设置为yes，否则还是设置为no，这样对持久化特性来说这是更安全的选择。设置为yes表示rewrite期间对新写操作不fsync,暂时存在内存中,等rewrite完成后再写入，默认为no，建议yes。Linux的默认fsync策略是30秒。可能丢失30秒数据。
+no-appendfsync-on-rewrite no
+
+#aof自动重写配置。当目前aof文件大小超过上一次重写的aof文件大小的百分之多少进行重写，即当aof文件增长到一定大小的时候Redis能够调用bgrewriteaof对日志文件进行重写。当前AOF文件大小是上次日志重写得到AOF文件大小的二倍（设置为100）时，自动启动新的日志重写过程。
+auto-aof-rewrite-percentage 100
+#设置允许重写的最小aof文件大小，避免了达到约定百分比但尺寸仍然很小的情况还要重写
+auto-aof-rewrite-min-size 64mb
+
+#aof文件可能在尾部是不完整的，当redis启动的时候，aof文件的数据被载入内存。重启可能发生在redis所在的主机操作系统宕机后，尤其在ext4文件系统没有加上data=ordered选项（redis宕机或者异常终止不会造成尾部不完整现象。）出现这种现象，可以选择让redis退出，或者导入尽可能多的数据。如果选择的是yes，当截断的aof文件被导入的时候，会自动发布一个log给客户端然后load。如果是no，用户必须手动redis-check-aof修复AOF文件才可以。
+aof-load-truncated yes
+
+################################ LUA SCRIPTING ###############################
+# 如果达到最大时间限制（毫秒），redis会记个log，然后返回error。当一个脚本超过了最大时限。只有SCRIPT KILL和SHUTDOWN NOSAVE可以用。第一个可以杀没有调write命令的东西。要是已经调用了write，只能用第二个命令杀。
+lua-time-limit 5000
+
+################################ REDIS CLUSTER ###############################
+#集群开关，默认是不开启集群模式。
+# cluster-enabled yes
+
+#集群配置文件的名称，每个节点都有一个集群相关的配置文件，持久化保存集群的信息。这个文件并不需要手动配置，这个配置文件有Redis生成并更新，每个Redis集群节点需要一个单独的配置文件，请确保与实例运行的系统中配置文件名称不冲突
+# cluster-config-file nodes-6379.conf
+
+#节点互连超时的阀值。集群节点超时毫秒数
+# cluster-node-timeout 15000
+
+#在进行故障转移的时候，全部slave都会请求申请为master，但是有些slave可能与master断开连接一段时间了，导致数据过于陈旧，这样的slave不应该被提升为master。该参数就是用来判断slave节点与master断线的时间是否过长。判断方法是：
+#比较slave断开连接的时间和(node-timeout * slave-validity-factor) + repl-ping-slave-period
+#如果节点超时时间为三十秒, 并且slave-validity-factor为10,假设默认的repl-ping-slave-period是10秒，即如果超过310秒slave将不会尝试进行故障转移 
+# cluster-slave-validity-factor 10
+
+#master的slave数量大于该值，slave才能迁移到其他孤立master上，如这个参数若被设为2，那么只有当一个主节点拥有2 个可工作的从节点时，它的一个从节点会尝试迁移。
+# cluster-migration-barrier 1
+
+#默认情况下，集群全部的slot有节点负责，集群状态才为ok，才能提供服务。设置为no，可以在slot没有全部分配的时候提供服务。不建议打开该配置，这样会造成分区的时候，小分区的master一直在接受写请求，而造成很长时间数据不一致。
+# cluster-require-full-coverage yes
+
+################################## SLOW LOG ###################################
+###slog log是用来记录redis运行中执行比较慢的命令耗时。当命令的执行超过了指定时间，就记录在slow log中，slog log保存在内存中，所以没有IO操作。
+#执行时间比slowlog-log-slower-than大的请求记录到slowlog里面，单位是微秒，所以1000000就是1秒。注意，负数时间会禁用慢查询日志，而0则会强制记录所有命令。
+slowlog-log-slower-than 10000
+
+#慢查询日志长度。当一个新的命令被写进日志的时候，最老的那个记录会被删掉。这个长度没有限制。只要有足够的内存就行。你可以通过 SLOWLOG RESET 来释放内存。
+slowlog-max-len 128
+
+################################ LATENCY MONITOR ##############################
+#延迟监控功能是用来监控redis中执行比较缓慢的一些操作，用LATENCY打印redis实例在跑命令时的耗时图表。只记录大于等于下边设置的值的操作。0的话，就是关闭监视。默认延迟监控功能是关闭的，如果你需要打开，也可以通过CONFIG SET命令动态设置。
+latency-monitor-threshold 0
+
+############################# EVENT NOTIFICATION ##############################
+#键空间通知使得客户端可以通过订阅频道或模式，来接收那些以某种方式改动了 Redis 数据集的事件。因为开启键空间通知功能需要消耗一些 CPU ，所以在默认配置下，该功能处于关闭状态。
+#notify-keyspace-events 的参数可以是以下字符的任意组合，它指定了服务器该发送哪些类型的通知：
+##K 键空间通知，所有通知以 __keyspace@__ 为前缀
+##E 键事件通知，所有通知以 __keyevent@__ 为前缀
+##g DEL 、 EXPIRE 、 RENAME 等类型无关的通用命令的通知
+##$ 字符串命令的通知
+##l 列表命令的通知
+##s 集合命令的通知
+##h 哈希命令的通知
+##z 有序集合命令的通知
+##x 过期事件：每当有过期键被删除时发送
+##e 驱逐(evict)事件：每当有键因为 maxmemory 政策而被删除时发送
+##A 参数 g$lshzxe 的别名
+#输入的参数中至少要有一个 K 或者 E，否则的话，不管其余的参数是什么，都不会有任何 通知被分发。详细使用可以参考http://redis.io/topics/notifications
+
+notify-keyspace-events &quot;&quot;
+
+############################### ADVANCED CONFIG ###############################
+#数据量小于等于hash-max-ziplist-entries的用ziplist，大于hash-max-ziplist-entries用hash
+hash-max-ziplist-entries 512
+#value大小小于等于hash-max-ziplist-value的用ziplist，大于hash-max-ziplist-value用hash。
+hash-max-ziplist-value 64
+
+#数据量小于等于list-max-ziplist-entries用ziplist，大于list-max-ziplist-entries用list。
+list-max-ziplist-entries 512
+#value大小小于等于list-max-ziplist-value的用ziplist，大于list-max-ziplist-value用list。
+list-max-ziplist-value 64
+
+#数据量小于等于set-max-intset-entries用iniset，大于set-max-intset-entries用set。
+set-max-intset-entries 512
+
+#数据量小于等于zset-max-ziplist-entries用ziplist，大于zset-max-ziplist-entries用zset。
+zset-max-ziplist-entries 128
+#value大小小于等于zset-max-ziplist-value用ziplist，大于zset-max-ziplist-value用zset。
+zset-max-ziplist-value 64
+
+#value大小小于等于hll-sparse-max-bytes使用稀疏数据结构（sparse），大于hll-sparse-max-bytes使用稠密的数据结构（dense）。一个比16000大的value是几乎没用的，建议的value大概为3000。如果对CPU要求不高，对空间要求较高的，建议设置到10000左右。
+hll-sparse-max-bytes 3000
+
+#Redis将在每100毫秒时使用1毫秒的CPU时间来对redis的hash表进行重新hash，可以降低内存的使用。当你的使用场景中，有非常严格的实时性需要，不能够接受Redis时不时的对请求有2毫秒的延迟的话，把这项配置为no。如果没有这么严格的实时性要求，可以设置为yes，以便能够尽可能快的释放内存。
+activerehashing yes
+
+##对客户端输出缓冲进行限制可以强迫那些不从服务器读取数据的客户端断开连接，用来强制关闭传输缓慢的客户端。
+#对于normal client，第一个0表示取消hard limit，第二个0和第三个0表示取消soft limit，normal client默认取消限制，因为如果没有寻问，他们是不会接收数据的。
+client-output-buffer-limit normal 0 0 0
+#对于slave client和MONITER client，如果client-output-buffer一旦超过256mb，又或者超过64mb持续60秒，那么服务器就会立即断开客户端连接。
+client-output-buffer-limit slave 256mb 64mb 60
+#对于pubsub client，如果client-output-buffer一旦超过32mb，又或者超过8mb持续60秒，那么服务器就会立即断开客户端连接。
+client-output-buffer-limit pubsub 32mb 8mb 60
+
+#redis执行任务的频率为1s除以hz。
+hz 10
+
+#在aof重写的时候，如果打开了aof-rewrite-incremental-fsync开关，系统会每32MB执行一次fsync。这对于把文件写入磁盘是有帮助的，可以避免过大的延迟峰值。
+aof-rewrite-incremental-fsync yes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;附件2哨兵配置详解&quot;&gt;附件2：哨兵配置详解&lt;/h3&gt;
+
+&lt;p&gt;sentinel.conf配置介绍-&lt;a href=&quot;原文：https://blog.csdn.net/u012441222/article/details/80751390&quot;&gt;原文地址&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;# Example sentinel.conf  
+# 哨兵sentinel实例运行的端口 默认26379  
+port 26379  
+
+# 哨兵sentinel的工作目录  
+dir /tmp  
+
+# 哨兵sentinel监控的redis主节点的 ip port  
+# master-name  可以自己命名的主节点名字 只能由字母A-z、数字0-9 、这三个字符&quot;.-_&quot;组成。  
+# quorum 指定多少个哨兵认为master失联时，确认主节点失联，开始主节点飘移  
+# sentinel monitor &amp;lt;master-name&amp;gt; &amp;lt;ip&amp;gt; &amp;lt;redis-port&amp;gt; &amp;lt;quorum&amp;gt;  
+  sentinel monitor mymaster 127.0.0.1 6379 2  
+  
+# 当在Redis实例中开启了授权密码，这样所有连接Redis实例的客户端都要提供密码  
+# 设置哨兵sentinel 连接主从的密码 注意必须为主从设置一样的验证密码  
+# sentinel auth-pass &amp;lt;master-name&amp;gt; &amp;lt;password&amp;gt;  
+sentinel auth-pass mymaster MySUPER--secret-0123passw0rd  
+  
+# 指定多少毫秒之后 主节点没有应答哨兵sentinel 此时 哨兵主观上认为主节点下线 默认30秒  
+# sentinel down-after-milliseconds &amp;lt;master-name&amp;gt; &amp;lt;milliseconds&amp;gt;  
+sentinel down-after-milliseconds mymaster 30000  
+  
+# 这个配置项指定了在发生failover主备切换时最多可以有多少个slave同时对新的master进行 同步，  
+这个数字越小，完成failover所需的时间就越长，  
+但是如果这个数字越大，就意味着越 多的slave因为replication而不可用。  
+可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。  
+# sentinel parallel-syncs &amp;lt;master-name&amp;gt; &amp;lt;numslaves&amp;gt;  
+sentinel parallel-syncs mymaster 1  
+  
+# 故障转移的超时时间 failover-timeout 可以用在以下这些方面：  
+#1. 同一个sentinel对同一个master两次failover之间的间隔时间。  
+#2. 当一个slave从一个错误的master那里同步数据开始计算时间。直到slave被纠正为向正确的master那里同步数据时。  
+#3.当想要取消一个正在进行的failover所需要的时间。  
+#4.当进行failover时，配置所有slaves指向新的master所需的最大时间。不过，即使过了这个超时，slaves依然会被正确配置为指向master，但是就不按parallel-syncs所配置的规则来了  
+# 默认三分钟  
+# sentinel failover-timeout &amp;lt;master-name&amp;gt; &amp;lt;milliseconds&amp;gt;  
+sentinel failover-timeout mymaster 180000  
+  
+# SCRIPTS EXECUTION  
+#配置当某一事件发生时所需要执行的脚本，可以通过脚本来通知管理员，例如当系统运行不正常时发邮件通知相关人员。  
+#对于脚本的运行结果有以下规则：  
+#若脚本执行后返回1，那么该脚本稍后将会被再次执行，重复次数目前默认为10  
+#若脚本执行后返回2，或者比2更高的一个返回值，脚本将不会重复执行。  
+#如果脚本在执行过程中由于收到系统中断信号被终止了，则同返回值为1时的行为相同。  
+#一个脚本的最大执行时间为60s，如果超过这个时间，脚本将会被一个SIGKILL信号终止，之后重新执行。  
+  
+#通知型脚本:当sentinel有任何警告级别的事件发生时（比如说redis实例的主观失效和客观失效等等），将会去调用这个脚本，  
+这时这个脚本应该通过邮件，SMS等方式去通知系统管理员关于系统不正常运行的信息。调用该脚本时，将传给脚本两个参数，  
+一个是事件的类型，  
+一个是事件的描述。  
+如果sentinel.conf配置文件中配置了这个脚本路径，那么必须保证这个脚本存在于这个路径，并且是可执行的，否则sentinel无法正常启动成功。  
+#通知脚本  
+# sentinel notification-script &amp;lt;master-name&amp;gt; &amp;lt;script-path&amp;gt;  
+  sentinel notification-script mymaster /var/redis/notify.sh  
+  
+# 客户端重新配置主节点参数脚本  
+# 当一个master由于failover而发生改变时，这个脚本将会被调用，通知相关的客户端关于master地址已经发生改变的信息。  
+# 以下参数将会在调用脚本时传给脚本:  
+# &amp;lt;master-name&amp;gt; &amp;lt;role&amp;gt; &amp;lt;state&amp;gt; &amp;lt;from-ip&amp;gt; &amp;lt;from-port&amp;gt; &amp;lt;to-ip&amp;gt; &amp;lt;to-port&amp;gt;  
+# 目前&amp;lt;state&amp;gt;总是“failover”,  
+# &amp;lt;role&amp;gt;是“leader”或者“observer”中的一个。  
+# 参数 from-ip, from-port, to-ip, to-port是用来和旧的master和新的master(即旧的slave)通信的  
+# 这个脚本应该是通用的，能被多次调用，不是针对性的。  
+# sentinel client-reconfig-script &amp;lt;master-name&amp;gt; &amp;lt;script-path&amp;gt;  
+ sentinel client-reconfig-script mymaster /var/redis/reconfig.sh  
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Tue, 18 Dec 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/12/redis/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/12/redis/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>Smtp邮件服务详解</title>
@@ -18,9 +591,9 @@
 
 &lt;h3 id=&quot;终端测试&quot;&gt;终端测试:&lt;/h3&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet xxx 25  --&amp;gt;220
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet xxx 25  --&amp;gt;220
 HELO xxx  --&amp;gt;250
-auth login  --&amp;gt;334(等待服务器返回后输入账号密码对应的base64码)[base64加密解密](https://base64.supfree.net/)  
+auth login  --&amp;gt;334&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;等待服务器返回后输入账号密码对应的base64码&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 mail from: xxx --&amp;gt;250
 rcpt to: xxx, xxx
 data
@@ -32,7 +605,8 @@ xxx
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件&lt;br /&gt;
+&lt;p&gt;&lt;a href=&quot;https://base64.supfree.net/&quot;&gt;base64加密解密&lt;/a&gt;&lt;br /&gt;
+客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件&lt;br /&gt;
 通过nodemail发送失败&lt;br /&gt;
 在终端测试的过程中发现,telnet 25端口后等待时间很长才会返回20x的响应码&lt;/p&gt;
 
@@ -93,9 +667,9 @@ xxx
         <title>Docker从入门到使用系列</title>
         <description>&lt;h1 id=&quot;get-started-with-docker&quot;&gt;Get Started with Docker&lt;/h1&gt;
 
-&lt;p&gt;我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker
-从nginx的官网docker镜像入门,理解docker
-&lt;a href=&quot;https://hub.docker.com/_/nginx/&quot;&gt;Nginx-Docker镜像地址&lt;/a&gt;
+&lt;p&gt;我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker&lt;br /&gt;
+从nginx的官网docker镜像入门,理解docker&lt;br /&gt;
+&lt;a href=&quot;https://hub.docker.com/_/nginx/&quot;&gt;Nginx-Docker镜像地址&lt;/a&gt;&lt;br /&gt;
 能看到,有很多tag的镜像版本：&lt;/p&gt;
 
 &lt;ul&gt;
@@ -103,8 +677,8 @@ xxx
   &lt;li&gt;标注了基础镜像版本：stretch(debain)和alpine&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标明这个dockerfile是在什么镜像的基础上编写的。
-作为最底层的基础镜像,就像虚拟机里面的操作系统。
+&lt;p&gt;主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标明这个dockerfile是在什么镜像的基础上编写的&lt;br /&gt;
+作为最底层的基础镜像,就像虚拟机里面的操作系统&lt;br /&gt;
 Alpine:优点 小,快,安全&lt;/p&gt;
 
 &lt;ul&gt;
@@ -120,8 +694,9 @@ Alpine:优点 小,快,安全&lt;/p&gt;
   &lt;li&gt;DNS问题&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;alpine仓库中很多&lt;code class=&quot;highlighter-rouge&quot;&gt;已经编译好的二进制服务的软件包&lt;/code&gt;是依赖于alpine的musl libc库,安装这些服务包只需要&lt;code class=&quot;highlighter-rouge&quot;&gt;apk add xxx &lt;/code&gt;直接安装
-仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库&lt;/p&gt;
+&lt;p&gt;alpine仓库中很多&lt;strong&gt;已经编译好的二进制服务的软件包&lt;/strong&gt;是依赖于alpine的musl libc库&lt;br /&gt;
+安装这些服务包只需要&lt;code class=&quot;highlighter-rouge&quot;&gt;apk add xxx &lt;/code&gt;直接安装&lt;br /&gt;
+仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库  gs&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RUN apk --no-cache add ca-certificates &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
@@ -131,11 +706,15 @@ Alpine:优点 小,快,安全&lt;/p&gt;
 &lt;/div&gt;
 
 &lt;p&gt;Dns问题官方给出的解释还是和musl libc库有关系&lt;br /&gt;
-总结下来就是&lt;code class=&quot;highlighter-rouge&quot;&gt;musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置&lt;/code&gt;&lt;br /&gt;
-&lt;a href=&quot;https://github.com/gliderlabs/docker-alpine/blob/master/docs/caveats.md#dns&quot;&gt;github官方解释&lt;/a&gt;&lt;br /&gt;
-一是在使用dns作为服务发现时&lt;br /&gt;
-二是在使用并行的dns服务器时,不能确保前一个一直作为默认的dns服务器 &lt;code class=&quot;highlighter-rouge&quot;&gt;--dns xxx1 --dns xxx2&lt;/code&gt;&lt;br /&gt;
-推荐使用dnsmasq,运行时使用&lt;code class=&quot;highlighter-rouge&quot;&gt;--server /consul/10.0.0.1&lt;/code&gt;这个参数&lt;/p&gt;
+总结下来就是&lt;strong&gt;musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置&lt;/strong&gt;&lt;br /&gt;
+&lt;a href=&quot;https://github.com/gliderlabs/docker-alpine/blob/master/docs/caveats.md#dns&quot;&gt;github官方解释&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一是在使用dns作为服务发现时&lt;/li&gt;
+  &lt;li&gt;二是在使用并行的dns服务器时,不能确保前一个一直作为默认的dns服务器 &lt;strong&gt;–dns xxx1 –dns xxx2&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;推荐使用dnsmasq,运行时使用&lt;strong&gt;–server /consul/10.0.0.1&lt;/strong&gt;这个参数&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM alpine:edge
 RUN apk --no-cache add dnsmasq
@@ -153,160 +732,36 @@ ENTRYPOINT &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2
 &lt;span class=&quot;s&quot;&gt;ENV NGINX_VERSION 1.14.2&lt;/span&gt;
 
 &lt;span class=&quot;s&quot;&gt;RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;CONFIG=&quot;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--prefix=/etc/nginx \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--sbin-path=/usr/sbin/nginx \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--modules-path=/usr/lib/nginx/modules \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--conf-path=/etc/nginx/nginx.conf \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--error-log-path=/var/log/nginx/error.log \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-log-path=/var/log/nginx/access.log \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--pid-path=/var/run/nginx.pid \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--lock-path=/var/run/nginx.lock \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-client-body-temp-path=/var/cache/nginx/client_temp \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-proxy-temp-path=/var/cache/nginx/proxy_temp \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--http-scgi-temp-path=/var/cache/nginx/scgi_temp \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--user=nginx \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--group=nginx \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_ssl_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_realip_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_addition_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_sub_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_dav_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_flv_module \&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;--with-http_mp4_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_gunzip_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_gzip_static_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_random_index_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_secure_link_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_stub_status_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_auth_request_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_xslt_module=dynamic \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_image_filter_module=dynamic \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_geoip_module=dynamic \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-threads \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-stream \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-stream_ssl_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-stream_ssl_preread_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-stream_realip_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-stream_geoip_module=dynamic \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_slice_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-mail \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-mail_ssl_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-compat \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-file-aio \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--with-http_v2_module \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;addgroup&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-S&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;adduser&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-D&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-S&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-h&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/var/cache/nginx&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-s&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/sbin/nologin&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-G&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;apk&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--no-cache&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;--virtual&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.build-deps&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gcc&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;libc-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;openssl-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;pcre-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;zlib-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;linux-headers&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;curl&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gnupg1&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;libxslt-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gd-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;geoip-dev&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;curl&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-fSL&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-o&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;nginx.tar.gz&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;curl&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-fSL&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-o&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;nginx.tar.gz.asc&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;export&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;GNUPGHOME=&quot;$(mktemp -d)&quot; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;found=''; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;for server in \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;ha.pool.sks-keyservers.net \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;hkp://keyserver.ubuntu.com:80 \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;hkp://p80.pool.sks-keyservers.net:80 \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;pgp.mit.edu \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;; do \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;echo &quot;Fetching GPG key $GPG_KEYS from $server&quot;; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gpg --keyserver &quot;$server&quot; --keyserver-options timeout=10 --recv-keys &quot;$GPG_KEYS&quot; &amp;amp;&amp;amp; found=yes &amp;amp;&amp;amp; break; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;done; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;test -z &quot;$found&quot; &amp;amp;&amp;amp; echo &amp;gt;&amp;amp;2 &quot;error&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;failed to fetch GPG key $GPG_KEYS&quot; &amp;amp;&amp;amp; exit 1; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rm -rf &quot;$GNUPGHOME&quot; nginx.tar.gz.asc \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mkdir -p /usr/src \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tar -zxC /usr/src -f nginx.tar.gz \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rm nginx.tar.gz \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cd /usr/src/nginx-$NGINX_VERSION \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./configure $CONFIG --with-debug \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;make -j$(getconf _NPROCESSORS_ONLN) \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv objs/nginx objs/nginx-debug \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv objs/ngx_http_image_filter_module.so objs/ngx_http_image_filter_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./configure $CONFIG \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;make -j$(getconf _NPROCESSORS_ONLN) \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;make install \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rm -rf /etc/nginx/html/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mkdir /etc/nginx/conf.d/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mkdir -p /usr/share/nginx/html/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m644 html/index.html /usr/share/nginx/html/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m644 html/50x.html /usr/share/nginx/html/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m755 objs/nginx-debug /usr/sbin/nginx-debug \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m755 objs/ngx_http_xslt_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_xslt_filter_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m755 objs/ngx_http_image_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_image_filter_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m755 objs/ngx_http_geoip_module-debug.so /usr/lib/nginx/modules/ngx_http_geoip_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strip /usr/sbin/nginx* \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strip /usr/lib/nginx/modules/*.so \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rm -rf /usr/src/nginx-$NGINX_VERSION \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Bring in gettext so we can get `envsubst`, then throw&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# the rest away. To do this, we need to install `gettext`&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# then move `envsubst` out of the way so `gettext` can&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# be deleted completely, then move `envsubst` back.&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;apk add --no-cache --virtual .gettext gettext \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mv /usr/bin/envsubst /tmp/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;runDeps=&quot;$( \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;		&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;scanelf --needed --nobanner --format '%n#p' /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;			&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;','&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;'\n'&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;		| sort -u \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;		| awk 'system(&quot;[ -e /usr/local/lib/&quot; $1 &quot; ]&quot;) == 0 { next } { print &quot;so:&quot; $1 }' \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;)&quot; \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; apk add --no-cache --virtual .nginx-rundeps $runDeps \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; apk del .build-deps \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; apk del .gettext \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; mv /tmp/envsubst /usr/local/bin/ \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;# Bring in tzdata so users could set the timezones through the environment&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;# variables&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; apk add --no-cache tzdata \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;# forward request and error logs to docker log collector&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; ln -sf /dev/stdout /var/log/nginx/access.log \&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;	&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;&amp;amp;&amp;amp; ln -sf /dev/stderr /var/log/nginx/error.log&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;	***&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;	&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -sf /dev/stderr /var/log/nginx/error.log&lt;/span&gt;
 
-&lt;span class=&quot;err&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;OPY nginx.conf /etc/nginx/nginx.conf&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;OPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;COPY nginx.conf /etc/nginx/nginx.conf&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf&lt;/span&gt;
 
-&lt;span class=&quot;err&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;XPOSE 80&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;EXPOSE 80&lt;/span&gt;
 
-&lt;span class=&quot;err&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TOPSIGNAL SIGTERM&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;STOPSIGNAL SIGTERM&lt;/span&gt;
 
-&lt;span class=&quot;err&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]&lt;/span&gt;
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;FROM: 前面已经说了,声明基础镜像,声明这个dockerfile是基于哪个镜像来生成的
-LABEL: 没啥作用,标注作者用的
-ENV: 环境变量声明,类似语言中申明变量一样
-中间可以看到有很长的连接符,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,连接的好处也是减少最终镜像的大小。&lt;br /&gt;
-RUN: 运行命令,一般用户构建过程中的指令
-CP: 将宿主机的文件拷贝到镜像内
-EXPOSE: 指定镜像端口
-CMD: 最后运行指定,多个时以最后一个为准,CMD只会执行一条&lt;/p&gt;
+&lt;p&gt;上文dockerfile，RUN部分的代码省略了,下面做命令的简单解释:&lt;br /&gt;
+&lt;strong&gt;RUN命令用&lt;code class=&quot;highlighter-rouge&quot;&gt;\ &amp;amp;&amp;amp;&lt;/code&gt;连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;dockerfile打包的规则是打出尽量小的镜像,&lt;code class=&quot;highlighter-rouge&quot;&gt;多指令通过连接符&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;--no-cache&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;删除过程文件&lt;/code&gt;均是为了最小化镜像&lt;br /&gt;
-在docker17.05之后,docker支持了多阶段构建的-&lt;code class=&quot;highlighter-rouge&quot;&gt;multi-stage build&lt;/code&gt;&lt;br /&gt;
+&lt;ul&gt;
+  &lt;li&gt;FROM: 前面已经说了,声明基础镜像,声明这个dockerfile是基于哪个镜像来生成的&lt;/li&gt;
+  &lt;li&gt;LABEL: 没啥作用,标注作者用的&lt;/li&gt;
+  &lt;li&gt;ENV: 环境变量声明,类似语言中申明变量一样&lt;/li&gt;
+  &lt;li&gt;RUN: 运行命令,一般用户构建过程中的指令,RUN执行的命令是在构建镜像过程中,在基于FROM的基础镜像的系统上执行的命令,所以RUN里面的命令风格要和FROM指定的基础镜像一致,比如上面基于alpine的nginx安装时,RUN时安装包则用&lt;strong&gt;apk add&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;CP: 将宿主机的文件拷贝到镜像内&lt;/li&gt;
+  &lt;li&gt;EXPOSE: 指定镜像端口&lt;/li&gt;
+  &lt;li&gt;CMD: 最后运行指定,多个时以最后一个为准,CMD只会执行最后一条&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;dockerfile打包的规则是打出尽量小的镜像,&lt;strong&gt;多指令通过连接符、–no-cache,删除过程文件&lt;/strong&gt;均是为了最小化镜像&lt;br /&gt;
+在docker17.05之后,docker支持了多阶段构建的-&lt;strong&gt;multi-stage build&lt;/strong&gt;&lt;br /&gt;
 通过多阶段构建,解决依赖构建过程,造成镜像包大的问题,因为安装的构建服务只会使用一次&lt;br /&gt;
 使用也很简单&lt;/p&gt;
 
@@ -324,9 +779,13 @@ CMD [&quot;./app&quot;]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;可以看到多阶段构建第一阶段即进行依赖构建&lt;br /&gt;
-第二阶段拷贝依赖,启动服务。&lt;/p&gt;
+&lt;p&gt;可以看到多阶段构建&lt;br /&gt;
+第一阶段即进行依赖构建,将构建好的依赖包拷贝出来&lt;br /&gt;
+第二阶段将打好包的依赖CP进去,启动服务&lt;/p&gt;
 
+&lt;p&gt;这样最终生成的镜像仅包含第二阶段的内容,而没有仅仅打包时需要安装的一些库。从而更加精简了docker镜像&lt;br /&gt;
+日常使用下来,真正需要手动编写的dockerfile很少,大部分是基于docker官方镜像仓库编好的镜像进行改写&lt;br /&gt;
+比如在编写好的nginx增加一个插件,FROM nginx:xxx 然后安装插件,即可&lt;/p&gt;
 </description>
         <pubDate>Tue, 11 Dec 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/12/docker/</link>
@@ -1208,69 +1667,6 @@ server {
         <guid isPermaLink="true">http://localhost:4000/2018/10/https/</guid>
         
         <category>工具</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>学习搭建个人博客</title>
-        <description>&lt;h2 id=&quot;环境准备&quot;&gt;环境准备&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了[潘柏信]的模板 &lt;br /&gt;
-搭建过程:  &lt;a href=&quot;https://yq.aliyun.com/articles/640926&quot;&gt;参考博客&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;首先是github账号&lt;/li&gt;
-  &lt;li&gt;准备一个域名&lt;/li&gt;
-  &lt;li&gt;挑选一个喜欢的模板:  &lt;a href=&quot;http://jekyllthemes.org/?spm=a2c4e.11153940.blogcont640926.12.77189941Qjir4F&quot;&gt;主题挑选&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;添加评论，统计插件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;步骤&quot;&gt;步骤&lt;/h2&gt;
-
-&lt;p&gt;步骤在参考博客，有非常详细的介绍&lt;/p&gt;
-
-&lt;h2 id=&quot;说下在部署时遇到的几个小问题&quot;&gt;说下在部署时遇到的几个小问题：&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;提示ruby版本不对:   &lt;a href=&quot;https://www.jianshu.com/p/48ad6365f3eb&quot;&gt;解决&lt;/a&gt;    &lt;br /&gt;
-  另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。  &lt;br /&gt;
-  原因是mac自带的ruby有个默认版本，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm list&lt;/code&gt;查看已经安装的ruby版本，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm remove&lt;/code&gt;卸载掉老的版本，或者&lt;code class=&quot;highlighter-rouge&quot;&gt;rvm use xxx --default&lt;/code&gt;将要使用的版本设置为默认版本&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在github上复制项目以后，会有提示报错，我按下图设置的  &lt;br /&gt;
-  &lt;img src=&quot;https://user-images.githubusercontent.com/26788046/46715858-50f10900-cc94-11e8-85c1-a7e82ccd7ec7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;gittalk评论插件报错  &lt;br /&gt;
-  报错信息忘记了，原因是我在_posts中创建的文章，在gittalk会用那个名字去创建issue,改成简短的英文就解决了，具体查看issue名称限制&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;统计不出数据
-我的博客用的是模板带的统计，busuanzi,在作者的主页有说明：             &lt;br /&gt;
-因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』
-所以遇到统计出不了，记得更换一下模板文件中服务的地址    &lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;    &lt;br /&gt;
-更换为：    &lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;新建issue评论，跳转链接提示error
-&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch&lt;/code&gt;
- 原因是，我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
- 解决办法，登录github-&amp;gt;setting-&amp;gt; Developer settings -&amp;gt; Authorization callback URL 修改为当前博客的访问地址即&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.yangshiwei.top/&lt;/code&gt;
- 建议在创建gittalk评论插件时填写的回调地址填github自带的域名&lt;code class=&quot;highlighter-rouge&quot;&gt;youname.github.io&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/blog/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/blog/</guid>
-        
-        <category>博客</category>
         
         
       </item>
