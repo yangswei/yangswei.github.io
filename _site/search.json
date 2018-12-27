@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "实用的一些快捷键命令整理",
+      "category" : "",
+      "tags"     : "Linux",
+      "url"      : "/2018/12/useful/",
+      "date"     : "2018-12-27 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "Redis集群下的那些事",
       "category" : "",
       "tags"     : "Linux",

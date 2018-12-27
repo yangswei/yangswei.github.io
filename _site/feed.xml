@@ -5,9 +5,137 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 26 Dec 2018 17:40:25 +0800</pubDate>
-    <lastBuildDate>Wed, 26 Dec 2018 17:40:25 +0800</lastBuildDate>
+    <pubDate>Thu, 27 Dec 2018 18:18:34 +0800</pubDate>
+    <lastBuildDate>Thu, 27 Dec 2018 18:18:34 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>实用的一些快捷键命令整理</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;linux-一些命令&quot;&gt;Linux 一些命令&lt;/h3&gt;
+
+&lt;p&gt;变量=a,文件=file&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;–文件处理–&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sed -i '/^$/d' file&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;清除文件所有空白的行&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sed -i '/#/d'  file&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;清除文件中所有包含某字符的行，以#为例&lt;/td&gt;
+      &lt;td&gt;//中间支持正则,比如删除以#开头则^#&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;–字符处理–&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;if [[ $a =~ ':' ]]&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;判断字符串中是否包含某字符&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a#*.}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;删掉字符串中第一个&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;及其左边的字符&lt;/td&gt;
+      &lt;td&gt;a=1.2.3 -&amp;gt; a=2.3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a##*.}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;删掉字符串中最后一个&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;及其左边的字符&lt;/td&gt;
+      &lt;td&gt;a=1.2.3 -&amp;gt; a=3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a%.*}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;删掉字符串中最后一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;及其右边的字符串&lt;/td&gt;
+      &lt;td&gt;a=1.2.3 -&amp;gt; a=1.2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a%%.*}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;删掉字符串中第一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;及其右边的字符串&lt;/td&gt;
+      &lt;td&gt;a=1.2.3 -&amp;gt; a=1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a:0:$}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;取字符串第一到最后一个字符&lt;/td&gt;
+      &lt;td&gt;eg: ${a:1:2} a=1234 -&amp;gt; a=23&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a/b/c}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;将a字符串中的第一个b字符替换成c字符&lt;/td&gt;
+      &lt;td&gt;eg: ${a/2/3} a=1232 -&amp;gt; a=1332&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a//b/c}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;将a字符串中的所有b字符替换成c字符&lt;/td&gt;
+      &lt;td&gt;eg: ${a/2/3} a=1232 -&amp;gt; a=1333&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${#a}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;返回一个整数值，数值为字符串长度&lt;/td&gt;
+      &lt;td&gt;eg: a=123 echo ${#a} -&amp;gt; 3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a-b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a未赋值，则使用b为返回值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a:-b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a未赋值或空，则使用b为返回值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a+b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a空或非空，则使用b为返回值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a:+b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a非空，则使用b为返回值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a=b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a未赋值，则使用b为返回值,并赋值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;${a:=b}&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;a未赋值或空，则使用b为返回值，并赋值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;vim快捷键&quot;&gt;Vim快捷键&lt;/h3&gt;
+</description>
+        <pubDate>Thu, 27 Dec 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/12/useful/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/12/useful/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>Redis集群下的那些事</title>
@@ -170,11 +298,15 @@ sentinel failover-timeout mymaster 180000
 &lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
 
 &lt;p&gt;还存在一个问题，如果程序中写死了写缓存的地址，但是当masterdown掉之后新的master的地址可能是发生变化的，所以此时我们需要keepalived来实现地址的漂移。&lt;br /&gt;
-最好是基于sentinel的keepalived&lt;br /&gt;
+看到过一遍关于这个方法的解决方案是基于sentinel的keepalived&lt;br /&gt;
 &lt;a href=&quot;https://blog.csdn.net/huangyimo/article/details/76618532&quot;&gt;哨兵+keepalived，请参考&lt;/a&gt;&lt;br /&gt;
 参考方法中也提到了局限性，包括不受控网络以及云主机环境，无法提供虚拟ip等情况&lt;/p&gt;
 
-&lt;p&gt;另外可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法&lt;/p&gt;
+&lt;p&gt;这里可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法&lt;br /&gt;
+同样，这个方法无论是集群模式的redis和哨兵模式的redis,都适用&lt;br /&gt;
+脚本填入redis节点的ip，并在本地的hosts写入redis解析地址(如果是多master节点，可以改写一下脚本)&lt;br /&gt;
+脚本每2秒检测一次当前集群的master，如果master连接不上或者变了，那么脚本会直接替换掉解析中的ip&lt;br /&gt;
+程序如果还不能正常，脚本还可以加入重启服务的部分。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#要求1: /etc/hosts里面写入 &quot;1.1.1.1 redis-tb&quot; 的解析规则&lt;/span&gt;
@@ -1611,60 +1743,6 @@ services:
         <pubDate>Thu, 18 Oct 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/10/baidudisk/</link>
         <guid isPermaLink="true">http://localhost:4000/2018/10/baidudisk/</guid>
-        
-        <category>工具</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Nginx免费证书加密https</title>
-        <description>&lt;h3 id=&quot;生成免费证书&quot;&gt;生成免费证书&lt;/h3&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;生成方法：  &lt;br /&gt;
-    &lt;code class=&quot;highlighter-rouge&quot;&gt;curl https://get.acme.sh | SH&lt;/code&gt; &lt;br /&gt;
-    执行完后，脚本位置在~/.acme.sh/下  &lt;br /&gt;
-    &lt;code class=&quot;highlighter-rouge&quot;&gt;acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com&lt;/code&gt;  &lt;br /&gt;
-    [上面命令是github给出的，我在服务器上执行的是下面的命令行] 
-    ` sh  ~/.acme.sh/acme.sh    –issue –nginx  -d myucloud.com -d www.myucloud.com –force` &lt;br /&gt;
-    执行完之后，屏幕上会显示生成证书的位置&lt;/p&gt;
-
-&lt;h3 id=&quot;配置nginx&quot;&gt;配置nginx&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;默认是https访问，当访问80端口时，指向https&lt;/li&gt;
-  &lt;li&gt;在nginx/conf.d/下添加conf，只需要指定证书ssl_certificate/ssl_certificate_key位置，将www.xx.com替换成你的域名即可&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
-    listen  443 ssl;
-    ssl_certificate      ./ssl/youdomain.cer;
-    ssl_certificate_key  ./ssl/youdomain.key;
-    ssl_session_timeout  5m;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers         HIGH:!aNULL:!MD5;
-    server_name  www.xx.com;
-    location / {
-        root   /opt/html;
-        index  index.html index.htm index.php;
-    }
-}
-
-server {
-    listen 80;
-    server_name  www.xx.com;
-    rewrite ^(.*)$ https://${server_name}$1 permanent;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Tue, 09 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/https/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/https/</guid>
         
         <category>工具</category>
         

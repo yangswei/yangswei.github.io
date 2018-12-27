@@ -346,11 +346,15 @@ sentinel failover-timeout mymaster 180000
 <h3 id="其他">其他</h3>
 
 <p>还存在一个问题，如果程序中写死了写缓存的地址，但是当masterdown掉之后新的master的地址可能是发生变化的，所以此时我们需要keepalived来实现地址的漂移。<br />
-最好是基于sentinel的keepalived<br />
+看到过一遍关于这个方法的解决方案是基于sentinel的keepalived<br />
 <a href="https://blog.csdn.net/huangyimo/article/details/76618532">哨兵+keepalived，请参考</a><br />
 参考方法中也提到了局限性，包括不受控网络以及云主机环境，无法提供虚拟ip等情况</p>
 
-<p>另外可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法</p>
+<p>这里可通过脚本的方法解决程序缓存地址的问题,能解决没有虚拟ip以及不可控网络的方法<br />
+同样，这个方法无论是集群模式的redis和哨兵模式的redis,都适用<br />
+脚本填入redis节点的ip，并在本地的hosts写入redis解析地址(如果是多master节点，可以改写一下脚本)<br />
+脚本每2秒检测一次当前集群的master，如果master连接不上或者变了，那么脚本会直接替换掉解析中的ip<br />
+程序如果还不能正常，脚本还可以加入重启服务的部分。</p>
 
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#要求1: /etc/hosts里面写入 "1.1.1.1 redis-tb" 的解析规则</span>
@@ -822,6 +826,11 @@ sentinel failover-timeout mymaster 180000  
             </a>
         </li>
         
+        
+        <li class="next">
+            <a href="/2018/12/useful/" data-toggle="tooltip" data-placement="top" title="实用的一些快捷键命令整理">下一篇：  <span>实用的一些快捷键命令整理</span>
+            </a>
+        </li>
         
     </ul>
 </section>
