@@ -157,9 +157,13 @@
                 
               </ul>
             </nav>
-          </div>          
+            
+          </div>
         </div>
 
+        <div class="button-wrapper">
+          <button id="fashu1" type="button" class="button green larrow" onclick="myFunction()">召唤:隐身术</button>
+        </div>
 
         </div>
       </div>
@@ -180,7 +184,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/12/useful/" title="访问 实用的一些快捷键命令整理">实用的一些快捷键命令整理</a></h2>
-      <p class="excerpt">  一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理Linux 一些命令变量=a,文件=file            Command      功能      备注                  –文件处理–                            sed -i '/^$/d' file      清除文件所有空白的行                     sed -i '/#/d'  file    ...&hellip;</p>
+      <p class="excerpt">  一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理Vim快捷键            Command      功能      备注                  H      当前窗口最上方的那行      L当前末尾，M当前中间              u      撤销                     .      重复前一个动作                     x      向后删除字符   ...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-12-27 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -472,10 +476,25 @@
           </span>
 
         </div>
+
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
         <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
-        
+        </div>
+
+        <script>
+          function myFunction() {
+          var x = document.getElementById("live2d-widget");
+          var y = document.getElementById("fashu1");
+          if (x.style.display === "none") {
+          x.style.display = "block";
+          y.innerHTML = "召唤:隐身术"
+          } else {
+          x.style.display = "none";
+          y.innerHTML = "召唤:显形术"
+          }
+        }
+        </script>
     </footer>
 </section>
 

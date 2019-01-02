@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 27 Dec 2018 18:18:34 +0800</pubDate>
-    <lastBuildDate>Thu, 27 Dec 2018 18:18:34 +0800</lastBuildDate>
+    <pubDate>Wed, 02 Jan 2019 11:31:32 +0800</pubDate>
+    <lastBuildDate>Wed, 02 Jan 2019 11:31:32 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -14,6 +14,134 @@
         <description>&lt;blockquote&gt;
   &lt;p&gt;一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;h3 id=&quot;vim快捷键&quot;&gt;Vim快捷键&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;当前窗口最上方的那行&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;当前末尾，&lt;code class=&quot;highlighter-rouge&quot;&gt;M&lt;/code&gt;当前中间&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;u&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;撤销&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;重复前一个动作&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;向后删除字符&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt;向前删除&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:vs xx/xx/file&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;垂直分屏打开文件file&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:sp xx/xx/file&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;水平分屏打开文件file&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:!command&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;暂时离开vi，到命令行下执行命令&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;linux常用快捷键&quot;&gt;Linux常用快捷键&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;–命令行快捷键–&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+k&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;剪切(删除)光标到行尾的字符&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+u&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;剪切(删除)光标到行首的字符&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+w&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;剪切(删除)光标前一个单词&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+y&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;粘贴k,u,w的字符&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Esc+b&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;移动光标到当前单词的开头&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Esc+f&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;移动光标到当前单词的结尾&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;–ls&amp;amp;ll–&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ls -t&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;按时间排序，最新在最前面&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ls -rt&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;按时间倒序排序，最新在最后面&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;–去重–&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uniq&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;文件去重行或用&lt;code class=&quot;highlighter-rouge&quot;&gt;|&lt;/code&gt;传替，注意是按行去重&lt;/td&gt;
+      &lt;td&gt;eg: &lt;code class=&quot;highlighter-rouge&quot;&gt;cat file|sort|uniq -c&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;h3 id=&quot;linux-一些命令&quot;&gt;Linux 一些命令&lt;/h3&gt;
 
@@ -125,8 +253,6 @@
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
-
-&lt;h3 id=&quot;vim快捷键&quot;&gt;Vim快捷键&lt;/h3&gt;
 </description>
         <pubDate>Thu, 27 Dec 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/12/useful/</link>

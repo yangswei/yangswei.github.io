@@ -157,9 +157,13 @@
                 
               </ul>
             </nav>
-          </div>          
+            
+          </div>
         </div>
 
+        <div class="button-wrapper">
+          <button id="fashu1" type="button" class="button green larrow" onclick="myFunction()">召唤:隐身术</button>
+        </div>
 
         </div>
       </div>
@@ -415,10 +419,25 @@ cto - 又光芒万丈的来了：这台机器是测试机器，直接重装了�
           </span>
 
         </div>
+
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
         <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
-        
+        </div>
+
+        <script>
+          function myFunction() {
+          var x = document.getElementById("live2d-widget");
+          var y = document.getElementById("fashu1");
+          if (x.style.display === "none") {
+          x.style.display = "block";
+          y.innerHTML = "召唤:隐身术"
+          } else {
+          x.style.display = "none";
+          y.innerHTML = "召唤:显形术"
+          }
+        }
+        </script>
     </footer>
 </section>
 

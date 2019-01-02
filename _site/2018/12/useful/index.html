@@ -157,9 +157,13 @@
                 
               </ul>
             </nav>
-          </div>          
+            
+          </div>
         </div>
 
+        <div class="button-wrapper">
+          <button id="fashu1" type="button" class="button green larrow" onclick="myFunction()">召唤:隐身术</button>
+        </div>
 
         </div>
       </div>
@@ -190,6 +194,134 @@
     <blockquote>
   <p>一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理</p>
 </blockquote>
+
+<h3 id="vim快捷键">Vim快捷键</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>功能</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">H</code></td>
+      <td>当前窗口最上方的那行</td>
+      <td><code class="highlighter-rouge">L</code>当前末尾，<code class="highlighter-rouge">M</code>当前中间</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">u</code></td>
+      <td>撤销</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">.</code></td>
+      <td>重复前一个动作</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">x</code></td>
+      <td>向后删除字符</td>
+      <td><code class="highlighter-rouge">X</code>向前删除</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">:vs xx/xx/file</code></td>
+      <td>垂直分屏打开文件file</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">:sp xx/xx/file</code></td>
+      <td>水平分屏打开文件file</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">:!command</code></td>
+      <td>暂时离开vi，到命令行下执行命令</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="linux常用快捷键">Linux常用快捷键</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>功能</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>–命令行快捷键–</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Ctrl+k</code></td>
+      <td>剪切(删除)光标到行尾的字符</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Ctrl+u</code></td>
+      <td>剪切(删除)光标到行首的字符</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong><code class="highlighter-rouge">Ctrl+w</code></strong></td>
+      <td>剪切(删除)光标前一个单词</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Ctrl+y</code></td>
+      <td>粘贴k,u,w的字符</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Esc+b</code></td>
+      <td>移动光标到当前单词的开头</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Esc+f</code></td>
+      <td>移动光标到当前单词的结尾</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>–ls&amp;ll–</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ls -t</code></td>
+      <td>按时间排序，最新在最前面</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ls -rt</code></td>
+      <td>按时间倒序排序，最新在最后面</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>–去重–</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">uniq</code></td>
+      <td>文件去重行或用<code class="highlighter-rouge">|</code>传替，注意是按行去重</td>
+      <td>eg: <code class="highlighter-rouge">cat file|sort|uniq -c</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
 <h3 id="linux-一些命令">Linux 一些命令</h3>
 
@@ -301,8 +433,6 @@
     </tr>
   </tbody>
 </table>
-
-<h3 id="vim快捷键">Vim快捷键</h3>
 
 
   </section>
@@ -473,10 +603,25 @@
           </span>
 
         </div>
+
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
         <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
-        
+        </div>
+
+        <script>
+          function myFunction() {
+          var x = document.getElementById("live2d-widget");
+          var y = document.getElementById("fashu1");
+          if (x.style.display === "none") {
+          x.style.display = "block";
+          y.innerHTML = "召唤:隐身术"
+          } else {
+          x.style.display = "none";
+          y.innerHTML = "召唤:显形术"
+          }
+        }
+        </script>
     </footer>
 </section>
 
