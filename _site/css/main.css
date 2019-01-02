@@ -1428,6 +1428,20 @@ nav a {
     right: 200px!important;
 }
 
+.button-wrapper button::before,.button-wrapper button::after  {
+    display: none;
+}
+
+.button-wrapper button {
+    background: rgba(255, 255, 255, 0)!important;
+    border: 1px solid #fff!important;
+    box-shadow: 0 1px 2px #fff inset!important, 0 -1px 0 #fff inset!important, 0 -2px 3px #fff inset!important;
+}
+
+.button-wrapper {
+    margin-top: 20px;
+}
+
 
 @media only screen and (max-width: 767px) {
   #live2dcanvas {
@@ -1441,10 +1455,6 @@ nav a {
 
   .button-wrapper button {
     line-height: 38px;
+    background: rgba(255, 255, 255, 0)!important;
   }
-
-  .button-wrapper button::before,.button-wrapper button::after  {
-    display: none;
-  }
-
 }
