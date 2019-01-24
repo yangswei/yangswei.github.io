@@ -5,9 +5,75 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 02 Jan 2019 14:11:15 +0800</pubDate>
-    <lastBuildDate>Wed, 02 Jan 2019 14:11:15 +0800</lastBuildDate>
+    <pubDate>Mon, 14 Jan 2019 18:28:18 +0800</pubDate>
+    <lastBuildDate>Mon, 14 Jan 2019 18:28:18 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Mysql学习笔记-1:安装</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;记录mysql读书日记&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;安装mysql&quot;&gt;安装mysql&lt;/h4&gt;
+
+&lt;p&gt;二进制mysql&lt;a href=&quot;https://dev.mysql.com/downloads/mysql/&quot;&gt;下载首页&lt;/a&gt;&lt;br /&gt;
+选择下载版本,这里下载的是5.6.42的二进制包
+&lt;a href=&quot;wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.42-linux-glibc2.12-x86_64.tar.gz&quot;&gt;5.6二进制包下载链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;这里学习&lt;strong&gt;使用源码安装mysql&lt;/strong&gt;&lt;a href=&quot;https://dev.mysql.com/downloads/mirrors/&quot;&gt;源码下载页&lt;/a&gt;，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载&lt;a href=&quot;http://mirrors.163.com/&quot;&gt;163开源镜像站&lt;/a&gt;&lt;br /&gt;
+这里选择了个日本节点的5.6.40的源码包&lt;a href=&quot;wget http://ftp.jaist.ac.jp/pub/mysql/Downloads/MySQL-5.6/mysql-5.6.40.tar.gz&quot;&gt;5.6.40源码包&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;准备基础环境&quot;&gt;准备基础环境&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y  install  gcc   gcc-c++  make
+yum install ncurses-devel libaio-devel -y
+&lt;span class=&quot;c&quot;&gt;#这里是centos7，其他平台去https://cmake.org/download/ 找编译好的二进制下载吧，我下的源码，装了几分钟&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#源码 ./bootstrap --prefix=/usr;make;sudo make install&lt;/span&gt;
+wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.sh
+wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.tar.gz
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h5 id=&quot;卸载系统自带数据库如果有&quot;&gt;卸载系统自带数据库(如果有)&lt;/h5&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-x&quot;&gt;rpm -qa|grep mysql*
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5 id=&quot;安装mysql-1&quot;&gt;安装mysql&lt;/h5&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;groupadd mysql
+useradd -g mysql mysql -s /bin/false
+mkdir /data/mysql
+chown -R mysql:mysql /data/mysql
+mkdir /usr/local/ysql  
+#第一个参数指定安装的根目录，第二个指定数据存储目录，第三个指定配置文件目录
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql -DSYSCONFDIR=/etc 
+make  
+make install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安装完之后mysql,到安装根目录中&lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/mysql/support-files&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;生成系统数据库./scripts/mysql_install_db –user=mysql –basedir=/usr/local/mysql –datadir=/data/mysql&lt;/li&gt;
+  &lt;li&gt;配置文件&lt;strong&gt;my-default.cnf&lt;/strong&gt;,复制到指定的配置文件目录,修改配置参数&lt;/li&gt;
+  &lt;li&gt;系统启动文件&lt;strong&gt;mysql.server&lt;/strong&gt;,添加到系统启动cp mysql.server /etc/init.d/mysqld(需要填入basedir和datadir分别对应编译安装时指定的安装根目录和数据存储目录)&lt;/li&gt;
+  &lt;li&gt;添加到系统环境变量vim /etc/profile; export PATH=$PATH:/usr/local/mysql/bin(或者把mysql/bin软链到/usr/local/bin中去)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;/etc/init.d/mysqld start&lt;/p&gt;
+</description>
+        <pubDate>Mon, 14 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/01/learnmysql/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/01/learnmysql/</guid>
+        
+        <category>Mysql</category>
+        
+        
+      </item>
     
       <item>
         <title>实用的一些快捷键命令整理</title>
@@ -1846,31 +1912,6 @@ services:
         <guid isPermaLink="true">http://localhost:4000/2018/10/fek/</guid>
         
         <category>Docker</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>百度网盘Svip破解</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;github开源破解百度限速工具[mac版]
-[github地址] (https://github.com/CodeTips/BaiduNetdiskPlugin-macOS)&lt;/p&gt;
-  &lt;ul&gt;
-    &lt;li&gt;需要本地安装git&lt;/li&gt;
-    &lt;li&gt;mac上安装百度网盘&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cd ~/Downloads &amp;amp;&amp;amp; git clone https://github.com/CodeTips/BaiduNetdiskPlugin-macOS.git &amp;amp;&amp;amp; ./BaiduNetdiskPlugin-macOS/Other/Install.sh&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;一键安装即可完成
-测试了一下，没有提速，但是解除了限速~&lt;/p&gt;
-</description>
-        <pubDate>Thu, 18 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/baidudisk/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/baidudisk/</guid>
-        
-        <category>工具</category>
         
         
       </item>

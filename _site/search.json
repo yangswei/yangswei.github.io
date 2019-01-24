@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "Mysql学习笔记-1:安装",
+      "category" : "",
+      "tags"     : "Mysql",
+      "url"      : "/2019/01/learnmysql/",
+      "date"     : "2019-01-14 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "实用的一些快捷键命令整理",
       "category" : "",
       "tags"     : "Linux",

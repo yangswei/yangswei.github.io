@@ -1,0 +1,87 @@
+---
+layout: post
+title: "Openshift-基础篇"
+date: 2019-01-20  
+description: "learn openshift 1"
+tag: Openshift
+---  
+
+> 记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧  
+### 安装openshift-All in one  
+
+https://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/  
+
+### oc命令行创建应用
+
+因为oc命令带有权限管控，所以在使用oc命令前，需要通过oc login 登录  
+`oc login -u test https://10.50.64.34:8443`  
+创建项目(这个项目类似在k8s创建一个namespace)  
+`oc new-project hello-world-oc`  
+部署应用  
+`oc new-app openshift/hello-openshift`  
+查看pod  
+`oc get pod`  
+查看pod详细信息  
+`oc describe pod hello-openshift-1-z8mki`
+
+### 集群管理员账号登录  
+
+```
+mkdir -p ~/.kube
+cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
+登录  
+oc login -u system:admin
+查看集群节点  
+oc get node
+```
+
+### 添加route
+
+类似kube-proxy,是外界访问openshift的入口，外部请求都会到达router  
+切换到default项目  
+`oc project default`
+router组件需要读取集群的信息，它关联一个系统账号service account并为这个账号赋权。  
+(这个账号是专门供程序和组件使用的账号)  
+`oadm policy add-scc-to-user privileged system:serviceaccount:default:router`
+创建router实例  
+
+```
+oadm router router --replicas=1 --service-account=router
+oc get pod -n default
+```
+
+### 添加registry
+集群的docker registry内部docker镜像仓库  
+
+```
+oc project default
+oc registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
+oc get pod  
+```
+因为registry没有启用https,所以需要修改docker配置，让docker以非https模式连接到registry.  
+在OPTIONS变量值中添加参数'--insecure-registry=172.30.0.0/16'  
+重启docker systemctl restart docker  
+
+
+### 添加Image Stream
+
+is镜像集合，openshift并不一定要用到is，is是为了更加方便的将镜像管理和使用  
+
+```
+oc project openshift
+openshift version
+curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
+oc get is -n openshift
+```
+
+
+### 添加Template
+
+openshift定义了一些template供用户使用，模板定义一个多个部署镜像的集合，定义部署依赖对象以及配置参数项  
+```
+oc project openshift
+oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
+oc get template -n openshift
+oc get template cakephp-mysql-example -o json -n openshift
+oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/master/template/wildfly-basic-s2i.template.json -n openshift  
+```
