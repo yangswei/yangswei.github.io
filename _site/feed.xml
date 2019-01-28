@@ -5,9 +5,101 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 14 Jan 2019 18:28:18 +0800</pubDate>
-    <lastBuildDate>Mon, 14 Jan 2019 18:28:18 +0800</lastBuildDate>
+    <pubDate>Mon, 28 Jan 2019 14:06:51 +0800</pubDate>
+    <lastBuildDate>Mon, 28 Jan 2019 14:06:51 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Openshift-基础篇</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;安装openshift-all-in-one&quot;&gt;安装openshift-All in one&lt;/h2&gt;
+
+&lt;p&gt;https://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/&lt;/p&gt;
+
+&lt;h3 id=&quot;oc命令行创建应用&quot;&gt;oc命令行创建应用&lt;/h3&gt;
+
+&lt;p&gt;因为oc命令带有权限管控，所以在使用oc命令前，需要通过oc login 登录&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc login -u test https://10.50.64.34:8443&lt;/code&gt;&lt;br /&gt;
+创建项目(这个项目类似在k8s创建一个namespace)&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc new-project hello-world-oc&lt;/code&gt;&lt;br /&gt;
+部署应用&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc new-app openshift/hello-openshift&lt;/code&gt;&lt;br /&gt;
+查看pod&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc get pod&lt;/code&gt;&lt;br /&gt;
+查看pod详细信息&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc describe pod hello-openshift-1-z8mki&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;集群管理员账号登录&quot;&gt;集群管理员账号登录&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir -p ~/.kube
+cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
+登录  
+oc login -u system:admin
+查看集群节点  
+oc get node
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;添加route&quot;&gt;添加route&lt;/h3&gt;
+
+&lt;p&gt;类似kube-proxy,是外界访问openshift的入口，外部请求都会到达router&lt;br /&gt;
+切换到default项目&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oc project default&lt;/code&gt;
+router组件需要读取集群的信息，它关联一个系统账号service account并为这个账号赋权。&lt;br /&gt;
+(这个账号是专门供程序和组件使用的账号)&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router&lt;/code&gt;
+创建router实例&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm router router --replicas=1 --service-account=router
+oc get pod -n default
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;添加registry&quot;&gt;添加registry&lt;/h3&gt;
+&lt;p&gt;集群的docker registry内部docker镜像仓库&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project default
+oc registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
+oc get pod  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;因为registry没有启用https,所以需要修改docker配置，让docker以非https模式连接到registry.&lt;br /&gt;
+在OPTIONS变量值中添加参数’–insecure-registry=172.30.0.0/16’&lt;br /&gt;
+重启docker systemctl restart docker&lt;/p&gt;
+
+&lt;h3 id=&quot;添加image-stream&quot;&gt;添加Image Stream&lt;/h3&gt;
+
+&lt;p&gt;is镜像集合，openshift并不一定要用到is，is是为了更加方便的将镜像管理和使用&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
+openshift version
+curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
+oc get is -n openshift
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;添加template&quot;&gt;添加Template&lt;/h3&gt;
+
+&lt;p&gt;openshift定义了一些template供用户使用，模板定义一个多个部署镜像的集合，定义部署依赖对象以及配置参数项&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
+oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
+oc get template -n openshift
+oc get template cakephp-mysql-example -o json -n openshift
+oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/master/template/wildfly-basic-s2i.template.json -n openshift  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 20 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/01/openshift/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/01/openshift/</guid>
+        
+        <category>Openshift</category>
+        
+        
+      </item>
     
       <item>
         <title>Mysql学习笔记-1:安装</title>
@@ -18,7 +110,7 @@
 &lt;h4 id=&quot;安装mysql&quot;&gt;安装mysql&lt;/h4&gt;
 
 &lt;p&gt;二进制mysql&lt;a href=&quot;https://dev.mysql.com/downloads/mysql/&quot;&gt;下载首页&lt;/a&gt;&lt;br /&gt;
-选择下载版本,这里下载的是5.6.42的二进制包
+选择下载版本,这里下载的是5.6.42的二进制包&lt;br /&gt;
 &lt;a href=&quot;wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.42-linux-glibc2.12-x86_64.tar.gz&quot;&gt;5.6二进制包下载链接&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;这里学习&lt;strong&gt;使用源码安装mysql&lt;/strong&gt;&lt;a href=&quot;https://dev.mysql.com/downloads/mirrors/&quot;&gt;源码下载页&lt;/a&gt;，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载&lt;a href=&quot;http://mirrors.163.com/&quot;&gt;163开源镜像站&lt;/a&gt;&lt;br /&gt;
@@ -49,13 +141,30 @@ mkdir /data/mysql
 chown -R mysql:mysql /data/mysql
 mkdir /usr/local/ysql  
 #第一个参数指定安装的根目录，第二个指定数据存储目录，第三个指定配置文件目录
-cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql -DSYSCONFDIR=/etc 
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
+-DMYSQL_DATADIR=/data/mysql \
+-DSYSCONFDIR=/etc \
+-DMYSQL_UNIX_ADDR=/usr/local/mysql/tmp/mysql.sock \
+-DDEFAULT_CHARSET=utf8 \
+-DDEFAULT_COLLATION=utf8_general_ci \
+-DWITH_EXTRA_CHARSETS=all \
+-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+-DWITH_FEDERATED_STORAGE_ENGINE=1 \
+-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
+-DWITH_ZLIB=bundled \
+-DWITH_SSL=bundled \
+-DENABLED_LOCAL_INFILE=1 \
+-DWITH_EMBEDDED_SERVER=1 \
+-DENABLE_DOWNLOADS=1 \
+-DWITH_DEBUG=0
+#编译后执行
 make  
 make install
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;安装完之后mysql,到安装根目录中&lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/mysql/support-files&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;安装mysql到安装根目录中&lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/mysql/support-files&lt;/code&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;生成系统数据库./scripts/mysql_install_db –user=mysql –basedir=/usr/local/mysql –datadir=/data/mysql&lt;/li&gt;
@@ -64,7 +173,11 @@ make install
   &lt;li&gt;添加到系统环境变量vim /etc/profile; export PATH=$PATH:/usr/local/mysql/bin(或者把mysql/bin软链到/usr/local/bin中去)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;/etc/init.d/mysqld start&lt;/p&gt;
+&lt;p&gt;/etc/init.d/mysqld start&lt;br /&gt;
+报错：&lt;br /&gt;
+Segmentation fault&lt;br /&gt;
+编辑文件 cmd-line-utils/libedit/terminal.c&lt;br /&gt;
+把terminal_set方法中的 char buf[TC_BUFSIZE]; 这一行注释,再把 area = buf;改为 area = NULL;&lt;/p&gt;
 </description>
         <pubDate>Mon, 14 Jan 2019 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2019/01/learnmysql/</link>
@@ -1688,230 +1801,6 @@ mkdir live2d_models &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&
         <guid isPermaLink="true">http://localhost:4000/2018/11/live2d/</guid>
         
         <category>博客</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>K8s集群-fek插件</title>
-        <description>&lt;h2 id=&quot;安装插件前准备工作&quot;&gt;安装插件前准备工作&lt;/h2&gt;
-
-&lt;p&gt;github地址: &lt;a href=&quot;https://github.com/kubernetes/kubernetes&quot;&gt;https://github.com/kubernetes/kubernetes&lt;/a&gt;&lt;br /&gt;
-路径为kubenetes/cluster/addons/fluentd-elasticsearch&lt;/p&gt;
-
-&lt;p&gt;选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。&lt;br /&gt;
-在github上提供了官方的image地址:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;k8s.gcr.io/elasticsearch:v5.6.4
-k8s.gcr.io/fluentd-elasticsearch:v2.0.4
-docker.elastic.co/kibana/kibana:5.6.4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。&lt;br /&gt;
-另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像,如果要使用额外的plugin插件，则在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像。&lt;/p&gt;
-
-&lt;h3 id=&quot;调整文件&quot;&gt;调整文件&lt;/h3&gt;
-
-&lt;p&gt;fluentd会根据配置文件&lt;code class=&quot;highlighter-rouge&quot;&gt;fluentd-es-configmap.yaml&lt;/code&gt;指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 &lt;br /&gt;
-Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
-设置node节点的标签,只在标记了标签的节点上运行fluentd&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get nodes&lt;/code&gt;&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport&lt;br /&gt;
-调整elasticsearch的statefulset文件，调整limits&amp;amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;curl ip:9200/_cat/indices?v&lt;/code&gt;&lt;br /&gt;
-内存不够时，索引的状态会&lt;strong&gt;red&lt;/strong&gt;,单节点的els索引状态为&lt;strong&gt;yellow&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;按实际需要调整fluentd的configmap&quot;&gt;按实际需要调整fluentd的configmap&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;k8s组件&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;日志内容&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;kube-controller-manager&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;pod扩容或rc&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;kube-scheduler&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;pod扩容或rc&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;kubelet&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;pod周期相关：创建、停止&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;journalctl -u docker -o json-pretty -f&lt;/code&gt;来查看服务的日志.&lt;/p&gt;
-
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__CURSOR&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__REALTIME_TIMESTAMP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;__MONOTONIC_TIMESTAMP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_BOOT_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;PRIORITY&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_UID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_GID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_CAP_EFFECTIVE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_SYSTEMD_CGROUP&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_MACHINE_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_HOSTNAME&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_TRANSPORT&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;SYSLOG_FACILITY&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_STREAM_ID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;SYSLOG_IDENTIFIER&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_PID&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_COMM&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dockerd-current&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_EXE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_CMDLINE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;_SYSTEMD_UNIT&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-	&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;MESSAGE&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;fluentd-configmap指定源数据，匹配所有系统日志中_COMM值为&lt;code class=&quot;highlighter-rouge&quot;&gt;dockerd-current&lt;/code&gt;的日志记录为源日志数据
-输出部分说明，我所使用的环境中用到的插件有：&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;rewrite_tag_filter&lt;/li&gt;
-  &lt;li&gt;kubernetes_metadata&lt;/li&gt;
-  &lt;li&gt;record_transformer&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;source&amp;gt;
-@type systemd
-path /var/log/journal
-filters [{ &quot;_COMM&quot;: &quot;dockerd-current&quot; }]
-#pos_file /tmp/fluentd/journal.pos
-tag journal
-strip_underscores true
-read_from_head true
-&amp;lt;/source&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;匹配journal的日志数据，将container_name以k8s_开头的日志打上tag标签
-注意：官方的image中没有安装rewrite_tag_filter插件，在dockerfile指定的Gemfile添加
-&lt;code class=&quot;highlighter-rouge&quot;&gt;gem 'fluent-plugin-rewrite-tag-filter','~&amp;gt;2.1.0'&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;match journal&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;type rewrite_tag_filter&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;rule&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;key CONTAINER_NAME&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;pattern ^k8s_&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;tag kubernetes.journal.container&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/rule&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;log_level trace&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/match&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;根据上文打好的标签，过滤标签，将kubernetes.xx的标签匹配后，
-通过kubernetes_metadata将日志数据格式化&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;filter kubernetes.**&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;type kubernetes_metadata&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;use_journal true&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/filter&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;同上，匹配标签，使用record_transformer插件，添加topic&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;filter kubernetes.**&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;type record_transformer&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;enable_ruby&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;record&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;topic k8s-${record[&quot;kubernetes&quot;][&quot;container_name&quot;]}&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/record&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/filter&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;最后匹配所有，将日志按index_name保存到els中&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;match **&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;id elasticsearch&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;type elasticsearch&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;log_level info&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#只有tag_key是topic的日志才会输入到els中&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;include_tag_key true&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;tag_key topic&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;host elasticsearch-logging&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;port 9200&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#logstash_format true&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#将日志的topic匹配索引的key[这里key的值定义为topic]，&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#如果日志的topic=索引的key,则将对应的日志打入对应的索引中&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;target_index_key topic&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;index_name logstash-${topic}&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;buffer&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;type file&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;path /var/log/fluentd-buffers/kubernetes.system.buffer&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;flush_mode interval&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;retry_type exponential_backoff&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;flush_thread_count 2&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;flush_interval 5s&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;retry_forever&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;retry_max_interval 30&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;chunk_limit_size 2M&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;queue_limit_length 8&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;overflow_action block&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/buffer&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;&amp;lt;/match&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;插件作用：
-&lt;code class=&quot;highlighter-rouge&quot;&gt;rewrite_tag_filter&lt;/code&gt;插件是从source源匹配的日志中，过滤找到&lt;code class=&quot;highlighter-rouge&quot;&gt;CONTAINER_NAME&lt;/code&gt;以k8s开头的日志，将过滤出来的日志打上tag
-另外两个插件分别是将源文件进行格式处理
-metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名&lt;/p&gt;
-
-&lt;p&gt;最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx)
-在kibana中即能够定义&lt;code class=&quot;highlighter-rouge&quot;&gt;Index Patterns&lt;/code&gt;的值为k8s-appname*&lt;/p&gt;
-
-&lt;h3 id=&quot;检验&quot;&gt;检验&lt;/h3&gt;
-
-&lt;p&gt;查看所有pod启动情况：
-&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'&lt;/code&gt;     &lt;br /&gt;
-查看service情况：   &lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;注意&quot;&gt;注意&lt;/h3&gt;
-
-&lt;p&gt;如果els经常报错，可以将els相关的组件从k8s中移除，单独运行elasticsearch。
-然后在修改kibana和fluentd中指定的elasticsearch地址，指定elasticsearch的位置。&lt;/p&gt;
-
-&lt;p&gt;kibana中加上：&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: XPACK_SECURITY_ENABLED       
-    value: &quot;false&quot;       
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;elasticsearch的docker-compose文件&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;version: '2'      
-services:      
-  elasticsearch:      
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2      
-    expose:      
-      - 9200      
-    ports:     
-      - &quot;9200:9200&quot;      
-    environment:      
-      - bootstrap.memory_lock=true      
-      - xpack.security.enabled=false      
-      - &quot;ES_JAVA_OPTS=-Xms8G -Xmx8G&quot;      
-    ulimits:      
-      memlock:      
-        soft: -1      
-        hard: -1      
-    volumes:      
-      - /Elasticsearch/data:/usr/share/elasticsearch/data      
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 24 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/fek/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/fek/</guid>
-        
-        <category>Docker</category>
         
         
       </item>

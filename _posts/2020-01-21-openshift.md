@@ -7,7 +7,8 @@ tag: Openshift
 ---  
 
 > 记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧  
-### 安装openshift-All in one  
+
+## 安装openshift-All in one  
 
 https://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/  
 
