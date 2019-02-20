@@ -53,8 +53,16 @@
 <lastmod>2019-01-14T00:00:00+08:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/2019/01/openshift/</loc>
+<loc>http://localhost:4000/2019/01/openshift1/</loc>
 <lastmod>2019-01-20T00:00:00+08:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/2019/02/openshift2/</loc>
+<lastmod>2019-02-14T00:00:00+08:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/2019/02/myhistory/</loc>
+<lastmod>2019-02-20T00:00:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>

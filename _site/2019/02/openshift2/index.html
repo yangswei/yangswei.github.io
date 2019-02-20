@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>Mysql学习笔记-1:安装</title>
-  <meta name="description" content="  记录mysql读书日记">
+  <title>Openshift-生产环境安装</title>
+  <meta name="description" content="  生产环境安装openshift">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Mysql学习笔记-1:安装">
-  <meta name="twitter:description" content="  记录mysql读书日记">
+  <meta name="twitter:title" content="Openshift-生产环境安装">
+  <meta name="twitter:description" content="  生产环境安装openshift">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Mysql学习笔记-1:安装">
-  <meta property="og:description" content="  记录mysql读书日记">
+  <meta property="og:title" content="Openshift-生产环境安装">
+  <meta property="og:description" content="  生产环境安装openshift">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2019/01/learnmysql/">
+  <link rel="canonical" href="http://localhost:4000/2019/02/openshift2/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -180,10 +180,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">Mysql学习笔记-1:安装</h1>
+    <h1 class="post-title">Openshift-生产环境安装</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2019-01-14 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-01-14</time>  
+      <time datetime="2019-02-14 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-02-14</time>  
          
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -192,80 +192,161 @@
 
   <section class="post">
     <blockquote>
-  <p>记录mysql读书日记</p>
+  <p>生产环境安装openshift</p>
 </blockquote>
 
-<h4 id="安装mysql">安装mysql</h4>
+<table>
+  <thead>
+    <tr>
+      <th>主机类型</th>
+      <th>主机名</th>
+      <th>IP地址</th>
+      <th>操作系统</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Master节点</td>
+      <td>master.example.com</td>
+      <td>192.168.172.168</td>
+      <td>Centos 7.2</td>
+    </tr>
+    <tr>
+      <td>Node节点</td>
+      <td>node1.example.com</td>
+      <td>192.168.172.169</td>
+      <td>Centos 7.2</td>
+    </tr>
+    <tr>
+      <td>Node节点</td>
+      <td>node2.example.com</td>
+      <td>192.168.172.170</td>
+      <td>Centos 7.2</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>二进制mysql<a href="https://dev.mysql.com/downloads/mysql/">下载首页</a><br />
-选择下载版本,这里下载的是5.6.42的二进制包<br />
-<a href="wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.42-linux-glibc2.12-x86_64.tar.gz">5.6二进制包下载链接</a></p>
+<h2 id="1配置主机名">1.配置主机名</h2>
 
-<p>这里学习<strong>使用源码安装mysql</strong><a href="https://dev.mysql.com/downloads/mirrors/">源码下载页</a>，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载<a href="http://mirrors.163.com/">163开源镜像站</a><br />
-这里选择了个日本节点的5.6.40的源码包<a href="wget http://ftp.jaist.ac.jp/pub/mysql/Downloads/MySQL-5.6/mysql-5.6.40.tar.gz">5.6.40源码包</a></p>
+<p>hostnamectl set-hostname master.example.com
+配置相关域名解析，使主机名可解析到对应ip地址
+192.168.172.168  master.example.com<br />
+192.168.172.169  node1.example.com<br />
+192.168.172.170  node2.example.com</p>
 
-<h5 id="准备基础环境">准备基础环境</h5>
+<p>所有节点设置网络<br />
+查看网络链接<br />
+nmcli con show<br />
+打开链接<br />
+nmcli con up eth0<br />
+设置开机自启动<br />
+nmcli con mod eth0 connection.autoconnect yes<br />
+重启网络服务<br />
+systemctl restart NetworkManager</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum -y  install  gcc   gcc-c++  make
-yum install ncurses-devel libaio-devel -y
-<span class="c">#这里是centos7，其他平台去https://cmake.org/download/ 找编译好的二进制下载吧，我下的源码，装了几分钟</span>
-<span class="c">#源码 ./bootstrap --prefix=/usr;make;sudo make install</span>
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.sh
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.tar.gz
+<h2 id="2安装及配置软件包">2.安装及配置软件包</h2>
 
+<p>所有节点安装openshift依赖软件包<br />
+yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion
+所有节点安装容器引擎docker
+yum install -y docker<br />
+修改配置存储<br />
+vim /etc/sysconfig/docker-storage-setup
+添加 ENVS=/dev/sdb
+执行docker-storage-setup</p>
+
+<p>在Master节点启动EPEL安装ansible
+yum -y install https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm<br />
+sed -i -e “s/^enabled=1/enabled=0/” /etc/yum.repos.d/epel.repo<br />
+yum -y –enablerepo=epel install ansible pyopenSSL<br />
+在Master节点生成SSH密钥<br />
+ssh-keygen -f /root/.ssh/id_rsa -N ‘’</p>
+
+<p>Ansible基于Agentless架构实现，不需要在目标主机安装agent依赖ssh远程控制协议，所以需要配置master和node节点互信
+在Master节点执行：<br />
+for host in master.example.com \
+node1.example.com \
+node2.example.com; \
+do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; \
+done</p>
+
+<p>在Master节点安装Openshift的ansible Playbook
+wget https://github.com/openshift/openshift-ansible/archive/openshift-ansible-3.3.26-1.tar.gz<br />
+tar zxf openshift-ansible-3.3.26-1.tar.gz</p>
+
+<p>安装单master可以不单独安装etcd,这里选择安装单节点的etcd,生产环境安装3节点的etcd集群,确保高可用<br />
+yum install -y etcd<br />
+systemctl enable etcd<br />
+systemctl start etcd</p>
+
+<h2 id="配置ansible">配置ansible</h2>
+
+<p>备份原有ansible的host
+cp /etc/ansible/hosts /etc/ansible/hosts-bk
+修改hosts:</p>
+
+<pre><code class="language-hosts文件">[OSEv3:children]
+masters
+nodes
+etcd
+
+[OSEv3:vars]
+ansible_ssh_user=root
+openshift_deployment_type=origin
+openshift_release=1.3.0
+
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+
+[masters]
+openshift-test-master
+
+[nodes]
+master.example.com  
+node1.example.com  
+node2.example.com
+
+[etcd]
+openshift-test-master
 </code></pre>
-</div>
 
-<h5 id="卸载系统自带数据库如果有">卸载系统自带数据库(如果有)</h5>
+<p>执行安装
+ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml
+执行完成以后，通过oc get node 查看节点状态</p>
 
-<pre><code class="language-x">rpm -qa|grep mysql*
-</code></pre>
-
-<h5 id="安装mysql-1">安装mysql</h5>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>groupadd mysql
-useradd -g mysql mysql -s /bin/false
-mkdir /data/mysql
-chown -R mysql:mysql /data/mysql
-mkdir /usr/local/ysql  
-#第一个参数指定安装的根目录，第二个指定数据存储目录，第三个指定配置文件目录
-cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
--DMYSQL_DATADIR=/data/mysql \
--DSYSCONFDIR=/etc \
--DMYSQL_UNIX_ADDR=/usr/local/mysql/tmp/mysql.sock \
--DDEFAULT_CHARSET=utf8 \
--DDEFAULT_COLLATION=utf8_general_ci \
--DWITH_EXTRA_CHARSETS=all \
--DWITH_INNOBASE_STORAGE_ENGINE=1 \
--DWITH_FEDERATED_STORAGE_ENGINE=1 \
--DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
--DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
--DWITH_ZLIB=bundled \
--DWITH_SSL=bundled \
--DENABLED_LOCAL_INFILE=1 \
--DWITH_EMBEDDED_SERVER=1 \
--DENABLE_DOWNLOADS=1 \
--DWITH_DEBUG=0
-#编译后执行
-make  
-make install
-</code></pre>
-</div>
-
-<p>安装mysql到安装根目录中<code class="highlighter-rouge">/usr/local/mysql/support-files</code></p>
+<p>基础安装完毕以后，进行组件和功能的配置</p>
 
 <ul>
-  <li>生成系统数据库./scripts/mysql_install_db –user=mysql –basedir=/usr/local/mysql –datadir=/data/mysql</li>
-  <li>配置文件<strong>my-default.cnf</strong>,复制到指定的配置文件目录,修改配置参数</li>
-  <li>系统启动文件<strong>mysql.server</strong>,添加到系统启动cp mysql.server /etc/init.d/mysqld(需要填入basedir和datadir分别对应编译安装时指定的安装根目录和数据存储目录)</li>
-  <li>添加到系统环境变量vim /etc/profile; export PATH=$PATH:/usr/local/mysql/bin(或者把mysql/bin软链到/usr/local/bin中去)</li>
+  <li>对接用户身份信息库</li>
+  <li>导入Image Stream</li>
+  <li>导入Template</li>
+  <li>部署Router</li>
+  <li>部署Registry</li>
+  <li>部署度量收集组件</li>
+  <li>部署日志聚合组件</li>
 </ul>
 
-<p>/etc/init.d/mysqld start<br />
-报错：<br />
-Segmentation fault<br />
-编辑文件 cmd-line-utils/libedit/terminal.c<br />
-把terminal_set方法中的 char buf[TC_BUFSIZE]; 这一行注释,再把 area = buf;改为 area = NULL;</p>
+<p>用户身份信息库：<br />
+<code class="highlighter-rouge">openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]</code><br />
+定义了文件/etc/origin/master/htpasswd作为用户身份信息库，我们通过<code class="highlighter-rouge">htpasswd -b /etc/origin/master/htpasswd dev dev</code>来创建用户</p>
+
+<p>is和template用ansible部署时默认已经部署上了</p>
+
+<p>Router部署
+Router是以容器的形式运行在Openshift平台，默认情况不知道容器运行在哪个node上<br />
+为node打上标签(Label),然后通过节点选择器(NodeSelector)指定容器运行的node
+oc label node node1.example.com infra=yes
+查看node节点<br />
+oc get node –show-labels<br />
+为Router使用的Service Account赋权<br />
+oadm policy add-scc-to-user privileged system:serviceaccount:default:router
+oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:default:router
+部署router<br />
+oadm router ose-router –replicas=1 –service-account=router –selector=’infra=yes’</p>
+
+<p>Registry部署<br />
+oadm registry –config=’/etc/origin/master/admin.kubeconfig’ –service-account=registry –selector=’infra=yes’ -n default<br />
+查看pod<br />
+oc get pod -n default|grep registry</p>
 
 
   </section>
@@ -336,13 +417,13 @@ Segmentation fault<br />
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/12/useful/" data-toggle="tooltip" data-placement="top" title="实用的一些快捷键命令整理">上一篇：  <span>实用的一些快捷键命令整理</span>
+            <a href="/2019/01/openshift1/" data-toggle="tooltip" data-placement="top" title="Openshift-基础篇 all-in-one">上一篇：  <span>Openshift-基础篇 all-in-one</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2019/01/openshift1/" data-toggle="tooltip" data-placement="top" title="Openshift-基础篇 all-in-one">下一篇：  <span>Openshift-基础篇 all-in-one</span>
+            <a href="/2019/02/myhistory/" data-toggle="tooltip" data-placement="top" title="京东-假货维权史">下一篇：  <span>京东-假货维权史</span>
             </a>
         </li>
         

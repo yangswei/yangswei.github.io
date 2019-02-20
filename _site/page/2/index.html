@@ -183,6 +183,48 @@
   <ol class="post-list">
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/11/linux/" title="访问 基础企业级Linux优化整理">基础企业级Linux优化整理</a></h2>
+      <p class="excerpt">生产环境优化开机启动chkconfig --list|grep 3:on查看当前开机开启服务关闭其他开机启动的服务for i in `chkconfig --list|grep '3:on'|awk '{print $1}'|grep -vE "crond|network|sshd|rsyslog|sysstat"`;do chkconfig $i off;done#执行完以后再查看一下开机启动的服务chkconfig --list|grep 3:on其他开机启动服务原则是：只保留使用的服...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-11-06 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-11-06</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/11/linux/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/11/live2d/" title="访问 博客添加live2d">博客添加live2d</a></h2>
+      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库，查看预览图选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 在live2d-widget-models目录下，npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录，安装hexo-helper-liv...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-11-01 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-11-01</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">博客</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/11/live2d/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/10/fek/" title="访问 K8s集群-fek插件">K8s集群-fek插件</a></h2>
       <p class="excerpt">安装插件前准备工作github地址: https://github.com/kubernetes/kubernetes路径为kubenetes/cluster/addons/fluentd-elasticsearch选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。在github上提供了官方的image地址:k8s.gcr.io/elasticsearch:v5.6.4k8s.gcr.io/fluentd-elasticsearch:v...&hellip;</p>
       <div class="post-list__meta">        

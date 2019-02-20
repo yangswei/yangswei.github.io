@@ -183,8 +183,50 @@
   <ol class="post-list">
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2019/01/openshift/" title="访问 Openshift-基础篇">Openshift-基础篇</a></h2>
-      <p class="excerpt">  记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧安装openshift-All in onehttps://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/oc命令行创建应用因为oc命令带有权限管控，所以在使用oc命令前，需要通过oc login 登录oc login -u test ...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2019/02/myhistory/" title="访问 京东-假货维权史">京东-假货维权史</a></h2>
+      <p class="excerpt">  今天看到一个假货找警察维权的新闻，想起来16年在京东买的假货，以及触目惊心的维权记录，特此记录一下。背景16年，迫于女友生日，并迫于囊中羞涩，准备给女友买个耳机，在淘宝京东来来回回找了半天，终于在《欣源国际专营店》看到beats的耳机，因为价格1200相对于那款耳机1800+的市场价格，相当便宜了，并且又是京东里面出售的（当时认为京东对假货的把控会比较严格）第一次购买和退换于是在16年双十一那天，我兴奋的拍下了，这款假beats耳机。20天后，到货了。包装看起来都正常，当时很兴奋。打开...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-02-20 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-02-20</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">diary</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/02/myhistory/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/02/openshift2/" title="访问 Openshift-生产环境安装">Openshift-生产环境安装</a></h2>
+      <p class="excerpt">  生产环境安装openshift            主机类型      主机名      IP地址      操作系统                  Master节点      master.example.com      192.168.172.168      Centos 7.2              Node节点      node1.example.com      192.168.172.169      Centos 7.2              Node...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-02-14 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-02-14</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Openshift</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/02/openshift2/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/01/openshift1/" title="访问 Openshift-基础篇 all-in-one">Openshift-基础篇 all-in-one</a></h2>
+      <p class="excerpt">  记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧安装openshift-All in onehttps://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/二进制下载地址oc命令行创建应用因为oc命令带有权限管控，所以在使用oc命令前，需要通过oc login 登录oc login -...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2019-01-20 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -197,7 +239,7 @@
             <span class="post-list__meta--tags-right">Openshift</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2019/01/openshift/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2019/01/openshift1/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
@@ -345,48 +387,6 @@
           </div>
           <div class = "post-list-small-mate">
           <a class="btn-border-small" href=/2018/11/netcon/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/11/linux/" title="访问 基础企业级Linux优化整理">基础企业级Linux优化整理</a></h2>
-      <p class="excerpt">生产环境优化开机启动chkconfig --list|grep 3:on查看当前开机开启服务关闭其他开机启动的服务for i in `chkconfig --list|grep '3:on'|awk '{print $1}'|grep -vE "crond|network|sshd|rsyslog|sysstat"`;do chkconfig $i off;done#执行完以后再查看一下开机启动的服务chkconfig --list|grep 3:on其他开机启动服务原则是：只保留使用的服...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-11-06 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-11-06</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">Linux</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/11/linux/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/11/live2d/" title="访问 博客添加live2d">博客添加live2d</a></h2>
-      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库，查看预览图选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 在live2d-widget-models目录下，npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录，安装hexo-helper-liv...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-11-01 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-11-01</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">博客</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/11/live2d/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
