@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>K8s集群-fek插件</title>
-  <meta name="description" content="安装插件前准备工作">
+  <title>京东-假货维权史</title>
+  <meta name="description" content="  今天看到一个假货找警察维权的新闻，想起来16年在京东买的假货，以及触目惊心的维权记录，特此记录一下。">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="K8s集群-fek插件">
-  <meta name="twitter:description" content="安装插件前准备工作">
+  <meta name="twitter:title" content="京东-假货维权史">
+  <meta name="twitter:description" content="  今天看到一个假货找警察维权的新闻，想起来16年在京东买的假货，以及触目惊心的维权记录，特此记录一下。">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="K8s集群-fek插件">
-  <meta property="og:description" content="安装插件前准备工作">
+  <meta property="og:title" content="京东-假货维权史">
+  <meta property="og:description" content="  今天看到一个假货找警察维权的新闻，想起来16年在京东买的假货，以及触目惊心的维权记录，特此记录一下。">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/fek/">
+  <link rel="canonical" href="http://localhost:4000/2019/02/diary02/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -175,10 +175,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">K8s集群-fek插件</h1>
+    <h1 class="post-title">京东-假货维权史</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-24 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-24</time>  
+      <time datetime="2019-02-20 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-02-20</time>  
       
       <button id="fashu1" type="button"  onclick="myFunction()">隐藏</button>
 
@@ -188,218 +188,103 @@
   </header>
 
   <section class="post">
-    <h2 id="安装插件前准备工作">安装插件前准备工作</h2>
+    <blockquote>
+  <p>今天看到一个假货找警察维权的新闻，想起来16年在京东买的假货，以及触目惊心的维权记录，特此记录一下。</p>
+</blockquote>
 
-<p>github地址: <a href="https://github.com/kubernetes/kubernetes">https://github.com/kubernetes/kubernetes</a><br />
-路径为kubenetes/cluster/addons/fluentd-elasticsearch</p>
+<h3 id="背景">背景</h3>
 
-<p>选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。<br />
-在github上提供了官方的image地址:</p>
+<p>16年，迫于女友生日，并迫于囊中羞涩，准备给女友买个耳机，在淘宝京东来来回回找了半天，终于在《欣源国际专营店》看到beats的耳机，因为价格1200相对于那款耳机1800+的市场价格，相当便宜了，并且又是京东里面出售的（当时认为京东对假货的把控会比较严格）</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>k8s.gcr.io/elasticsearch:v5.6.4
-k8s.gcr.io/fluentd-elasticsearch:v2.0.4
-docker.elastic.co/kibana/kibana:5.6.4
-</code></pre>
-</div>
+<h3 id="第一次购买和退换">第一次购买和退换</h3>
 
-<p>这些镜像貌似都被墙了，可以翻墙将镜像下载到本地，然后调整yaml的iamge地址，或者找找一些大牛将这些镜像放到国内cdn提供下载的地址。<br />
-另外在gihub里面提供了完整的dockerfile，可以自定义编辑镜像,如果要使用额外的plugin插件，则在fluentd的Gemfile中将要额外增加的插件添加进去，然后本地build镜像。</p>
+<p>于是在16年双十一那天，我兴奋的拍下了，这款假beats耳机。<br />
+20天后，到货了。包装看起来都正常，当时很兴奋。打开包装，倒腾了半天，看了半天教程，然后找这家店的客服，当时的态度还是非常好的。<br />
+我：你好，耳机蓝牙为啥一直连不上呀？<br />
+客服：尝试xxx,尝试xxx,还是不行吗？<br />
+我：不行，还是连不上<br />
+客服：您好，我们给您换一个，您看可以嘛？</p>
 
-<h3 id="调整文件">调整文件</h3>
+<p>当时看客服态度还是不错的，也没想为什么新的耳机，蓝牙会连不上，如果是正品，这些出厂检测必然过不了的，当时没考虑退货。把坏的耳机寄回去，店家寄了新的。</p>
 
-<p>fluentd会根据配置文件<code class="highlighter-rouge">fluentd-es-configmap.yaml</code>指定的规则收集系统日志，然后按规定格式打到els中，kibana读取els日志前端展示 <br />
-Fluentd+elasticsearch+kibana中配置相对复杂一些的就是fluentd。
-设置node节点的标签,只在标记了标签的节点上运行fluentd<br />
-<code class="highlighter-rouge">kubectl get nodes</code><br />
-<code class="highlighter-rouge">kubectl label nodes nodenamexxx beta.kubernetes.io/fluentd-ds-ready=true</code></p>
+<h3 id="第二次发现是假货和维权">第二次发现是假货和维权</h3>
 
-<p>调整默认kibana的yaml文件,设置type为NodePort然后指定nodeport<br />
-调整elasticsearch的statefulset文件，调整limits&amp;requests的cpu，按实际的需要来进行调整大小（至少2G+）<br />
-<code class="highlighter-rouge">curl ip:9200/_cat/indices?v</code><br />
-内存不够时，索引的状态会<strong>red</strong>,单节点的els索引状态为<strong>yellow</strong></p>
+<p>又过了十几天，第二次打开包装。<br />
+感觉耳机很轻，当时第一反应是检查一下耳机，仔细看了一圈，外观没什么问题，于是给了女朋友。<br />
+过了一个多礼拜吧。</p>
 
-<h3 id="按实际需要调整fluentd的configmap">按实际需要调整fluentd的configmap</h3>
+<p>女朋友：耳机断了<br />
+我：啊？这么不小心？<br />
+女朋友：我就正常带的啊，而且这个耳机的金属是镀金的，旁边都掉色，同事的正品用了两年都不掉漆<br />
+我：我曹，又是假货？</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>k8s组件</th>
-      <th style="text-align: center">日志内容</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>kube-controller-manager</td>
-      <td style="text-align: center">pod扩容或rc</td>
-    </tr>
-    <tr>
-      <td>kube-scheduler</td>
-      <td style="text-align: center">pod扩容或rc</td>
-    </tr>
-    <tr>
-      <td>kubelet</td>
-      <td style="text-align: center">pod周期相关：创建、停止</td>
-    </tr>
-  </tbody>
-</table>
+<p><img src="/images/posts/diary2/11.png" alt="" /></p>
 
-<p>k8s组件收集的日志是k8s集群的日志，实际的应用场景中，需要查看的是k8s集群中对应的服务打印出来的日志，在Linux系统上systemd系统来管理kubernetes服务，并且journal系统会接管服务程序的输出日志，可以通过<code class="highlighter-rouge">journalctl -u docker -o json-pretty -f</code>来查看服务的日志.</p>
+<p>第二次找客服
+客服，上次找你们换的那个蓝牙坏掉的耳机，这次换来的，边上断开了，而且还掉漆。<br />
+客服：您好，耳机断裂属于人为原因，无法维修<br />
+我：我从买到你们的耳机，到现在一直出问题。用了一个星期，告诉我是人为原因？？<br />
+客服：实在抱歉，这个断裂属于xxxxx，我们再给您换一个吧<br />
+我：能不能退货？<br />
+客服：不然我们给您更换一个吧？</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-	</span><span class="nt">"__CURSOR"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"__REALTIME_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"__MONOTONIC_TIMESTAMP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_BOOT_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"PRIORITY"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_UID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_GID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_CAP_EFFECTIVE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_SYSTEMD_CGROUP"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_MACHINE_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_HOSTNAME"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_TRANSPORT"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"SYSLOG_FACILITY"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_STREAM_ID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"SYSLOG_IDENTIFIER"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_PID"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_COMM"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"dockerd-current"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_EXE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_CMDLINE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"_SYSTEMD_UNIT"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="p">,</span><span class="w">
-	</span><span class="nt">"MESSAGE"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"xx"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<p>我要退货，因为正品的不可能一而再再而三出毛病。所以这家卖的东西肯定是假货。<br />
+看这情形，没办法聊了。<br />
+找到了京东的辣鸡客服。<br />
+申请客服介入后，当时介入的是专员。我把经过描述一遍以后，专员说，断裂属于人为因素造成的。
+我问：那我给你一个塑料的东西，你用几天也会断啊。这是假货，懂吗？<br />
+专员发动技能踢皮球！<br />
+皮球踢给了一个客户经理，这个客户经理一上来，请麻烦将问题再描述一遍。于是，我特么又跟祥林嫂一样，把买耳机退换到最后我希望退货，不同意更换的情况说了一遍。<br />
+客服经理说，这个问题他们研究一下。<br />
+过了三天<br />
+客服经理打了个电话，说这个京东方面赔偿300元的代金券，希望私了这个问题。<br />
+我：私了？意思是不管了？</p>
 
-<p>fluentd-configmap指定源数据，匹配所有系统日志中_COMM值为<code class="highlighter-rouge">dockerd-current</code>的日志记录为源日志数据
-输出部分说明，我所使用的环境中用到的插件有：</p>
-<ul>
-  <li>rewrite_tag_filter</li>
-  <li>kubernetes_metadata</li>
-  <li>record_transformer</li>
-</ul>
+<p>我忍不了，第二次发起了维权。<br />
+我不知道还是那个经理接待的还是怎么回事，直接说是人为原因造成的，京东方面无法提供支持。<br />
+我说，那如果卖的是假货呢？<br />
+京东：那请出具假货证明！<br />
+我：你们卖的东西，我们怀疑是假货，你们让我们去鉴定？还要出具假货证明？（到现在我也没听过哪个公司会给人出具假货证明的）<br />
+京东：如果不能提供假货证明，那这属于人为原因造成的。请联系卖家自行解决。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;source&gt;
-@type systemd
-path /var/log/journal
-filters [{ "_COMM": "dockerd-current" }]
-#pos_file /tmp/fluentd/journal.pos
-tag journal
-strip_underscores true
-read_from_head true
-&lt;/source&gt;
-</code></pre>
-</div>
+<p><img src="/images/posts/diary2/22.png" alt="" /></p>
 
-<p>匹配journal的日志数据，将container_name以k8s_开头的日志打上tag标签
-注意：官方的image中没有安装rewrite_tag_filter插件，在dockerfile指定的Gemfile添加
-<code class="highlighter-rouge">gem 'fluent-plugin-rewrite-tag-filter','~&gt;2.1.0'</code></p>
+<p>当时实在无奈了，再去找卖家，卖家已经不吱声了。<br />
+在京东买的东西，成了叫天天不应，叫地地不灵的地步</p>
 
-<div class="language-yml highlighter-rouge"><pre class="highlight"><code><span class="s">&lt;match journal&gt;</span>
-<span class="err">@</span><span class="s">type rewrite_tag_filter</span>
-<span class="s">&lt;rule&gt;</span>
-<span class="s">key CONTAINER_NAME</span>
-<span class="s">pattern ^k8s_</span>
-<span class="s">tag kubernetes.journal.container</span>
-<span class="s">&lt;/rule&gt;</span>
-<span class="s">log_level trace</span>
-<span class="s">&lt;/match&gt;</span>
-</code></pre>
-</div>
+<p>就这样<br />
+血淋淋的维权宣告失败。<br />
+以为就这样结束了么？没有</p>
 
-<p>根据上文打好的标签，过滤标签，将kubernetes.xx的标签匹配后，
-通过kubernetes_metadata将日志数据格式化</p>
+<h3 id="假货无疑">假货无疑</h3>
 
-<div class="language-yml highlighter-rouge"><pre class="highlight"><code><span class="s">&lt;filter kubernetes.**&gt;</span>
-<span class="err">@</span><span class="s">type kubernetes_metadata</span>
-<span class="s">use_journal true</span>
-<span class="s">&lt;/filter&gt;</span>
-<span class="s">同上，匹配标签，使用record_transformer插件，添加topic</span>
-<span class="s">&lt;filter kubernetes.**&gt;</span>
-<span class="err">@</span><span class="s">type record_transformer</span>
-<span class="s">enable_ruby</span>
-<span class="s">&lt;record&gt;</span>
-<span class="s">topic k8s-${record["kubernetes"]["container_name"]}</span>
-<span class="s">&lt;/record&gt;</span>
-<span class="s">&lt;/filter&gt;</span>
-<span class="s">最后匹配所有，将日志按index_name保存到els中</span>
-<span class="s">&lt;match **&gt;</span>
-<span class="err">@</span><span class="s">id elasticsearch</span>
-<span class="err">@</span><span class="s">type elasticsearch</span>
-<span class="err">@</span><span class="s">log_level info</span>
-<span class="c1">#只有tag_key是topic的日志才会输入到els中</span>
-<span class="s">include_tag_key true</span>
-<span class="s">tag_key topic</span>
-<span class="s">host elasticsearch-logging</span>
-<span class="s">port 9200</span>
-<span class="c1">#logstash_format true</span>
-<span class="c1">#将日志的topic匹配索引的key[这里key的值定义为topic]，</span>
-<span class="c1">#如果日志的topic=索引的key,则将对应的日志打入对应的索引中</span>
-<span class="s">target_index_key topic</span>
-<span class="s">index_name logstash-${topic}</span>
-<span class="s">&lt;buffer&gt;</span>
-<span class="err">@</span><span class="s">type file</span>
-<span class="s">path /var/log/fluentd-buffers/kubernetes.system.buffer</span>
-<span class="s">flush_mode interval</span>
-<span class="s">retry_type exponential_backoff</span>
-<span class="s">flush_thread_count 2</span>
-<span class="s">flush_interval 5s</span>
-<span class="s">retry_forever</span>
-<span class="s">retry_max_interval 30</span>
-<span class="s">chunk_limit_size 2M</span>
-<span class="s">queue_limit_length 8</span>
-<span class="s">overflow_action block</span>
-<span class="s">&lt;/buffer&gt;</span>
-<span class="s">&lt;/match&gt;</span>
-</code></pre>
-</div>
+<p>大概几个月后吧，女朋友说，耳机也就这边坏了一点，要不我们拿到苹果维修店去，看能不能维修？<br />
+我：好啊<br />
+官方维修店：抱歉，刚查询到您这个耳机不是我们的官方产品，这个SN码查询出来，有上百个这个耳机。所以我们无法替您维修<br />
+我：（想到之前京东客服说的假货证明）那方便给我们开个假货证明么？<br />
+官方维修点：（手动滑稽）我们从没有这种证明的，你听谁说有这种东西的</p>
 
-<p>插件作用：
-<code class="highlighter-rouge">rewrite_tag_filter</code>插件是从source源匹配的日志中，过滤找到<code class="highlighter-rouge">CONTAINER_NAME</code>以k8s开头的日志，将过滤出来的日志打上tag
-另外两个插件分别是将源文件进行格式处理
-metadata将日志中添加对应kubenetes的信息，类似容器名，namespace名等，record则是添加一个topic字段，topic名为k8s-容器的pod名</p>
+<p>我怀着悲愤的心情最后一次去京东，发起了维权。
+时隔一年<br />
+我：我已经去了官方维修店，确定了这个是假货！！<br />
+客服：什么都没说，直接关闭我的申请。。。<br />
+什么鬼？？？？<br />
+然后我再看一看，那个《欣源国际专营店》已经##关门跑路##了。。。<br />
+就这样，辣鸡的京东，辣鸡的售后，搞笑的客服<br />
+我的维权失败了。<br />
+这个店也卖了一波假耳机，捞了一波跑路了<br />
+最后实在忍不住了，直接喷了这傻逼京东，傻逼客服。</p>
 
-<p>最后在match中将日志按index=topic的规则写到对应的index中（index的值即为容器名:k8s-appname-xxx)
-在kibana中即能够定义<code class="highlighter-rouge">Index Patterns</code>的值为k8s-appname*</p>
+<p><img src="/images/posts/diary2/33.png" alt="" /></p>
 
-<h3 id="检验">检验</h3>
+<p>很搞笑的是，客服什么都没说直接关闭了维权申请。<br />
+而且，到现在我也不知道，这样的维权，到底要去哪里，到底要找谁，除了最初相信客服，别无他法</p>
 
-<p>查看所有pod启动情况：
-<code class="highlighter-rouge">kubectl get pods -n kube-system -o wide|grep -E 'elasticsearch|fluentd|kibana'</code>     <br />
-查看service情况：   <br />
-<code class="highlighter-rouge">kubectl get service  -n kube-system|grep -E 'elasticsearch|kibana'</code></p>
+<p>如今，那个破的假耳机还在家里躺着，去年去日本，又给媳妇买了个beats，实体店买的。<br />
+如今一个假beats和一个真beats都躺在那里吃灰</p>
 
-<h3 id="注意">注意</h3>
-
-<p>如果els经常报错，可以将els相关的组件从k8s中移除，单独运行elasticsearch。
-然后在修改kibana和fluentd中指定的elasticsearch地址，指定elasticsearch的位置。</p>
-
-<p>kibana中加上：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>- name: XPACK_SECURITY_ENABLED       
-    value: "false"       
-</code></pre>
-</div>
-<p>elasticsearch的docker-compose文件</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>version: '2'      
-services:      
-  elasticsearch:      
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2      
-    expose:      
-      - 9200      
-    ports:     
-      - "9200:9200"      
-    environment:      
-      - bootstrap.memory_lock=true      
-      - xpack.security.enabled=false      
-      - "ES_JAVA_OPTS=-Xms8G -Xmx8G"      
-    ulimits:      
-      memlock:      
-        soft: -1      
-        hard: -1      
-    volumes:      
-      - /Elasticsearch/data:/usr/share/elasticsearch/data      
-</code></pre>
-</div>
+<p>大家引以为戒吧，电子产品尽量去实体或者旗舰店，贵一点，更安心啊<br />
+不然买到假货，再碰到京东这样的客服，上哪里去维权，最后跑路了，你都拿不回你的损失</p>
 
 
   </section>
@@ -470,13 +355,13 @@ services:
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/10/baidudisk/" data-toggle="tooltip" data-placement="top" title="百度网盘Svip破解">上一篇：  <span>百度网盘Svip破解</span>
+            <a href="/2019/02/openshift2/" data-toggle="tooltip" data-placement="top" title="Openshift-生产环境安装">上一篇：  <span>Openshift-生产环境安装</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/11/live2d/" data-toggle="tooltip" data-placement="top" title="博客添加live2d">下一篇：  <span>博客添加live2d</span>
+            <a href="/2019/02/myhistory/" data-toggle="tooltip" data-placement="top" title="京东-假货维权史">下一篇：  <span>京东-假货维权史</span>
             </a>
         </li>
         
