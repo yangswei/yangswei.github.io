@@ -6,16 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>Redis集群下的那些事</title>
+  <title>Redis集群下生产实践</title>
   <meta name="description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Redis集群下的那些事">
+  <meta name="twitter:title" content="Redis集群下生产实践">
   <meta name="twitter:description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Redis集群下的那些事">
+  <meta property="og:title" content="Redis集群下生产实践">
   <meta property="og:description" content="  背景：近期弄了一套集群环境的服务，其中包含mongo数据库集群，redis集群和其他的服务集群，高可用的架构，为了支持真正意义的高可用，而做了这篇博客">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
@@ -175,12 +175,13 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">Redis集群下的那些事</h1>
+    <h1 class="post-title">Redis集群下生产实践</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
       <time datetime="2018-12-18 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-12-18</time>  
       
-      <button id="fashu1" type="button"  onclick="myFunction()">隐藏</button>
+      <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
+      
 
       <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
     </p>
@@ -823,13 +824,13 @@ sentinel failover-timeout mymaster 180000  
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/12/smtp/" data-toggle="tooltip" data-placement="top" title="Smtp邮件服务详解">上一篇：  <span>Smtp邮件服务详解</span>
+            <a href="/2018/12/smtp/" data-toggle="tooltip" data-placement="top" title="Smtp邮件服务原理与拍错">上一篇：  <span>Smtp邮件服务原理与拍错</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/12/useful/" data-toggle="tooltip" data-placement="top" title="实用的一些快捷键命令整理">下一篇：  <span>实用的一些快捷键命令整理</span>
+            <a href="/2018/12/useful/" data-toggle="tooltip" data-placement="top" title="Linux常用快捷键【持续更新...】">下一篇：  <span>Linux常用快捷键【持续更新...】</span>
             </a>
         </li>
         

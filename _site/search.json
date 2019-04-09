@@ -1,15 +1,7 @@
 [
   
     {
-      "title"    : "京东-那些年在狗东买过的假货",
-      "category" : "",
-      "tags"     : "diary",
-      "url"      : "/2019/02/diary02/",
-      "date"     : "2019-02-20 00:00:00 +0800"
-    } ,
-  
-    {
-      "title"    : "Openshift-生产环境安装",
+      "title"    : "Openshift-生产环境部署",
       "category" : "",
       "tags"     : "Openshift",
       "url"      : "/2019/02/openshift2/",
@@ -17,7 +9,7 @@
     } ,
   
     {
-      "title"    : "Openshift-基础篇 all-in-one",
+      "title"    : "Openshift-测试环境AllInOne",
       "category" : "",
       "tags"     : "Openshift",
       "url"      : "/2019/01/openshift1/",
@@ -25,7 +17,7 @@
     } ,
   
     {
-      "title"    : "Mysql学习笔记-1:安装",
+      "title"    : "Mysql学习笔记-安装",
       "category" : "",
       "tags"     : "Mysql",
       "url"      : "/2019/01/learnmysql/",
@@ -33,7 +25,7 @@
     } ,
   
     {
-      "title"    : "实用的一些快捷键命令整理",
+      "title"    : "Linux常用快捷键【持续更新...】",
       "category" : "",
       "tags"     : "Linux",
       "url"      : "/2018/12/useful/",
@@ -41,7 +33,7 @@
     } ,
   
     {
-      "title"    : "Redis集群下的那些事",
+      "title"    : "Redis集群下生产实践",
       "category" : "",
       "tags"     : "Linux",
       "url"      : "/2018/12/redis/",
@@ -49,7 +41,7 @@
     } ,
   
     {
-      "title"    : "Smtp邮件服务详解",
+      "title"    : "Smtp邮件服务原理与拍错",
       "category" : "",
       "tags"     : "Linux",
       "url"      : "/2018/12/smtp/",
@@ -57,19 +49,11 @@
     } ,
   
     {
-      "title"    : "Docker从入门到使用系列",
+      "title"    : "Docker入门与生产配置",
       "category" : "",
       "tags"     : "Docker",
       "url"      : "/2018/12/docker/",
       "date"     : "2018-12-11 00:00:00 +0800"
-    } ,
-  
-    {
-      "title"    : "2018年的第一场雪",
-      "category" : "",
-      "tags"     : "diary",
-      "url"      : "/2018/12/diary01/",
-      "date"     : "2018-12-08 00:00:00 +0800"
     } ,
   
     {
@@ -81,7 +65,7 @@
     } ,
   
     {
-      "title"    : "基础企业级Linux优化整理",
+      "title"    : "Linux内核优化",
       "category" : "",
       "tags"     : "Linux",
       "url"      : "/2018/11/linux/",
@@ -97,7 +81,7 @@
     } ,
   
     {
-      "title"    : "K8s集群-fek插件",
+      "title"    : "K8s集群-fek插件生产实践",
       "category" : "",
       "tags"     : "Docker",
       "url"      : "/2018/10/fek/",
@@ -121,7 +105,7 @@
     } ,
   
     {
-      "title"    : "学习搭建个人博客",
+      "title"    : "搭建个人博客+Gitpage",
       "category" : "",
       "tags"     : "博客",
       "url"      : "/2018/10/blog/",
