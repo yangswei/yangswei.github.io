@@ -10,71 +10,282 @@ tag: Mysql
 
 #### 安装mysql
 
-二进制mysql[下载首页](https://dev.mysql.com/downloads/mysql/)  
-选择下载版本,这里下载的是5.6.42的二进制包  
-[5.6二进制包下载链接](wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.42-linux-glibc2.12-x86_64.tar.gz)  
 
-这里学习**使用源码安装mysql**[源码下载页](https://dev.mysql.com/downloads/mirrors/)，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载[163开源镜像站](http://mirrors.163.com/)  
-这里选择了个日本节点的5.6.40的源码包[5.6.40源码包](wget http://ftp.jaist.ac.jp/pub/mysql/Downloads/MySQL-5.6/mysql-5.6.40.tar.gz)  
+`$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm`
+安装 mysql 源
 
-##### 准备基础环境  
+`$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm`
+检查 yum 源是否安装成功
 
-```bash
-yum -y  install  gcc   gcc-c++  make
-yum install ncurses-devel libaio-devel -y
-#这里是centos7，其他平台去https://cmake.org/download/ 找编译好的二进制下载吧，我下的源码，装了几分钟
-#源码 ./bootstrap --prefix=/usr;make;sudo make install
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.sh
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.tar.gz
+```a
 
+$ sudo yum repolist enabled | grep "mysql.*-community.*"
+mysql-connectors-community           MySQL Connectors Community              21
+mysql-tools-community                MySQL Tools Community                   38
+mysql57-community                    MySQL 5.7 Community Server             130
 ```
 
-##### 卸载系统自带数据库(如果有)
+如上所示，找到了 mysql 的安装包
 
-```x
-rpm -qa|grep mysql*
+2.安装
+
+`$ sudo yum install mysql-community-server`
+3.启动
+
+安装服务
+
+`$ sudo systemctl enable mysqld`
+启动服务
+
+`$ sudo systemctl start mysqld`
+查看服务状态
+
+`$ sudo systemctl status mysqld`
+4.修改 root 默认密码
+
+MySQL 5.7 启动后，在 /var/log/mysqld.log 文件中给 root 生成了一个默认密码。通过下面的方式找到 root 默认密码，然后登录 mysql 进行修改：
+
+```b
+$ grep 'temporary password' /var/log/mysqld.log
+[Note] A temporary password is generated for root@localhost: **********
 ```
 
-##### 安装mysql
+登录 MySQL 并修改密码
 
-```
-groupadd mysql
-useradd -g mysql mysql -s /bin/false
-mkdir /data/mysql
-chown -R mysql:mysql /data/mysql
-mkdir /usr/local/ysql  
-#第一个参数指定安装的根目录，第二个指定数据存储目录，第三个指定配置文件目录
-cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
--DMYSQL_DATADIR=/data/mysql \
--DSYSCONFDIR=/etc \
--DMYSQL_UNIX_ADDR=/usr/local/mysql/tmp/mysql.sock \
--DDEFAULT_CHARSET=utf8 \
--DDEFAULT_COLLATION=utf8_general_ci \
--DWITH_EXTRA_CHARSETS=all \
--DWITH_INNOBASE_STORAGE_ENGINE=1 \
--DWITH_FEDERATED_STORAGE_ENGINE=1 \
--DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
--DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
--DWITH_ZLIB=bundled \
--DWITH_SSL=bundled \
--DENABLED_LOCAL_INFILE=1 \
--DWITH_EMBEDDED_SERVER=1 \
--DENABLE_DOWNLOADS=1 \
--DWITH_DEBUG=0
-#编译后执行
-make  
-make install
+```c
+$ mysql -u root -p
+Enter password: 
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
+注意：MySQL 5.7 默认安装了密码安全检查插件（validate_password），默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于 8 位。
 ```
 
-安装mysql到安装根目录中`/usr/local/mysql/support-files`  
+通过 MySQL 环境变量可以查看密码策略的相关信息：
 
-- 生成系统数据库./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/data/mysql  
-- 配置文件**my-default.cnf**,复制到指定的配置文件目录,修改配置参数  
-- 系统启动文件**mysql.server**,添加到系统启动cp mysql.server /etc/init.d/mysqld(需要填入basedir和datadir分别对应编译安装时指定的安装根目录和数据存储目录)  
-- 添加到系统环境变量vim /etc/profile; export PATH=$PATH:/usr/local/mysql/bin(或者把mysql/bin软链到/usr/local/bin中去)  
+```e
 
-/etc/init.d/mysqld start  
-报错：  
-Segmentation fault  
-编辑文件 cmd-line-utils/libedit/terminal.c  
-把terminal_set方法中的 char buf[TC_BUFSIZE]; 这一行注释,再把 area = buf;改为 area = NULL;  
+mysql> SHOW VARIABLES LIKE 'validate_password%';
++--------------------------------------+--------+
+| Variable_name                        | Value  |
++--------------------------------------+--------+
+| validate_password_check_user_name    | OFF    |
+| validate_password_dictionary_file    |        |
+| validate_password_length             | 8      |
+| validate_password_mixed_case_count   | 1      |
+| validate_password_number_count       | 1      |
+| validate_password_policy             | MEDIUM |
+| validate_password_special_char_count | 1      |
++--------------------------------------+--------+
+7 rows in set (0.01 sec)
+具体修改，参见 http://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy
+```
+
+指定密码校验策略
+
+```f
+$ sudo vi /etc/my.cnf
+
+[mysqld]
+# 添加如下键值对, 0=LOW, 1=MEDIUM, 2=STRONG
+validate_password_policy=0
+禁用密码策略
+
+$ sudo vi /etc/my.cnf
+	
+[mysqld]
+# 禁用密码校验策略
+validate_password = off
+重启 MySQL 服务，使配置生效
+
+$ sudo systemctl restart mysqld
+```
+
+5.添加远程登录用户
+
+MySQL 默认只允许 root 帐户在本地登录，如果要在其它机器上连接 MySQL，必须修改 root 允许远程连接，或者添加一个允许远程连接的帐户，为了安全起见，本例添加一个新的帐户：  
+
+`mysql> GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;`
+
+6.配置默认编码为 utf8  
+
+MySQL 默认为 latin1, 一般修改为 UTF-8  
+
+$ vi /etc/my.cnf
+[mysqld]
+# 在myslqd下添加如下键值对
+character_set_server=utf8
+init_connect='SET NAMES utf8'
+重启 MySQL 服务，使配置生效
+
+$ sudo systemctl restart mysqld
+查看字符集
+
+mysql> SHOW VARIABLES LIKE 'character%';
++--------------------------+----------------------------+
+| Variable_name            | Value                      |
++--------------------------+----------------------------+
+| character_set_client     | utf8                       |
+| character_set_connection | utf8                       |
+| character_set_database   | utf8                       |
+| character_set_filesystem | binary                     |
+| character_set_results    | utf8                       |
+| character_set_server     | utf8                       |
+| character_set_system     | utf8                       |
+| character_sets_dir       | /usr/share/mysql/charsets/ |
++--------------------------+----------------------------+
+8 rows in set (0.00 sec
+7.开启端口
+
+$ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
+$ sudo firewall-cmd --reload
+
+简易方式快速启动：
+宿主机
+curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+yum install mysql-community-client -y 
+
+yum install  docker docker-compose -y
+
+mkdir -p /mysql
+mkdir -p /mysql/data
+mkdir -p /mysql/config
+
+将my.conf复制到/mysql/config下
+将docker-compose.yml拷贝到/mysql下
+
+my.cnf配置如下（.cnf结尾）
+
+```my.cnf
+# The MySQL database server configuration file.
+#
+# You can copy this to one of:
+# - "/etc/mysql/my.cnf" to set global options,
+# - "~/.my.cnf" to set user-specific options.
+#
+# One can use all long options that the program supports.
+# Run program with --help to get a list of available options and with
+# --print-defaults to see which it would actually understand and use.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+# This will be passed to all mysql clients
+# It has been reported that passwords should be enclosed with ticks/quotes
+# escpecially if they contain "#" chars...
+# Remember to edit /etc/mysql/debian.cnf when changing the socket location.
+
+# Here is entries for some specific programs
+# The following values assume you have at least 32M ram
+
+[mysqld_safe]
+socket		= /var/run/mysqld/mysqld.sock
+nice		= 0
+
+[mysqld]
+#
+# * Basic Settings
+#
+user		= mysql
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+port		= 3306
+basedir		= /usr
+datadir		= /var/lib/mysql
+tmpdir		= /tmp
+lc-messages-dir	= /usr/share/mysql
+skip-external-locking
+skip-grant-tables
+#
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+bind-address		= 0.0.0.0
+#
+# * Fine Tuning
+#
+key_buffer_size		= 16M
+max_allowed_packet	= 16M
+thread_stack		= 192K
+thread_cache_size       = 8
+# This replaces the startup script and checks MyISAM tables if needed
+# the first time they are touched
+myisam-recover-options  = BACKUP
+#max_connections        = 100
+#table_cache            = 64
+#thread_concurrency     = 10
+#
+# * Query Cache Configuration
+#
+query_cache_limit	= 1M
+query_cache_size        = 16M
+#
+# * Logging and Replication
+#
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# As of 5.1 you can enable the log at runtime!
+#general_log_file        = /var/log/mysql/mysql.log
+#general_log             = 1
+#
+# Error log - should be very few entries.
+#
+log_error = /var/log/mysql/error.log
+#
+# Here you can see queries with especially long duration
+#log_slow_queries	= /var/log/mysql/mysql-slow.log
+#long_query_time = 2
+#log-queries-not-using-indexes
+#
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+#server-id		= 1
+#log_bin			= /var/log/mysql/mysql-bin.log
+expire_logs_days	= 10
+max_binlog_size   = 100M
+#binlog_do_db		= include_database_name
+#binlog_ignore_db	= include_database_name
+#
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+#
+# * Security Features
+#
+# Read the manual, too, if you want chroot!
+# chroot = /var/lib/mysql/
+#
+# For generating SSL certificates I recommend the OpenSSL GUI "tinyca".
+#
+# ssl-ca=/etc/mysql/cacert.pem
+# ssl-cert=/etc/mysql/server-cert.pem
+# ssl-key=/etc/mysql/server-key.pem
+```
+
+docker-compose文件  
+
+```compose
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
+    restart: always
+    ports:
+      - 6606:3306
+    volumes:
+      - "/mysql/data:/var/lib/mysql"
+      - "/mysql/config:/etc/mysql/conf.d"
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"   #root管理员用户密码
+      MYSQL_USER: test   #创建test用户
+      MYSQL_PASSWORD: test  #设置test用户的密码
+```
+
+docker-compose up -d 启动  
+宿主机登录mysql: mysql -uroot -P6606 -p -h127.0.0.1  
+
+报错`Access denied for user 'root'@'localhost' (using password: YES)`
+配置文件添加：skip-grant-tables
+进入数据量，更新密码update mysql.user set authentication_string=password('*******') where user='*******'
+
