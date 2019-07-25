@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Mysql学习笔记-安装"
+title: "Mysql最佳实践"
 date: 2019-01-14  
 description: "learn mysql 1"
 tag: Mysql
