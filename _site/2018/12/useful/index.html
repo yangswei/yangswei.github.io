@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -198,21 +196,95 @@
 <table>
   <thead>
     <tr>
-      <th>Command</th>
+      <th>文档操作</th>
       <th>功能</th>
       <th>备注</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">H</code></td>
-      <td>当前窗口最上方的那行</td>
-      <td><code class="highlighter-rouge">L</code>当前末尾，<code class="highlighter-rouge">M</code>当前中间</td>
+      <td><code class="highlighter-rouge">:e!</code></td>
+      <td>重新加载当前文档，并丢弃已做的改动</td>
+      <td> </td>
     </tr>
+    <tr>
+      <td><code class="highlighter-rouge">:f newname</code></td>
+      <td>相当于复制一个文件到新名字</td>
+      <td>保存退出则相当于创建一个新的文件</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>光标屏幕移动</th>
+      <th>功能</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">k/j/h/l</code></td>
+      <td>上下左右</td>
+      <td>作用和方向键左右一致</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">SHIFT+e</code></td>
+      <td>光标移动下一个字符串的结尾</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">SHIFT+h/m/l</code></td>
+      <td>光标移动当前窗口的首，中，尾</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">zz</code></td>
+      <td>屏幕当前行至于屏幕中间</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">CTRL+y/e</code></td>
+      <td>屏幕上下滚动</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">SHIFT+e</code></td>
+      <td>屏幕移动下一个字符串的结尾</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>编辑操作</th>
+      <th>功能</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr>
       <td><code class="highlighter-rouge">u</code></td>
       <td>撤销</td>
       <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">x</code></td>
+      <td>光标向后删除</td>
+      <td>光标向前：X</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">yn</code></td>
+      <td>当前光标向下复制n行</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">x</code></td>
+      <td>光标向后删除字符</td>
+      <td><code class="highlighter-rouge">X</code>向前删除</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">.</code></td>
@@ -220,14 +292,9 @@
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">x</code></td>
-      <td>向后删除字符</td>
-      <td><code class="highlighter-rouge">X</code>向前删除</td>
-    </tr>
-    <tr>
       <td><code class="highlighter-rouge">:vs xx/xx/file</code></td>
       <td>垂直分屏打开文件file</td>
-      <td> </td>
+      <td>切换屏幕ctrl+w+w这个切换屏幕同样适用vimdiff</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">:sp xx/xx/file</code></td>
@@ -242,12 +309,34 @@
   </tbody>
 </table>
 
+<table>
+  <thead>
+    <tr>
+      <th>编程相关</th>
+      <th>功能</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">ci"</code></td>
+      <td>修改”内的内容</td>
+      <td>相当于di”+i,实用</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">多行操作</code></td>
+      <td> </td>
+      <td>ctrl+v选择编辑的列，shift+i编辑，esc</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="linux常用快捷键">Linux常用快捷键</h3>
 
 <table>
   <thead>
     <tr>
-      <th>Command</th>
+      <th>常用命令</th>
       <th>功能</th>
       <th>备注</th>
     </tr>
@@ -507,7 +596,7 @@
         
         
         <li class="next">
-            <a href="/2019/01/learnmysql/" data-toggle="tooltip" data-placement="top" title="Mysql学习笔记-安装">下一篇：  <span>Mysql学习笔记-安装</span>
+            <a href="/2019/01/learnmysql/" data-toggle="tooltip" data-placement="top" title="Mysql最佳实践">下一篇：  <span>Mysql最佳实践</span>
             </a>
         </li>
         

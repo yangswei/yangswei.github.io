@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -178,6 +176,48 @@
   <ol class="post-list">
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/11/linux/" title="访问 Linux内核优化">Linux内核优化</a></h2>
+      <p class="excerpt">生产环境优化开机启动chkconfig --list|grep 3:on查看当前开机开启服务关闭其他开机启动的服务for i in `chkconfig --list|grep '3:on'|awk '{print $1}'|grep -vE "crond|network|sshd|rsyslog|sysstat"`;do chkconfig $i off;done#执行完以后再查看一下开机启动的服务chkconfig --list|grep 3:on其他开机启动服务原则是：只保留使用的服...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-11-06 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-11-06</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/11/linux/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/11/live2d/" title="访问 博客添加live2d">博客添加live2d</a></h2>
+      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库，查看预览图选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 在live2d-widget-models目录下，npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录，安装hexo-helper-liv...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-11-01 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-11-01</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">博客</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/11/live2d/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/10/fek/" title="访问 K8s集群-fek插件生产实践">K8s集群-fek插件生产实践</a></h2>
       <p class="excerpt">安装插件前准备工作github地址: https://github.com/kubernetes/kubernetes路径为kubenetes/cluster/addons/fluentd-elasticsearch选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。在github上提供了官方的image地址:k8s.gcr.io/elasticsearch:v5.6.4k8s.gcr.io/fluentd-elasticsearch:v...&hellip;</p>
       <div class="post-list__meta">        
@@ -220,7 +260,7 @@
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/10/https/" title="访问 Nginx免费证书加密https">Nginx免费证书加密https</a></h2>
+      <h2 class="post-list__post-title post-title"><a href="/2018/10/https/" title="访问 免费证书加密https">免费证书加密https</a></h2>
       <p class="excerpt">生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com      [上面命令是github给出的，我...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-10-09 00:00:00 +0800" class="post-list__meta--date date">

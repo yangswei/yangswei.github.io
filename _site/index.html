@@ -36,16 +36,26 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<!-- google 统计 >
   
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9005224472374751",
+    enable_page_level_ads: true
+  });
+</script-->
 
 </head>
 
@@ -166,6 +176,48 @@
   <ol class="post-list">
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/10/nginx/" title="访问 Nginx生产实践">Nginx生产实践</a></h2>
+      <p class="excerpt">  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧常用的一些nginx配置  测试环境本地项目调试  测试环境多端口调试  rewrite常用用法  root&amp;alias用法与区别  生产环境切换测试环境本地项目调试server {    listen 80;    server_name xxx;    error_page 502 503 504 = ...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-10-14 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-10-14</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/10/nginx/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/07/mkdisk/" title="访问 云主机磁盘分区">云主机磁盘分区</a></h2>
+      <p class="excerpt">  去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊去年这个时候，薅羊毛2c8g的伦敦节点，花了300+一年搞定今年看到官网又出了海外节点2折的活动，果断入手香港节点2c4g20G+2M带宽，价格550以上与本文无关发现系统盘有点小，准备扩一下系统盘，20g到40g一年0.01元，呵呵呵，不买我是弟弟啊~一顿操作加载系统盘，重装电脑，发现fdisk下面仅仅/dev/vda显示为40g。系统盘已经挂载上去的/dev/vda1对应系统...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-07-01 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-07-01</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/07/mkdisk/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2019/02/openshift2/" title="访问 Openshift-生产环境部署">Openshift-生产环境部署</a></h2>
       <p class="excerpt">  生产环境安装openshift            主机类型      主机名      IP地址      操作系统                  Master节点      master.example.com      192.168.172.168      Centos 7.2              Node节点      node1.example.com      192.168.172.169      Centos 7.2              Node...&hellip;</p>
       <div class="post-list__meta">        
@@ -208,8 +260,8 @@
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2019/01/learnmysql/" title="访问 Mysql学习笔记-安装">Mysql学习笔记-安装</a></h2>
-      <p class="excerpt">  记录mysql读书日记安装mysql二进制mysql下载首页选择下载版本,这里下载的是5.6.42的二进制包5.6二进制包下载链接这里学习使用源码安装mysql源码下载页，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载163开源镜像站这里选择了个日本节点的5.6.40的源码包5.6.40源码包准备基础环境yum -y  install  gcc   gcc-c++  makeyum install ncurses-devel libaio-devel -y...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2019/01/learnmysql/" title="访问 Mysql最佳实践">Mysql最佳实践</a></h2>
+      <p class="excerpt">  记录mysql读书日记安装mysql$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm安装 mysql 源$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm检查 yum 源是否安装成功$ sudo yum repolist enabled | grep "mysql.*-community.*"m...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2019-01-14 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -230,7 +282,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/12/useful/" title="访问 Linux常用快捷键【持续更新...】">Linux常用快捷键【持续更新...】</a></h2>
-      <p class="excerpt">  一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理Vim快捷键            Command      功能      备注                  H      当前窗口最上方的那行      L当前末尾，M当前中间              u      撤销                     .      重复前一个动作                     x      向后删除字符   ...&hellip;</p>
+      <p class="excerpt">  一些好用的命令每次要用的时候，不记得怎么用，用起来时区网上查找。死循环，决定整理一份自己常用且好用的一些整理，梳理Vim快捷键            文档操作      功能      备注                  :e!      重新加载当前文档，并丢弃已做的改动                     :f newname      相当于复制一个文件到新名字      保存退出则相当于创建一个新的文件                  光标屏幕移动      功能  ...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-12-27 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -292,7 +344,7 @@
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/12/docker/" title="访问 Docker入门与生产配置">Docker入门与生产配置</a></h2>
+      <h2 class="post-list__post-title post-title"><a href="/2018/12/docker/" title="访问 Docker最佳实践">Docker最佳实践</a></h2>
       <p class="excerpt">Get Started with Docker我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker从nginx的官网docker镜像入门,理解dockerNginx-Docker镜像地址能看到,有很多tag的镜像版本：  镜像标注了nginx的版本：mainline和stable,分别表示开发版(主力版)和稳定版(生产环境建议版本)  标注了基础镜像版本：stretch(debain)和alpine主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-12-11 00:00:00 +0800" class="post-list__meta--date date">
@@ -313,7 +365,7 @@
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/11/netcon/" title="访问 科学上网">科学上网</a></h2>
+      <h2 class="post-list__post-title post-title"><a href="/2018/11/netcon/" title="访问 科学上网且用且珍惜">科学上网且用且珍惜</a></h2>
       <p class="excerpt">安装：服务端安装linux服务器服务端(在国外服务器上执行)wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh执行完成后监听端口为执行过程中的默认端口在客户端按脚本输出信息配置连接信息客户端安装客户端下载地址:windowsandroidmacios的到appstore找一个,目前貌似大部分要收费了~原理：转自: https://vc2tea.com/whats-...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-11-09 00:00:00 +0800" class="post-list__meta--date date">
@@ -328,48 +380,6 @@
           </div>
           <div class = "post-list-small-mate">
           <a class="btn-border-small" href=/2018/11/netcon/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/11/linux/" title="访问 Linux内核优化">Linux内核优化</a></h2>
-      <p class="excerpt">生产环境优化开机启动chkconfig --list|grep 3:on查看当前开机开启服务关闭其他开机启动的服务for i in `chkconfig --list|grep '3:on'|awk '{print $1}'|grep -vE "crond|network|sshd|rsyslog|sysstat"`;do chkconfig $i off;done#执行完以后再查看一下开机启动的服务chkconfig --list|grep 3:on其他开机启动服务原则是：只保留使用的服...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-11-06 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-11-06</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">Linux</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/11/linux/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/11/live2d/" title="访问 博客添加live2d">博客添加live2d</a></h2>
-      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库，查看预览图选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 在live2d-widget-models目录下，npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录，安装hexo-helper-liv...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-11-01 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-11-01</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">博客</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/11/live2d/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />

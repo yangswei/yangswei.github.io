@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -197,12 +195,11 @@
 <br />
 关闭其他开机启动的服务</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span>chkconfig --list|grep <span class="s1">'3:on'</span>|awk <span class="s1">'{print $1}'</span>|grep -vE <span class="s2">"crond|network|sshd|rsyslog|sysstat"</span><span class="sb">`</span>;<span class="k">do </span>chkconfig <span class="nv">$i</span> off;done
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span>chkconfig <span class="nt">--list</span>|grep <span class="s1">'3:on'</span>|awk <span class="s1">'{print $1}'</span>|grep <span class="nt">-vE</span> <span class="s2">"crond|network|sshd|rsyslog|sysstat"</span><span class="sb">`</span><span class="p">;</span><span class="k">do </span>chkconfig <span class="nv">$i</span> off<span class="p">;</span><span class="k">done</span>
 <span class="c">#执行完以后再查看一下开机启动的服务</span>
-chkconfig --list|grep 3:on
+chkconfig <span class="nt">--list</span>|grep 3:on
 
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br />
 其他开机启动服务原则是：只保留使用的服务，清楚系统上每个服务的角色，最小化系统服务。</p>
 
@@ -219,12 +216,11 @@ chkconfig --list|grep 3:on
 <br /></li>
 </ul>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim /etc/profile
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /etc/profile
 <span class="c">#在末尾添加一行alias，这样每次vim会自动在vim的目录创建一个备份</span>
 <span class="nb">alias </span><span class="nv">vim</span><span class="o">=</span><span class="s1">'func() { cp -f  $1 $1-bk; vim $1;}; func'</span>
 <span class="nb">source</span> /etc/profile
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ul>
   <li>修改配置<br />
@@ -266,24 +262,22 @@ chkconfig --list|grep 3:on
 
 <h3 id="权限管理">权限管理</h3>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>visudo
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>visudo
 在文件的98行给对应普通用户加权限
 用户名|机器<span class="o">=(</span>授权角色<span class="o">)</span>|可执行命令
 xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: ALL 
 表示xxx 可通过sudo 执行所以系统命令，并不需要密码提示
 最后的ALL表示所有命令，可指定某些命令，用逗号隔开
 xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: vim,cp,find
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="关键系统文件上锁">关键系统文件上锁</h3>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#上锁</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#上锁</span>
 chattr +i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
 <span class="c">#解锁</span>
-chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
-</code></pre>
-</div>
+chattr <span class="nt">-i</span> /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
+</code></pre></div></div>
 
 <h3 id="升级已知漏洞软件版本">升级已知漏洞软件版本</h3>
 
@@ -461,7 +455,7 @@ chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
   </tbody>
 </table>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cat /etc/sysctl.conf 
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /etc/sysctl.conf 
 
 net.ipv4.tcp_syn_retries <span class="o">=</span> 1
 net.ipv4.tcp_synack_retries <span class="o">=</span> 1
@@ -486,8 +480,7 @@ net.ipv4.netfilter.ip_conntrack_tcp_timeout_established<span class="o">=</span>1
 net.core.somaxconn <span class="o">=</span> 16384
 net.core.netdev_max_backlog <span class="o">=</span> 16384
 vm.swappiness<span class="o">=</span>10
-</code></pre>
-</div>
+</code></pre></div></div>
 
 
 
@@ -565,7 +558,7 @@ vm.swappiness<span class="o">=</span>10
         
         
         <li class="next">
-            <a href="/2018/11/netcon/" data-toggle="tooltip" data-placement="top" title="科学上网">下一篇：  <span>科学上网</span>
+            <a href="/2018/11/netcon/" data-toggle="tooltip" data-placement="top" title="科学上网且用且珍惜">下一篇：  <span>科学上网且用且珍惜</span>
             </a>
         </li>
         

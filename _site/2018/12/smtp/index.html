@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -196,19 +194,18 @@
 
 <h3 id="终端测试">终端测试:</h3>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>telnet xxx 25  --&gt;220
-HELO xxx  --&gt;250
-auth login  --&gt;334<span class="o">(</span>等待服务器返回后输入账号密码对应的base64码<span class="o">)</span>
-mail from: xxx --&gt;250
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>telnet xxx 25  <span class="nt">--</span><span class="o">&gt;</span>220
+HELO xxx  <span class="nt">--</span><span class="o">&gt;</span>250
+auth login  <span class="nt">--</span><span class="o">&gt;</span>334<span class="o">(</span>等待服务器返回后输入账号密码对应的base64码<span class="o">)</span>
+mail from: xxx <span class="nt">--</span><span class="o">&gt;</span>250
 rcpt to: xxx, xxx
 data
 Subject: xxx
 Hello,
 xxx
-.
+<span class="nb">.</span>
  发送成功会返回success
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><a href="https://base64.supfree.net/">base64加密解密</a><br />
 客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件<br />
@@ -328,7 +325,7 @@ xxx
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/12/docker/" data-toggle="tooltip" data-placement="top" title="Docker入门与生产配置">上一篇：  <span>Docker入门与生产配置</span>
+            <a href="/2018/12/docker/" data-toggle="tooltip" data-placement="top" title="Docker最佳实践">上一篇：  <span>Docker最佳实践</span>
             </a>
         </li>
         

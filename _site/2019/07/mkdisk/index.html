@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>免费证书加密https</title>
-  <meta name="description" content="生成免费证书">
+  <title>云主机磁盘分区</title>
+  <meta name="description" content="  去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="免费证书加密https">
-  <meta name="twitter:description" content="生成免费证书">
+  <meta name="twitter:title" content="云主机磁盘分区">
+  <meta name="twitter:description" content="  去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="免费证书加密https">
-  <meta property="og:description" content="生成免费证书">
+  <meta property="og:title" content="云主机磁盘分区">
+  <meta property="og:description" content="  去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/https/">
+  <link rel="canonical" href="http://localhost:4000/2019/07/mkdisk/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -173,10 +173,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">免费证书加密https</h1>
+    <h1 class="post-title">云主机磁盘分区</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-09</time>  
+      <time datetime="2019-07-01 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-07-01</time>  
       
       <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
       
@@ -187,47 +187,37 @@
   </header>
 
   <section class="post">
-    <h3 id="生成免费证书">生成免费证书</h3>
-
-<blockquote>
-  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)</p>
+    <blockquote>
+  <p>去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊</p>
 </blockquote>
 
-<p>生成方法：  <br />
-    <code class="highlighter-rouge">curl https://get.acme.sh | SH</code> <br />
-    执行完后，脚本位置在~/.acme.sh/下  <br />
-    <code class="highlighter-rouge">acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com</code>  <br />
-    [上面命令是github给出的，我在服务器上执行的是下面的命令行] 
-    ` sh  ~/.acme.sh/acme.sh    –issue –nginx  -d myucloud.com -d www.myucloud.com –force` <br />
-    执行完之后，屏幕上会显示生成证书的位置</p>
+<p>去年这个时候，薅羊毛2c8g的伦敦节点，花了300+一年搞定<br />
+今年看到官网又出了海外节点2折的活动，果断入手<br />
+香港节点2c4g20G+2M带宽，价格550</p>
 
-<h3 id="配置nginx">配置nginx</h3>
+<p>以上与本文无关<br />
+发现系统盘有点小，准备扩一下系统盘，20g到40g一年0.01元，呵呵呵，不买我是弟弟啊~<br />
+一顿操作加载系统盘，重装电脑，发现fdisk下面仅仅/dev/vda显示为40g。系统盘已经挂载上去的/dev/vda1对应系统的/目录仍然是20g</p>
 
-<ul>
-  <li>默认是https访问，当访问80端口时，指向https</li>
-  <li>在nginx/conf.d/下添加conf，只需要指定证书ssl_certificate/ssl_certificate_key位置，将www.xx.com替换成你的域名即可</li>
-</ul>
+<p><img src="/images/posts/2019-07-01-mkdisk/mkdisk1.png" alt="" /></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server {
-    listen  443 ssl;
-    ssl_certificate      ./ssl/youdomain.cer;
-    ssl_certificate_key  ./ssl/youdomain.key;
-    ssl_session_timeout  5m;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers         HIGH:!aNULL:!MD5;
-    server_name  www.xx.com;
-    location / {
-        root   /opt/html;
-        index  index.html index.htm index.php;
-    }
-}
+<p>还有20g没有划入分区？那就分区呗</p>
 
-server {
-    listen 80;
-    server_name  www.xx.com;
-    rewrite ^(.*)$ https://${server_name}$1 permanent;
-}
-</code></pre></div></div>
+<p>fdisk /dev/vda
+n p 2 新建分区-建立分区-分区编号（ucloud默认是2-4）
+剩下的默认回车就行了，大概意思是选择盘符的起始位置，结束位置，就是划分磁盘的大小
+w  最后w保存创建，退出交互模式</p>
+
+<p>分区建完，格式化磁盘<br />
+mkfs.ext4 /dev/vda2<br />
+如果报错，则在内核将刚创建的分区更新过去<br />
+partprobe<br />
+再格式化</p>
+
+<p>最后一步，挂载分区<br />
+mkdir /data (创建任意目录)<br />
+mount /dev/vda2 /data<br />
+<img src="/images/posts/2019-07-01-mkdisk/mkdisk2.png" alt="" /></p>
 
 
   </section>
@@ -298,13 +288,13 @@ server {
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/10/blog/" data-toggle="tooltip" data-placement="top" title="搭建个人博客+Gitpage">上一篇：  <span>搭建个人博客+Gitpage</span>
+            <a href="/2019/02/openshift2/" data-toggle="tooltip" data-placement="top" title="Openshift-生产环境部署">上一篇：  <span>Openshift-生产环境部署</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/10/baidudisk/" data-toggle="tooltip" data-placement="top" title="百度网盘Svip破解">下一篇：  <span>百度网盘Svip破解</span>
+            <a href="/2019/10/nginx/" data-toggle="tooltip" data-placement="top" title="Nginx生产实践">下一篇：  <span>Nginx生产实践</span>
             </a>
         </li>
         

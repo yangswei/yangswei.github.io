@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -214,14 +212,13 @@
 
 <h3 id="集群管理员账号登录">集群管理员账号登录</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>mkdir -p ~/.kube
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir -p ~/.kube
 cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
 登录  
 oc login -u system:admin
 查看集群节点  
 oc get node
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="添加route">添加route</h3>
 
@@ -233,19 +230,17 @@ router组件需要读取集群的信息，它关联一个系统账号service acc
 <code class="highlighter-rouge">oadm policy add-scc-to-user privileged system:serviceaccount:default:router</code>
 创建router实例</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>oadm router router --replicas=1 --service-account=router
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oadm router router --replicas=1 --service-account=router
 oc get pod -n default
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="添加registry">添加registry</h3>
 <p>集群的docker registry内部docker镜像仓库</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>oc project default
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project default
 oadm registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
 oc get pod  
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>因为registry没有启用https,所以需要修改docker配置，让docker以非https模式连接到registry.<br />
 在OPTIONS变量值中添加参数’–insecure-registry=172.30.0.0/16’<br />
 重启docker systemctl restart docker</p>
@@ -253,23 +248,21 @@ oc get pod
 <h3 id="添加image-stream">添加Image Stream</h3>
 
 <p>is镜像集合，openshift并不一定要用到is，is是为了更加方便的将镜像管理和使用</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>oc project openshift
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 openshift version
 curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
 oc get is -n openshift
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="添加template">添加Template</h3>
 
 <p>openshift定义了一些template供用户使用，模板定义一个多个部署镜像的集合，定义部署依赖对象以及配置参数项</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>oc project openshift
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
 oc get template -n openshift
 oc get template cakephp-mysql-example -o json -n openshift
 oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/master/template/wildfly-basic-s2i.template.json -n openshift  
-</code></pre>
-</div>
+</code></pre></div></div>
 
 
   </section>
@@ -340,7 +333,7 @@ oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/m
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2019/01/learnmysql/" data-toggle="tooltip" data-placement="top" title="Mysql学习笔记-安装">上一篇：  <span>Mysql学习笔记-安装</span>
+            <a href="/2019/01/learnmysql/" data-toggle="tooltip" data-placement="top" title="Mysql最佳实践">上一篇：  <span>Mysql最佳实践</span>
             </a>
         </li>
         

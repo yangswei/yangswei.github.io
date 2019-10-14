@@ -6,16 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>Docker入门与生产配置</title>
+  <title>Docker最佳实践</title>
   <meta name="description" content="Get Started with Docker">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Docker入门与生产配置">
+  <meta name="twitter:title" content="Docker最佳实践">
   <meta name="twitter:description" content="Get Started with Docker">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Docker入门与生产配置">
+  <meta property="og:title" content="Docker最佳实践">
   <meta property="og:description" content="Get Started with Docker">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -175,7 +173,7 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">Docker入门与生产配置</h1>
+    <h1 class="post-title">Docker最佳实践</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
       <time datetime="2018-12-11 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-12-11</time>  
@@ -222,12 +220,11 @@ Alpine:优点 小,快,安全</p>
 安装这些服务包只需要<code class="highlighter-rouge">apk add xxx </code>直接安装<br />
 仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库  gs</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>RUN apk --no-cache add ca-certificates <span class="o">&amp;&amp;</span> <span class="se">\</span>
-    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RUN apk <span class="nt">--no-cache</span> add ca-certificates <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    wget <span class="nt">-q</span> <span class="nt">-O</span> /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub <span class="o">&amp;&amp;</span> <span class="se">\</span>
     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk <span class="o">&amp;&amp;</span> <span class="se">\</span>
     apk add glibc-2.27-r0.apk
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Dns问题官方给出的解释还是和musl libc库有关系<br />
 总结下来就是<strong>musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置</strong><br />
@@ -240,16 +237,15 @@ Alpine:优点 小,快,安全</p>
 
 <p>推荐使用dnsmasq,运行时使用<strong>–server /consul/10.0.0.1</strong>这个参数</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>FROM alpine:edge
-RUN apk --no-cache add dnsmasq
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM alpine:edge
+RUN apk <span class="nt">--no-cache</span> add dnsmasq
 EXPOSE 53 53/udp
 ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span class="s2">"-k"</span><span class="o">]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="从nginx的dockerfile来理解docker">从Nginx的dockerfile来理解docker</h3>
 
-<div class="language-yml highlighter-rouge"><pre class="highlight"><code><span class="s">FROM alpine:3.8</span>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">FROM alpine:3.8</span>
 
 <span class="s">LABEL maintainer="NGINX Docker Maintainers &lt;docker-maint@nginx.com&gt;"</span>
 
@@ -262,14 +258,13 @@ ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span clas
 <span class="s">COPY nginx.conf /etc/nginx/nginx.conf</span>
 <span class="s">COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf</span>
 
-<span class="s">EXPOSE 80</span>
+<span class="s">EXPOSE </span><span class="m">80</span>
 
 <span class="s">STOPSIGNAL SIGTERM</span>
 
 <span class="s">CMD ["nginx", "-g", "daemon off;"]</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>上文dockerfile，RUN部分的代码省略了,下面做命令的简单解释:<br />
 <strong>RUN命令用<code class="highlighter-rouge">\ &amp;&amp;</code>连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN</strong></p>
@@ -289,7 +284,7 @@ ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span clas
 通过多阶段构建,解决依赖构建过程,造成镜像包大的问题,因为安装的构建服务只会使用一次<br />
 使用也很简单</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>FROM golang:1.7.3
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM golang:1.7.3
 WORKDIR /go/src/github.com/sparkdevo/href-counter/
 RUN go get -d -v golang.org/x/net/html
 COPY app.go .
@@ -300,8 +295,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/sparkdevo/href-counter/app .
 CMD ["./app"]
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>可以看到多阶段构建<br />
 第一阶段即进行依赖构建,将构建好的依赖包拷贝出来<br />
@@ -380,7 +374,7 @@ CMD ["./app"]
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/11/netcon/" data-toggle="tooltip" data-placement="top" title="科学上网">上一篇：  <span>科学上网</span>
+            <a href="/2018/11/netcon/" data-toggle="tooltip" data-placement="top" title="科学上网且用且珍惜">上一篇：  <span>科学上网且用且珍惜</span>
             </a>
         </li>
         

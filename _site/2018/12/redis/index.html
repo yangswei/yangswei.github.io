@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -201,32 +199,29 @@ cluster-config-file指定保存节点配置的文件，redis集群启动后会�
 
 <p>集群模式的最简节点配置文件如下</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>port 7000
-cluster-enabled yes
-cluster-config-file nodes.conf
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>port 7000
+cluster-enabled <span class="nb">yes
+</span>cluster-config-file nodes.conf
 cluster-node-timeout 5000
-appendonly yes
-</code></pre>
-</div>
+appendonly <span class="nb">yes</span>
+</code></pre></div></div>
 
 <p>可以添加一些配置指定数据文件，日志等</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pidfile /var/run/redis/redis.pid
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pidfile /var/run/redis/redis.pid
 <span class="nb">bind </span>127.0.0.1 xxx.xxx.xxx.xxx
 loglevel notice
 logfile /xxx/log/redis/redis.log
-dir /xxx/db/redis/
-</code></pre>
-</div>
+<span class="nb">dir</span> /xxx/db/redis/
+</code></pre></div></div>
 
 <p>另外还有一些配置，例如负载很大的服务修改<strong>tcp-backlog、tcp-keepalive</strong>参数等</p>
 
 <p>按上面方法，通过修改监听端口启动的不同节点的redis实例，但还不是集群<br />
 <strong>redis-trib 位于Redis源码的src文件夹中,它是一个Ruby程序</strong></p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>./redis-trib.rb create --replicas 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./redis-trib.rb create <span class="nt">--replicas</span> 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">replicas 1</code>这个参数指定在6个节点中为每个主节点创建一个从节点，则执行完后会生成对应的三主三从节点配置。</p>
 
@@ -358,16 +353,16 @@ sentinel failover-timeout mymaster 180000
 脚本每2秒检测一次当前集群的master，如果master连接不上或者变了，那么脚本会直接替换掉解析中的ip<br />
 程序如果还不能正常，脚本还可以加入重启服务的部分。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#要求1: /etc/hosts里面写入 "1.1.1.1 redis-tb" 的解析规则</span>
 <span class="c">#要求2: 该脚本要有读写/etc/hosts的权限，建议用root</span>
 <span class="nv">hostlist</span><span class="o">=(</span><span class="s1">'1.1.1.1'</span> <span class="s1">'2.2.2.2'</span> <span class="s1">'3.3.3.3'</span><span class="o">)</span>
 <span class="nv">flag</span><span class="o">=</span>0
 <span class="nb">echo</span> <span class="nv">$nowhost</span>
 checkismaster<span class="o">(){</span>
-  timeout 3 <span class="nv">ismaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli -h <span class="nv">$1</span>| grep <span class="s1">'role'</span>| awk -F <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep -w <span class="s2">"master"</span>|wc -l<span class="sb">`</span>
-  <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">ismaster</span><span class="o">=</span>0
-  <span class="k">if</span> <span class="o">[</span> <span class="nv">$ismaster</span> -eq 1 <span class="o">]</span>
+  <span class="nb">timeout </span>3 <span class="nv">ismaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli <span class="nt">-h</span> <span class="nv">$1</span>| <span class="nb">grep</span> <span class="s1">'role'</span>| <span class="nb">awk</span> <span class="nt">-F</span> <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep <span class="nt">-w</span> <span class="s2">"master"</span>|wc <span class="nt">-l</span><span class="sb">`</span>
+  <span class="o">[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">ismaster</span><span class="o">=</span>0
+  <span class="k">if</span> <span class="o">[</span> <span class="nv">$ismaster</span> <span class="nt">-eq</span> 1 <span class="o">]</span>
   <span class="k">then
      </span><span class="nb">echo</span> <span class="s2">"nowhost is master"</span>
   <span class="k">else
@@ -377,28 +372,27 @@ checkismaster<span class="o">(){</span>
 <span class="o">}</span>
 <span class="k">while </span><span class="nb">true
 </span><span class="k">do
-  </span><span class="nv">nowhost</span><span class="o">=</span><span class="sb">`</span>cat /etc/hosts | grep <span class="s1">'redis-tb'</span>| awk <span class="s1">'{print $1}'</span><span class="sb">`</span>
+  </span><span class="nv">nowhost</span><span class="o">=</span><span class="sb">`</span><span class="nb">cat</span> /etc/hosts | <span class="nb">grep</span> <span class="s1">'redis-tb'</span>| <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="sb">`</span>
   checkismaster <span class="nv">$nowhost</span>
-  <span class="o">[</span> <span class="nv">$flag</span> -eq 1 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
+  <span class="o">[</span> <span class="nv">$flag</span> <span class="nt">-eq</span> 1 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
    <span class="k">for </span>i <span class="k">in</span> <span class="k">${</span><span class="nv">hostlist</span><span class="p">[@]</span><span class="k">}</span>
    <span class="k">do
     </span><span class="nb">echo</span> <span class="s2">"now is finding master in hostlist"</span>
     <span class="nb">echo</span> <span class="s2">"checking ip --  </span><span class="nv">$i</span><span class="s2">"</span>
-    timeout 3 <span class="nv">checkmaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli -h <span class="nv">$i</span>| grep <span class="s1">'role'</span>| awk -F <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep -w <span class="s2">"master"</span>|wc -l<span class="sb">`</span>
-    <span class="o">[</span> <span class="nv">$?</span> -eq 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">checkmaster</span><span class="o">=</span>0
+    <span class="nb">timeout </span>3 <span class="nv">checkmaster</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo </span>info |timeout 2 redis-cli <span class="nt">-h</span> <span class="nv">$i</span>| <span class="nb">grep</span> <span class="s1">'role'</span>| <span class="nb">awk</span> <span class="nt">-F</span> <span class="s1">':'</span> <span class="s1">'{print $2}'</span>|grep <span class="nt">-w</span> <span class="s2">"master"</span>|wc <span class="nt">-l</span><span class="sb">`</span>
+    <span class="o">[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">||</span> <span class="nv">checkmaster</span><span class="o">=</span>0
     <span class="nb">echo</span> <span class="s2">"when checkip is master, then checkmaster=1 ---  </span><span class="nv">$checkmaster</span><span class="s2">"</span>
-    <span class="k">if</span> <span class="o">[</span> <span class="nv">$checkmaster</span> -eq 1 <span class="o">]</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$checkmaster</span> <span class="nt">-eq</span> 1 <span class="o">]</span>
     <span class="k">then
      </span><span class="nb">echo</span> <span class="s2">"now changeing nowhost to master = </span><span class="nv">$nowhost</span><span class="s2"> to </span><span class="nv">$i</span><span class="s2">"</span>
-     sed -i <span class="s1">'s/'</span><span class="s2">"</span><span class="nv">$nowhost</span><span class="s2">"</span><span class="s1">'/'</span><span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span><span class="s1">'/g'</span> /etc/hosts
+     <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'s/'</span><span class="s2">"</span><span class="nv">$nowhost</span><span class="s2">"</span><span class="s1">'/'</span><span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span><span class="s1">'/g'</span> /etc/hosts
     <span class="k">fi
     </span><span class="nv">flag</span><span class="o">=</span>0
    <span class="k">done</span>
   <span class="o">}</span>
-  sleep 2
+  <span class="nb">sleep </span>2
 <span class="k">done</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>nohup sh xx.sh &amp;<br />
 将脚本放后台执行，这个脚本会将三个节点的主写到hosts中，并且每两秒检测一次，在应用中写上hosts指定的master地址</p>

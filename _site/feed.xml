@@ -5,9 +5,217 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 10 Apr 2019 10:24:54 +0800</pubDate>
-    <lastBuildDate>Wed, 10 Apr 2019 10:24:54 +0800</lastBuildDate>
-    <generator>Jekyll v3.5.2</generator>
+    <pubDate>Mon, 14 Oct 2019 16:39:00 +0800</pubDate>
+    <lastBuildDate>Mon, 14 Oct 2019 16:39:00 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>Nginx生产实践</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;常用的一些nginx配置&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;测试环境本地项目调试&lt;/li&gt;
+  &lt;li&gt;测试环境多端口调试&lt;/li&gt;
+  &lt;li&gt;rewrite常用用法&lt;/li&gt;
+  &lt;li&gt;root&amp;amp;alias用法与区别&lt;/li&gt;
+  &lt;li&gt;生产环境切换&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;测试环境本地项目调试&quot;&gt;测试环境本地项目调试&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-nginx-1&quot;&gt;server {
+    listen 80;
+    server_name xxx;
+    error_page 502 503 504 = @backurl;
+    location / {
+        proxy_pass http://$remote_addr:8888;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location @backurl {
+        proxy_pass http://127.0.0.1:8888;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;请求工作方法： 访问对应server时，首先找location对应的url,url则指向remote_addr(客户端IP,注意这里的remote_addr需要在nginx设置获取真实ip配置)，当客户端本地未监听8888时，则重新将location指向服务端的8888,即完成测试环境代理本地项目测试需求&lt;/p&gt;
+
+&lt;h3 id=&quot;测试环境多端口调试&quot;&gt;测试环境多端口调试&lt;/h3&gt;
+&lt;p&gt;同一服务在测试环境部署N个，那么如何在浏览器指定port请求对应服务？&lt;br /&gt;
+通过cookie是一种方法,与测试项目本地调试的配置类似&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-port-nginx&quot;&gt;    location / {
+        if ($cookie_port) {
+          set $apiport $cookie_port;
+        }
+        proxy_pass http://$remote_addr:$apiport;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其实只需要nginx获取到客户端请求时传输的port变量即可，这里将port信息放到cookie中，同样可以放到请求的head中，nginx通过http_x_port来进行反代即可&lt;/p&gt;
+
+&lt;h3 id=&quot;rewrite常用用法&quot;&gt;rewrite常用用法&lt;/h3&gt;
+
+&lt;p&gt;rewrite为了改写请求url,改变浏览器中的请求地址&lt;br /&gt;
+有四个标签：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;last      匹配后继续匹配其他规则&lt;/li&gt;
+  &lt;li&gt;break     匹配后不匹配其他规则&lt;/li&gt;
+  &lt;li&gt;redirect  临时重定向&lt;/li&gt;
+  &lt;li&gt;permanent 永久重定向&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;用法1：location中直接将url第一个根路径以前的url替换成rewrite指定的url,正则有很多，具体参考nginx-rewrite正则相关的文章&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-rewrite&quot;&gt;  rewrite ^/(.*) http://www.taobao.com/$1 permanent;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用法2：例如请求的url是&lt;code class=&quot;highlighter-rouge&quot;&gt;taobao.com/xxx/aa&lt;/code&gt;则rewrite成&lt;code class=&quot;highlighter-rouge&quot;&gt;taobao.com/aa&lt;/code&gt;并执行pass的跳转并且不会继续匹配aa对应的location&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-rewrite2&quot;&gt;location /xxx {
+    rewrite ^/xxx(.*) $1 break;
+    proxy_pass http://xx.xx.xx.xx:port;
+}
+location /aa {
+    dosomething
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用法3：在if判断中,例如如下防盗链配置请求资源。除none blocked域名外其他均rewrite掉&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ifrewrite&quot;&gt;server {
+  listen 8080;
+  server_name xxx.abc.com
+  location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$ {                                   ## location /xx/ {
+                                                                                      ##    root /xxx/xx;
+    valid_referers none blocked www.xxx.com www.yyy.com *.baidu.com  *.tabobao.com;
+    if ($invalid_referer) {
+      rewrite ^/ http://www.xxx.com/images/forbidden.png;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;rewrite使用方面有很多场景官方文档有详细说明：&lt;a href=&quot;http://nginx.org/en/docs/http/ngx_http_rewrite_module.html&quot;&gt;跳转&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;alias用法与区别&quot;&gt;alias用法与区别&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;root处理结果是将url指向location路径+root路径&lt;/li&gt;
+  &lt;li&gt;alias的处理结果是：使用alias路径替换location路径&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;alias目录名后面一定要加”/”，alias在使用正则匹配时，必须捕捉要匹配的内容并在指定的内容处使用，alias只用于location中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-location-alias&quot;&gt;location ^~ /t/ {
+ alias /www/root/xxx/;
+}
+location = /favicon.ico {
+    alias /xxx/favicon.ico;
+    break;
+}
+location /xxx {
+    alias /xxx/dist;
+    index index.html;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;生产环境切换&quot;&gt;生产环境切换&lt;/h3&gt;
+
+&lt;p&gt;环境切换与端口切换类似，方法可以通过head或者cookie等进行传参，nginx中进行判断，根据不同的变量，进行不同的跳转&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;根据来源ip进行跳转&lt;/li&gt;
+  &lt;li&gt;根据cookie是否包含version字段进行跳转&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-change&quot;&gt;        location /xxx/ {
+            set $xxxpassurl http://xxx-release;
+                if ($remote_addr ~ '(xx.xx.xx.x1|xx.xx.xx.x2)' ) {
+                        set $xxxpassurl http://xxx-test;
+                }
+                if ($http_cookie ~ version\=release) {
+                        set $xxxpassurl http://xxx-release;
+                }
+                if ($http_cookie ~ version\=ga) {
+                        set $xxxpassurl http://xxx-test;
+                }
+            rewrite ^/xxx(.*)$  $1 break;
+            proxy_pass $xxxpassurl;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $http_connection;
+            proxy_http_version 1.1;
+        }  
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Mon, 14 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/nginx/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/nginx/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>云主机磁盘分区</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;去年云主机快到期了，对比各个云主机，挑选性价比最高的一家云主机，最后选了ucloud的，因为确实便宜到爆炸啊&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;去年这个时候，薅羊毛2c8g的伦敦节点，花了300+一年搞定&lt;br /&gt;
+今年看到官网又出了海外节点2折的活动，果断入手&lt;br /&gt;
+香港节点2c4g20G+2M带宽，价格550&lt;/p&gt;
+
+&lt;p&gt;以上与本文无关&lt;br /&gt;
+发现系统盘有点小，准备扩一下系统盘，20g到40g一年0.01元，呵呵呵，不买我是弟弟啊~&lt;br /&gt;
+一顿操作加载系统盘，重装电脑，发现fdisk下面仅仅/dev/vda显示为40g。系统盘已经挂载上去的/dev/vda1对应系统的/目录仍然是20g&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2019-07-01-mkdisk/mkdisk1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;还有20g没有划入分区？那就分区呗&lt;/p&gt;
+
+&lt;p&gt;fdisk /dev/vda
+n p 2 新建分区-建立分区-分区编号（ucloud默认是2-4）
+剩下的默认回车就行了，大概意思是选择盘符的起始位置，结束位置，就是划分磁盘的大小
+w  最后w保存创建，退出交互模式&lt;/p&gt;
+
+&lt;p&gt;分区建完，格式化磁盘&lt;br /&gt;
+mkfs.ext4 /dev/vda2&lt;br /&gt;
+如果报错，则在内核将刚创建的分区更新过去&lt;br /&gt;
+partprobe&lt;br /&gt;
+再格式化&lt;/p&gt;
+
+&lt;p&gt;最后一步，挂载分区&lt;br /&gt;
+mkdir /data (创建任意目录)&lt;br /&gt;
+mount /dev/vda2 /data&lt;br /&gt;
+&lt;img src=&quot;/images/posts/2019-07-01-mkdisk/mkdisk2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/07/mkdisk/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/07/mkdisk/</guid>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>Openshift-生产环境部署</title>
@@ -79,11 +287,10 @@
 
 &lt;p&gt;在Master节点启动EPEL安装ansible&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y install https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm  
-sed -i -e &lt;span class=&quot;s2&quot;&gt;&quot;s/^enabled=1/enabled=0/&quot;&lt;/span&gt; /etc/yum.repos.d/epel.repo  
-yum -y --enablerepo&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;epel install ansible pyopenSSL  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm  
+&lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;s/^enabled=1/enabled=0/&quot;&lt;/span&gt; /etc/yum.repos.d/epel.repo  
+yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--enablerepo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;epel &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;ansible pyopenSSL  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;在Master节点生成SSH密钥&lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh-keygen -f /root/.ssh/id_rsa -N ''&lt;/code&gt;&lt;/p&gt;
@@ -91,28 +298,25 @@ yum -y --enablerepo&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;epel install an
 &lt;p&gt;Ansible基于Agentless架构实现，不需要在目标主机安装agent依赖ssh远程控制协议，所以需要配置master和node节点互信&lt;br /&gt;
 在Master节点执行：&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;master.example.com &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;master.example.com &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 node1.example.com &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-node2.example.com; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;ssh-copy-id -i ~/.ssh/id_rsa.pub &lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt;; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+node2.example.com&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;ssh-copy-id &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; ~/.ssh/id_rsa.pub &lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;在Master节点安装Openshift的ansible Playbook&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget https://github.com/openshift/openshift-ansible/archive/openshift-ansible-3.3.26-1.tar.gz  
-tar zxf openshift-ansible-3.3.26-1.tar.gz  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget https://github.com/openshift/openshift-ansible/archive/openshift-ansible-3.3.26-1.tar.gz  
+&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;zxf openshift-ansible-3.3.26-1.tar.gz  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;安装单master可以不单独安装etcd,这里选择安装单节点的etcd,生产环境安装3节点的etcd集群,确保高可用&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install -y etcd  
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; etcd  
 systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;etcd  
 systemctl start etcd  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;配置ansible&quot;&gt;配置ansible&lt;/h2&gt;
 
@@ -175,10 +379,9 @@ Router是以容器的形式运行在Openshift平台，默认情况不知道容�
 &lt;code class=&quot;highlighter-rouge&quot;&gt;oc get node --show-labels&lt;/code&gt;&lt;br /&gt;
 为Router使用的Service Account赋权&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router
 oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:default:router
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;部署router&lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;oadm router ose-router --replicas=1 --service-account=router --selector='infra=yes'&lt;/code&gt;&lt;/p&gt;
@@ -225,14 +428,13 @@ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:defaul
 
 &lt;h3 id=&quot;集群管理员账号登录&quot;&gt;集群管理员账号登录&lt;/h3&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir -p ~/.kube
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir -p ~/.kube
 cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
 登录  
 oc login -u system:admin
 查看集群节点  
 oc get node
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;添加route&quot;&gt;添加route&lt;/h3&gt;
 
@@ -244,19 +446,17 @@ router组件需要读取集群的信息，它关联一个系统账号service acc
 &lt;code class=&quot;highlighter-rouge&quot;&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router&lt;/code&gt;
 创建router实例&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm router router --replicas=1 --service-account=router
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm router router --replicas=1 --service-account=router
 oc get pod -n default
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;添加registry&quot;&gt;添加registry&lt;/h3&gt;
 &lt;p&gt;集群的docker registry内部docker镜像仓库&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project default
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project default
 oadm registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
 oc get pod  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;因为registry没有启用https,所以需要修改docker配置，让docker以非https模式连接到registry.&lt;br /&gt;
 在OPTIONS变量值中添加参数’–insecure-registry=172.30.0.0/16’&lt;br /&gt;
 重启docker systemctl restart docker&lt;/p&gt;
@@ -264,23 +464,21 @@ oc get pod
 &lt;h3 id=&quot;添加image-stream&quot;&gt;添加Image Stream&lt;/h3&gt;
 
 &lt;p&gt;is镜像集合，openshift并不一定要用到is，is是为了更加方便的将镜像管理和使用&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
 openshift version
 curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
 oc get is -n openshift
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;添加template&quot;&gt;添加Template&lt;/h3&gt;
 
 &lt;p&gt;openshift定义了一些template供用户使用，模板定义一个多个部署镜像的集合，定义部署依赖对象以及配置参数项&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
 oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
 oc get template -n openshift
 oc get template cakephp-mysql-example -o json -n openshift
 oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/master/template/wildfly-basic-s2i.template.json -n openshift  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Sun, 20 Jan 2019 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2019/01/openshift1/</link>
@@ -292,82 +490,284 @@ oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/m
       </item>
     
       <item>
-        <title>Mysql学习笔记-安装</title>
+        <title>Mysql最佳实践</title>
         <description>&lt;blockquote&gt;
   &lt;p&gt;记录mysql读书日记&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h4 id=&quot;安装mysql&quot;&gt;安装mysql&lt;/h4&gt;
 
-&lt;p&gt;二进制mysql&lt;a href=&quot;https://dev.mysql.com/downloads/mysql/&quot;&gt;下载首页&lt;/a&gt;&lt;br /&gt;
-选择下载版本,这里下载的是5.6.42的二进制包&lt;br /&gt;
-&lt;a href=&quot;wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.42-linux-glibc2.12-x86_64.tar.gz&quot;&gt;5.6二进制包下载链接&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm&lt;/code&gt;
+安装 mysql 源&lt;/p&gt;
 
-&lt;p&gt;这里学习&lt;strong&gt;使用源码安装mysql&lt;/strong&gt;&lt;a href=&quot;https://dev.mysql.com/downloads/mirrors/&quot;&gt;源码下载页&lt;/a&gt;，选择对应的链路下载，没有看到中国节点，可能需要翻墙或者去国内的开源镜像站下载&lt;a href=&quot;http://mirrors.163.com/&quot;&gt;163开源镜像站&lt;/a&gt;&lt;br /&gt;
-这里选择了个日本节点的5.6.40的源码包&lt;a href=&quot;wget http://ftp.jaist.ac.jp/pub/mysql/Downloads/MySQL-5.6/mysql-5.6.40.tar.gz&quot;&gt;5.6.40源码包&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm&lt;/code&gt;
+检查 yum 源是否安装成功&lt;/p&gt;
 
-&lt;h5 id=&quot;准备基础环境&quot;&gt;准备基础环境&lt;/h5&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y  install  gcc   gcc-c++  make
-yum install ncurses-devel libaio-devel -y
-&lt;span class=&quot;c&quot;&gt;#这里是centos7，其他平台去https://cmake.org/download/ 找编译好的二进制下载吧，我下的源码，装了几分钟&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#源码 ./bootstrap --prefix=/usr;make;sudo make install&lt;/span&gt;
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.sh
-wget https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.tar.gz
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h5 id=&quot;卸载系统自带数据库如果有&quot;&gt;卸载系统自带数据库(如果有)&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-x&quot;&gt;rpm -qa|grep mysql*
+&lt;pre&gt;&lt;code class=&quot;language-a&quot;&gt;
+$ sudo yum repolist enabled | grep &quot;mysql.*-community.*&quot;
+mysql-connectors-community           MySQL Connectors Community              21
+mysql-tools-community                MySQL Tools Community                   38
+mysql57-community                    MySQL 5.7 Community Server             130
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h5 id=&quot;安装mysql-1&quot;&gt;安装mysql&lt;/h5&gt;
+&lt;p&gt;如上所示，找到了 mysql 的安装包&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;groupadd mysql
-useradd -g mysql mysql -s /bin/false
-mkdir /data/mysql
-chown -R mysql:mysql /data/mysql
-mkdir /usr/local/ysql  
-#第一个参数指定安装的根目录，第二个指定数据存储目录，第三个指定配置文件目录
-cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
--DMYSQL_DATADIR=/data/mysql \
--DSYSCONFDIR=/etc \
--DMYSQL_UNIX_ADDR=/usr/local/mysql/tmp/mysql.sock \
--DDEFAULT_CHARSET=utf8 \
--DDEFAULT_COLLATION=utf8_general_ci \
--DWITH_EXTRA_CHARSETS=all \
--DWITH_INNOBASE_STORAGE_ENGINE=1 \
--DWITH_FEDERATED_STORAGE_ENGINE=1 \
--DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
--DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
--DWITH_ZLIB=bundled \
--DWITH_SSL=bundled \
--DENABLED_LOCAL_INFILE=1 \
--DWITH_EMBEDDED_SERVER=1 \
--DENABLE_DOWNLOADS=1 \
--DWITH_DEBUG=0
-#编译后执行
-make  
-make install
+&lt;p&gt;2.安装&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo yum install mysql-community-server&lt;/code&gt;
+3.启动&lt;/p&gt;
+
+&lt;p&gt;安装服务&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo systemctl enable mysqld&lt;/code&gt;
+启动服务&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo systemctl start mysqld&lt;/code&gt;
+查看服务状态&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo systemctl status mysqld&lt;/code&gt;
+4.修改 root 默认密码&lt;/p&gt;
+
+&lt;p&gt;MySQL 5.7 启动后，在 /var/log/mysqld.log 文件中给 root 生成了一个默认密码。通过下面的方式找到 root 默认密码，然后登录 mysql 进行修改：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-b&quot;&gt;$ grep 'temporary password' /var/log/mysqld.log
+[Note] A temporary password is generated for root@localhost: **********
 &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
 
-&lt;p&gt;安装mysql到安装根目录中&lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/mysql/support-files&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;登录 MySQL 并修改密码&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;生成系统数据库./scripts/mysql_install_db –user=mysql –basedir=/usr/local/mysql –datadir=/data/mysql&lt;/li&gt;
-  &lt;li&gt;配置文件&lt;strong&gt;my-default.cnf&lt;/strong&gt;,复制到指定的配置文件目录,修改配置参数&lt;/li&gt;
-  &lt;li&gt;系统启动文件&lt;strong&gt;mysql.server&lt;/strong&gt;,添加到系统启动cp mysql.server /etc/init.d/mysqld(需要填入basedir和datadir分别对应编译安装时指定的安装根目录和数据存储目录)&lt;/li&gt;
-  &lt;li&gt;添加到系统环境变量vim /etc/profile; export PATH=$PATH:/usr/local/mysql/bin(或者把mysql/bin软链到/usr/local/bin中去)&lt;/li&gt;
-&lt;/ul&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Enter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;sc&quot;&gt;'@'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MyNewPass4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;注意：&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MySQL&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;默认安装了密码安全检查插件（&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;validate_password&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;），默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;位。&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;/etc/init.d/mysqld start&lt;br /&gt;
-报错：&lt;br /&gt;
-Segmentation fault&lt;br /&gt;
-编辑文件 cmd-line-utils/libedit/terminal.c&lt;br /&gt;
-把terminal_set方法中的 char buf[TC_BUFSIZE]; 这一行注释,再把 area = buf;改为 area = NULL;&lt;/p&gt;
+&lt;p&gt;通过 MySQL 环境变量可以查看密码策略的相关信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-e&quot;&gt;
+mysql&amp;gt; SHOW VARIABLES LIKE 'validate_password%';
++--------------------------------------+--------+
+| Variable_name                        | Value  |
++--------------------------------------+--------+
+| validate_password_check_user_name    | OFF    |
+| validate_password_dictionary_file    |        |
+| validate_password_length             | 8      |
+| validate_password_mixed_case_count   | 1      |
+| validate_password_number_count       | 1      |
+| validate_password_policy             | MEDIUM |
+| validate_password_special_char_count | 1      |
++--------------------------------------+--------+
+7 rows in set (0.01 sec)
+具体修改，参见 http://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;指定密码校验策略&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-f&quot;&gt;$ sudo vi /etc/my.cnf
+
+[mysqld]
+# 添加如下键值对, 0=LOW, 1=MEDIUM, 2=STRONG
+validate_password_policy=0
+禁用密码策略
+
+$ sudo vi /etc/my.cnf
+	
+[mysqld]
+# 禁用密码校验策略
+validate_password = off
+重启 MySQL 服务，使配置生效
+
+$ sudo systemctl restart mysqld
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;5.添加远程登录用户&lt;/p&gt;
+
+&lt;p&gt;MySQL 默认只允许 root 帐户在本地登录，如果要在其它机器上连接 MySQL，必须修改 root 允许远程连接，或者添加一个允许远程连接的帐户，为了安全起见，本例添加一个新的帐户：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql&amp;gt; GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;6.配置默认编码为 utf8&lt;/p&gt;
+
+&lt;p&gt;MySQL 默认为 latin1, 一般修改为 UTF-8&lt;/p&gt;
+
+&lt;p&gt;$ vi /etc/my.cnf
+[mysqld]&lt;/p&gt;
+&lt;h1 id=&quot;在myslqd下添加如下键值对&quot;&gt;在myslqd下添加如下键值对&lt;/h1&gt;
+&lt;p&gt;character_set_server=utf8
+init_connect=’SET NAMES utf8’
+重启 MySQL 服务，使配置生效&lt;/p&gt;
+
+&lt;p&gt;$ sudo systemctl restart mysqld
+查看字符集&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; SHOW VARIABLES LIKE ‘character%’;
++————————–+—————————-+
+| Variable_name            | Value                      |
++————————–+—————————-+
+| character_set_client     | utf8                       |
+| character_set_connection | utf8                       |
+| character_set_database   | utf8                       |
+| character_set_filesystem | binary                     |
+| character_set_results    | utf8                       |
+| character_set_server     | utf8                       |
+| character_set_system     | utf8                       |
+| character_sets_dir       | /usr/share/mysql/charsets/ |
++————————–+—————————-+
+8 rows in set (0.00 sec
+7.开启端口&lt;/p&gt;
+
+&lt;p&gt;$ sudo firewall-cmd –zone=public –add-port=3306/tcp –permanent
+$ sudo firewall-cmd –reload&lt;/p&gt;
+
+&lt;p&gt;简易方式快速启动：
+宿主机
+curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+yum install mysql-community-client -y&lt;/p&gt;
+
+&lt;p&gt;yum install  docker docker-compose -y&lt;/p&gt;
+
+&lt;p&gt;mkdir -p /mysql
+mkdir -p /mysql/data
+mkdir -p /mysql/config&lt;/p&gt;
+
+&lt;p&gt;将my.conf复制到/mysql/config下
+将docker-compose.yml拷贝到/mysql下&lt;/p&gt;
+
+&lt;p&gt;my.cnf配置如下（.cnf结尾）&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-my.cnf&quot;&gt;# The MySQL database server configuration file.
+#
+# You can copy this to one of:
+# - &quot;/etc/mysql/my.cnf&quot; to set global options,
+# - &quot;~/.my.cnf&quot; to set user-specific options.
+#
+# One can use all long options that the program supports.
+# Run program with --help to get a list of available options and with
+# --print-defaults to see which it would actually understand and use.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+# This will be passed to all mysql clients
+# It has been reported that passwords should be enclosed with ticks/quotes
+# escpecially if they contain &quot;#&quot; chars...
+# Remember to edit /etc/mysql/debian.cnf when changing the socket location.
+
+# Here is entries for some specific programs
+# The following values assume you have at least 32M ram
+
+[mysqld_safe]
+socket		= /var/run/mysqld/mysqld.sock
+nice		= 0
+
+[mysqld]
+#
+# * Basic Settings
+#
+user		= mysql
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+port		= 3306
+basedir		= /usr
+datadir		= /var/lib/mysql
+tmpdir		= /tmp
+lc-messages-dir	= /usr/share/mysql
+skip-external-locking
+skip-grant-tables
+#
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+bind-address		= 0.0.0.0
+#
+# * Fine Tuning
+#
+key_buffer_size		= 16M
+max_allowed_packet	= 16M
+thread_stack		= 192K
+thread_cache_size       = 8
+# This replaces the startup script and checks MyISAM tables if needed
+# the first time they are touched
+myisam-recover-options  = BACKUP
+#max_connections        = 100
+#table_cache            = 64
+#thread_concurrency     = 10
+#
+# * Query Cache Configuration
+#
+query_cache_limit	= 1M
+query_cache_size        = 16M
+#
+# * Logging and Replication
+#
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# As of 5.1 you can enable the log at runtime!
+#general_log_file        = /var/log/mysql/mysql.log
+#general_log             = 1
+#
+# Error log - should be very few entries.
+#
+log_error = /var/log/mysql/error.log
+#
+# Here you can see queries with especially long duration
+#log_slow_queries	= /var/log/mysql/mysql-slow.log
+#long_query_time = 2
+#log-queries-not-using-indexes
+#
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+#server-id		= 1
+#log_bin			= /var/log/mysql/mysql-bin.log
+expire_logs_days	= 10
+max_binlog_size   = 100M
+#binlog_do_db		= include_database_name
+#binlog_ignore_db	= include_database_name
+#
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+#
+# * Security Features
+#
+# Read the manual, too, if you want chroot!
+# chroot = /var/lib/mysql/
+#
+# For generating SSL certificates I recommend the OpenSSL GUI &quot;tinyca&quot;.
+#
+# ssl-ca=/etc/mysql/cacert.pem
+# ssl-cert=/etc/mysql/server-cert.pem
+# ssl-key=/etc/mysql/server-key.pem
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;docker-compose文件&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-compose&quot;&gt;version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
+    restart: always
+    ports:
+      - 6606:3306
+    volumes:
+      - &quot;/mysql/data:/var/lib/mysql&quot;
+      - &quot;/mysql/config:/etc/mysql/conf.d&quot;
+    environment:
+      MYSQL_ROOT_PASSWORD: &quot;123456&quot;   #root管理员用户密码
+      MYSQL_USER: test   #创建test用户
+      MYSQL_PASSWORD: test  #设置test用户的密码
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;docker-compose up -d 启动&lt;br /&gt;
+宿主机登录mysql: mysql -uroot -P6606 -p -h127.0.0.1&lt;/p&gt;
+
+&lt;p&gt;报错&lt;code class=&quot;highlighter-rouge&quot;&gt;Access denied for user 'root'@'localhost' (using password: YES)&lt;/code&gt;
+配置文件添加：skip-grant-tables
+进入数据量，更新密码update mysql.user set authentication_string=password(‘&lt;strong&gt;**&lt;/strong&gt;&lt;em&gt;’) where user=’&lt;/em&gt;&lt;strong&gt;**&lt;/strong&gt;’&lt;/p&gt;
+
 </description>
         <pubDate>Mon, 14 Jan 2019 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2019/01/learnmysql/</link>
@@ -389,21 +789,95 @@ Segmentation fault&lt;br /&gt;
 &lt;table&gt;
   &lt;thead&gt;
     &lt;tr&gt;
-      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;文档操作&lt;/th&gt;
       &lt;th&gt;功能&lt;/th&gt;
       &lt;th&gt;备注&lt;/th&gt;
     &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;H&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;当前窗口最上方的那行&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;当前末尾，&lt;code class=&quot;highlighter-rouge&quot;&gt;M&lt;/code&gt;当前中间&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:e!&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;重新加载当前文档，并丢弃已做的改动&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:f newname&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;相当于复制一个文件到新名字&lt;/td&gt;
+      &lt;td&gt;保存退出则相当于创建一个新的文件&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;光标屏幕移动&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;k/j/h/l&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;上下左右&lt;/td&gt;
+      &lt;td&gt;作用和方向键左右一致&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SHIFT+e&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;光标移动下一个字符串的结尾&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SHIFT+h/m/l&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;光标移动当前窗口的首，中，尾&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;zz&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;屏幕当前行至于屏幕中间&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CTRL+y/e&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;屏幕上下滚动&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SHIFT+e&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;屏幕移动下一个字符串的结尾&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;编辑操作&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
     &lt;tr&gt;
       &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;u&lt;/code&gt;&lt;/td&gt;
       &lt;td&gt;撤销&lt;/td&gt;
       &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;光标向后删除&lt;/td&gt;
+      &lt;td&gt;光标向前：X&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yn&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;当前光标向下复制n行&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;光标向后删除字符&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt;向前删除&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;&lt;/td&gt;
@@ -411,14 +885,9 @@ Segmentation fault&lt;br /&gt;
       &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;向后删除字符&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt;向前删除&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
       &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:vs xx/xx/file&lt;/code&gt;&lt;/td&gt;
       &lt;td&gt;垂直分屏打开文件file&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;切换屏幕ctrl+w+w这个切换屏幕同样适用vimdiff&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:sp xx/xx/file&lt;/code&gt;&lt;/td&gt;
@@ -433,12 +902,34 @@ Segmentation fault&lt;br /&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;编程相关&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+      &lt;th&gt;备注&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ci&quot;&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;修改”内的内容&lt;/td&gt;
+      &lt;td&gt;相当于di”+i,实用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;多行操作&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;ctrl+v选择编辑的列，shift+i编辑，esc&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
 &lt;h3 id=&quot;linux常用快捷键&quot;&gt;Linux常用快捷键&lt;/h3&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
     &lt;tr&gt;
-      &lt;th&gt;Command&lt;/th&gt;
+      &lt;th&gt;常用命令&lt;/th&gt;
       &lt;th&gt;功能&lt;/th&gt;
       &lt;th&gt;备注&lt;/th&gt;
     &lt;/tr&gt;
@@ -646,32 +1137,29 @@ cluster-config-file指定保存节点配置的文件，redis集群启动后会�
 
 &lt;p&gt;集群模式的最简节点配置文件如下&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;port 7000
-cluster-enabled yes
-cluster-config-file nodes.conf
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;port 7000
+cluster-enabled &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;cluster-config-file nodes.conf
 cluster-node-timeout 5000
-appendonly yes
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+appendonly &lt;span class=&quot;nb&quot;&gt;yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;可以添加一些配置指定数据文件，日志等&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pidfile /var/run/redis/redis.pid
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pidfile /var/run/redis/redis.pid
 &lt;span class=&quot;nb&quot;&gt;bind &lt;/span&gt;127.0.0.1 xxx.xxx.xxx.xxx
 loglevel notice
 logfile /xxx/log/redis/redis.log
-dir /xxx/db/redis/
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt; /xxx/db/redis/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;另外还有一些配置，例如负载很大的服务修改&lt;strong&gt;tcp-backlog、tcp-keepalive&lt;/strong&gt;参数等&lt;/p&gt;
 
 &lt;p&gt;按上面方法，通过修改监听端口启动的不同节点的redis实例，但还不是集群&lt;br /&gt;
 &lt;strong&gt;redis-trib 位于Redis源码的src文件夹中,它是一个Ruby程序&lt;/strong&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./redis-trib.rb create --replicas 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./redis-trib.rb create &lt;span class=&quot;nt&quot;&gt;--replicas&lt;/span&gt; 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;replicas 1&lt;/code&gt;这个参数指定在6个节点中为每个主节点创建一个从节点，则执行完后会生成对应的三主三从节点配置。&lt;/p&gt;
 
@@ -803,16 +1291,16 @@ sentinel failover-timeout mymaster 180000
 脚本每2秒检测一次当前集群的master，如果master连接不上或者变了，那么脚本会直接替换掉解析中的ip&lt;br /&gt;
 程序如果还不能正常，脚本还可以加入重启服务的部分。&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#要求1: /etc/hosts里面写入 &quot;1.1.1.1 redis-tb&quot; 的解析规则&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#要求2: 该脚本要有读写/etc/hosts的权限，建议用root&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;hostlist&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1.1.1.1'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'2.2.2.2'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'3.3.3.3'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
 &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;
 checkismaster&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-  timeout 3 &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli -h &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;| grep &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| awk -F &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep -w &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc -l&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; -eq 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ismaster&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;timeout &lt;/span&gt;3 &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-F&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ismaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ismaster&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;then
      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nowhost is master&quot;&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;else
@@ -822,28 +1310,27 @@ checkismaster&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true
 &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;do
-  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;nowhost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cat /etc/hosts | grep &lt;span class=&quot;s1&quot;&gt;'redis-tb'&lt;/span&gt;| awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;nowhost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/hosts | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'redis-tb'&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
   checkismaster &lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$flag&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$flag&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
    &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;hostlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[@]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
    &lt;span class=&quot;k&quot;&gt;do
     &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;now is finding master in hostlist&quot;&lt;/span&gt;
     &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;checking ip --  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-    timeout 3 &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli -h &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;| grep &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| awk -F &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep -w &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc -l&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; -eq 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+    &lt;span class=&quot;nb&quot;&gt;timeout &lt;/span&gt;3 &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;info |timeout 2 redis-cli &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'role'&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-F&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;|grep &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;master&quot;&lt;/span&gt;|wc &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;checkmaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
     &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;when checkip is master, then checkmaster=1 ---  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$checkmaster&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$checkmaster&lt;/span&gt; -eq 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$checkmaster&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 1 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;then
      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;now changeing nowhost to master = &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-     sed -i &lt;span class=&quot;s1&quot;&gt;'s/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/g'&lt;/span&gt; /etc/hosts
+     &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$nowhost&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/'&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/g'&lt;/span&gt; /etc/hosts
     &lt;span class=&quot;k&quot;&gt;fi
     &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
    &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-  sleep 2
+  &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;2
 &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;nohup sh xx.sh &amp;amp;&lt;br /&gt;
 将脚本放后台执行，这个脚本会将三个节点的主写到hosts中，并且每两秒检测一次，在应用中写上hosts指定的master地址&lt;/p&gt;
@@ -1218,19 +1705,18 @@ sentinel failover-timeout mymaster 180000  
 
 &lt;h3 id=&quot;终端测试&quot;&gt;终端测试:&lt;/h3&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet xxx 25  --&amp;gt;220
-HELO xxx  --&amp;gt;250
-auth login  --&amp;gt;334&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;等待服务器返回后输入账号密码对应的base64码&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-mail from: xxx --&amp;gt;250
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet xxx 25  &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;220
+HELO xxx  &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;250
+auth login  &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;334&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;等待服务器返回后输入账号密码对应的base64码&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+mail from: xxx &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;250
 rcpt to: xxx, xxx
 data
 Subject: xxx
 Hello,
 xxx
-.
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
  发送成功会返回success
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://base64.supfree.net/&quot;&gt;base64加密解密&lt;/a&gt;&lt;br /&gt;
 客户加了白名单,跳过auth login这一步,通过终端测试发现可以发送邮件&lt;br /&gt;
@@ -1291,7 +1777,7 @@ xxx
       </item>
     
       <item>
-        <title>Docker入门与生产配置</title>
+        <title>Docker最佳实践</title>
         <description>&lt;h1 id=&quot;get-started-with-docker&quot;&gt;Get Started with Docker&lt;/h1&gt;
 
 &lt;p&gt;我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker&lt;br /&gt;
@@ -1325,12 +1811,11 @@ Alpine:优点 小,快,安全&lt;/p&gt;
 安装这些服务包只需要&lt;code class=&quot;highlighter-rouge&quot;&gt;apk add xxx &lt;/code&gt;直接安装&lt;br /&gt;
 仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库  gs&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RUN apk --no-cache add ca-certificates &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;RUN apk &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; add ca-certificates &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    wget &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-O&lt;/span&gt; /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     apk add glibc-2.27-r0.apk
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Dns问题官方给出的解释还是和musl libc库有关系&lt;br /&gt;
 总结下来就是&lt;strong&gt;musl实现的DNS服务不会使用resolv.conf文件中的search和domain两个配置&lt;/strong&gt;&lt;br /&gt;
@@ -1343,16 +1828,15 @@ Alpine:优点 小,快,安全&lt;/p&gt;
 
 &lt;p&gt;推荐使用dnsmasq,运行时使用&lt;strong&gt;–server /consul/10.0.0.1&lt;/strong&gt;这个参数&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM alpine:edge
-RUN apk --no-cache add dnsmasq
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM alpine:edge
+RUN apk &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; add dnsmasq
 EXPOSE 53 53/udp
 ENTRYPOINT &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dnsmasq&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;-k&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;从nginx的dockerfile来理解docker&quot;&gt;从Nginx的dockerfile来理解docker&lt;/h3&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;FROM alpine:3.8&lt;/span&gt;
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;FROM alpine:3.8&lt;/span&gt;
 
 &lt;span class=&quot;s&quot;&gt;LABEL maintainer=&quot;NGINX Docker Maintainers &amp;lt;docker-maint@nginx.com&amp;gt;&quot;&lt;/span&gt;
 
@@ -1365,14 +1849,13 @@ ENTRYPOINT &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2
 &lt;span class=&quot;s&quot;&gt;COPY nginx.conf /etc/nginx/nginx.conf&lt;/span&gt;
 &lt;span class=&quot;s&quot;&gt;COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf&lt;/span&gt;
 
-&lt;span class=&quot;s&quot;&gt;EXPOSE 80&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;EXPOSE &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;80&lt;/span&gt;
 
 &lt;span class=&quot;s&quot;&gt;STOPSIGNAL SIGTERM&lt;/span&gt;
 
 &lt;span class=&quot;s&quot;&gt;CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]&lt;/span&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;上文dockerfile，RUN部分的代码省略了,下面做命令的简单解释:&lt;br /&gt;
 &lt;strong&gt;RUN命令用&lt;code class=&quot;highlighter-rouge&quot;&gt;\ &amp;amp;&amp;amp;&lt;/code&gt;连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN&lt;/strong&gt;&lt;/p&gt;
@@ -1392,7 +1875,7 @@ ENTRYPOINT &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2
 通过多阶段构建,解决依赖构建过程,造成镜像包大的问题,因为安装的构建服务只会使用一次&lt;br /&gt;
 使用也很简单&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM golang:1.7.3
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM golang:1.7.3
 WORKDIR /go/src/github.com/sparkdevo/href-counter/
 RUN go get -d -v golang.org/x/net/html
 COPY app.go .
@@ -1403,8 +1886,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/sparkdevo/href-counter/app .
 CMD [&quot;./app&quot;]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;可以看到多阶段构建&lt;br /&gt;
 第一阶段即进行依赖构建,将构建好的依赖包拷贝出来&lt;br /&gt;
@@ -1424,7 +1906,7 @@ CMD [&quot;./app&quot;]
       </item>
     
       <item>
-        <title>科学上网</title>
+        <title>科学上网且用且珍惜</title>
         <description>&lt;h2 id=&quot;安装&quot;&gt;安装：&lt;/h2&gt;
 
 &lt;h3 id=&quot;服务端安装&quot;&gt;服务端安装&lt;/h3&gt;
@@ -1487,404 +1969,6 @@ ios的到appstore找一个,目前貌似大部分要收费了~&lt;br /&gt;
         <guid isPermaLink="true">http://localhost:4000/2018/11/netcon/</guid>
         
         <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Linux内核优化</title>
-        <description>&lt;h1 id=&quot;生产环境优化&quot;&gt;生产环境优化&lt;/h1&gt;
-
-&lt;h3 id=&quot;开机启动&quot;&gt;开机启动&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;chkconfig --list|grep 3:on&lt;/code&gt;查看当前开机开启服务
-&lt;br /&gt;
-关闭其他开机启动的服务&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;chkconfig --list|grep &lt;span class=&quot;s1&quot;&gt;'3:on'&lt;/span&gt;|awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;|grep -vE &lt;span class=&quot;s2&quot;&gt;&quot;crond|network|sshd|rsyslog|sysstat&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;chkconfig &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; off;done
-&lt;span class=&quot;c&quot;&gt;#执行完以后再查看一下开机启动的服务&lt;/span&gt;
-chkconfig --list|grep 3:on
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-其他开机启动服务原则是：只保留使用的服务，清楚系统上每个服务的角色，最小化系统服务。&lt;/p&gt;
-
-&lt;h3 id=&quot;防火墙&quot;&gt;防火墙&lt;/h3&gt;
-&lt;p&gt;防火墙个人学习或者企业级高并发高流量服务器一般都不开启，因为开启防火墙会有较大的性能损耗，解决此类问题及在更前端用硬件防火墙进行安全防护
-&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/init.d/iptables stop&lt;/code&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;远程连接&quot;&gt;远程连接&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;linux系统配置修改后恢复比较麻烦，建议修改配置前备份一份，如果容易忘记，则设置一下命令别名
-&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim /etc/profile
-&lt;span class=&quot;c&quot;&gt;#在末尾添加一行alias，这样每次vim会自动在vim的目录创建一个备份&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;vim&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'func() { cp -f  $1 $1-bk; vim $1;}; func'&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /etc/profile
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;修改配置&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/ssh/sshd_config&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;参数&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Port&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;设置远程连接端口,默认22&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;PermitEmptyPasswords&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;远程用户空密码登录，设置为no&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;PermitRootLogin&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否允许root用户直接登录,设置为no&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;UseDNS no&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否反向解析ip,设置为no&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;GSSAPIAuthentication no&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;解决慢连接&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/init.d/sshd reload&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;权限管理&quot;&gt;权限管理&lt;/h3&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;visudo
-在文件的98行给对应普通用户加权限
-用户名|机器&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;授权角色&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;|可执行命令
-xxx &lt;span class=&quot;nv&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: ALL 
-表示xxx 可通过sudo 执行所以系统命令，并不需要密码提示
-最后的ALL表示所有命令，可指定某些命令，用逗号隔开
-xxx &lt;span class=&quot;nv&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: vim,cp,find
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;关键系统文件上锁&quot;&gt;关键系统文件上锁&lt;/h3&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#上锁&lt;/span&gt;
-chattr +i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
-&lt;span class=&quot;c&quot;&gt;#解锁&lt;/span&gt;
-chattr -i /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/inittab
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;升级已知漏洞软件版本&quot;&gt;升级已知漏洞软件版本&lt;/h3&gt;
-
-&lt;p&gt;升级到最新&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;openssl&lt;/li&gt;
-  &lt;li&gt;openssh&lt;/li&gt;
-  &lt;li&gt;bash&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;内核优化&quot;&gt;内核优化&lt;/h3&gt;
-
-&lt;p&gt;内核部分根据实际需要优化&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;参数名&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;默认值&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;建议值&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_syn_retries&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;5&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;对外TCP连接请求时,内核尝试发送syn请求的次数,默认5次大概180秒，对内请求是由参数tcp_retries1控制&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_synack_retries&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;5&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;对外TCP的第二步，尝试发送SYN +ACK次数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_keepalive_time&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;7200&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1800&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;当网络两端建立了TCP连接之后，闲置tcp_keepalive_time时间后，内核会向客户端发送侦测包判断tcp连接情况&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_keepalive_probes&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;9&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;内核会向客户端发送tcp_keepalive_probes次侦测包判断tcp连接情况&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_keepalive_intvl&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;75&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;15&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;内核向客户端发送侦测包未获得响应时,隔tcp_keepalive_intvl时间,再发一次侦测&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_retries1&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;放弃回应一个TCP连接请求前,进行tcp_retries1次重试,最低为3&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_retries2&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;15&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;5&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;丢弃已建立的tcp前,进行多少次重试&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_orphan_retries&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;7&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;在近端丢弃TCP前，重试多少次&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_fin_timeout&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;60&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;2&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;对于本端断开的socket连接，TCP保持的时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_max_tw_buckets&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;180000&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;36000&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;系统在同时所处理的最大timewait sockets数目&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_tw_recycle&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;0&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;快速TIME-WAIT sockets回收&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_tw_reuse&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;0&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;表示是否允许重新应用处于TIME-WAIT状态的socket用于新的TCP连接&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_max_orphans&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;8192&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;32768&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;系统所能处理不属于任何进程的TCP sockets最大数量,超过这个数量﹐那么不属于任何进程的连接会被立即reset，并同时显示警告信息&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_syncookies&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;0&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;只有在内核编译时选择了CONFIG_SYNCOOKIES时才会发生作用。当出现syn等候队列出现溢出时象对方发送syncookies。目的是为了防止syn flood攻击&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_max_syn_backlog&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1024&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;16384&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;对于那些依然还未获得客户端确认的连接请求﹐需要保存在队列中最大数目&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_reordering&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;6&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;TCP流中重排序的数据报最大数量&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_retrans_collapse&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;0&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;对于某些有bug的打印机提供针对其bug的兼容性&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_wmem：mindefaultmax&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;4096/16384/131072&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;8192/131072/16777216&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;发送缓存设置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_rmem：mindefaultmax&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;4096/16384/131072&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;8192/131072/16777216&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;接收缓存设置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tcp_mem：mindefaultmax&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;内存计算&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;786432/1048576/1572864&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ip_local_port_range:minmax&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;32768/61000&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1024/65000&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;表示用于向外连接的端口范围&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;netdev_max_backlog&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;1024&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;16384&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目，对重负载服务器而言，该值需要调高一点&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;somaxconn&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;128&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;16384&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;用来限制监听(LISTEN)队列最大数据包的数量，超过这个数量就会导致链接超时或者触发重传机制&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;rmem_max&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;129024&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;873200&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;最大的TCP数据接收缓冲&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;wmem_max&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;129024&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;873200&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;最大的TCP数据发送缓冲&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat /etc/sysctl.conf 
-
-net.ipv4.tcp_syn_retries &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
-net.ipv4.tcp_synack_retries &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
-net.ipv4.tcp_keepalive_time &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 600
-net.ipv4.tcp_keepalive_probes &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 3
-net.ipv4.tcp_keepalive_intvl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;15
-net.ipv4.tcp_retries2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5
-net.ipv4.tcp_fin_timeout &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2
-net.ipv4.tcp_max_tw_buckets &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 36000
-net.ipv4.tcp_tw_recycle &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
-net.ipv4.tcp_tw_reuse &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
-net.ipv4.tcp_max_orphans &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 32768
-net.ipv4.tcp_syncookies &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1
-net.ipv4.tcp_max_syn_backlog &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 16384
-net.ipv4.tcp_wmem &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 8192 131072 16777216
-net.ipv4.tcp_rmem &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 32768 131072 16777216
-net.ipv4.tcp_mem &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 786432 1048576 1572864
-net.ipv4.ip_local_port_range &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1024 65000
-net.ipv4.ip_conntrack_max &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 65536
-net.ipv4.netfilter.ip_conntrack_max&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;65536
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_established&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;180
-net.core.somaxconn &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 16384
-net.core.netdev_max_backlog &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 16384
-vm.swappiness&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-        <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/11/linux/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/11/linux/</guid>
-        
-        <category>Linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>博客添加live2d</title>
-        <description>&lt;h1 id=&quot;为博客添加女朋友&quot;&gt;为博客添加女朋友&lt;/h1&gt;
-
-&lt;h2 id=&quot;下载live2d-models-库&quot;&gt;下载live2d models 库&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/xiazeyu/live2d-widget-models&quot;&gt;github地址&lt;/a&gt;&lt;br /&gt;
-下载live2d库，&lt;a href=&quot;https://huaji8.top/post/live2d-plugin-2.0/&quot;&gt;查看预览图&lt;/a&gt;&lt;br /&gt;
-选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 
-在live2d-widget-models目录下，npm install live2d-widget-model-z16&lt;/p&gt;
-
-&lt;h2 id=&quot;生成静态的文件&quot;&gt;生成静态的文件&lt;/h2&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install hexo-cli -g
-hexo init blog
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;blog
-npm install
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;进入blog目录，安装hexo-helper-live2d，&lt;a href=&quot;https://github.com/EYHN/hexo-helper-live2d&quot;&gt;链接&lt;/a&gt;&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;npm install --save hexo-helper-live2d&lt;/code&gt;&lt;br /&gt;
-如果不成功：&lt;code class=&quot;highlighter-rouge&quot;&gt;yarn add hexo-helper-live2d&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;修改_config.xml&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;live2d&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;enable&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;scriptFrom&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;local&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;pluginRootPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;live2dw/&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;pluginJsPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;lib/&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;pluginModelPath&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;assets/&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;tagMode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;false&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;false&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;z16&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;display&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;right&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;150&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;300&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;mobile&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;除了model.use的名字，根据选择的model名外，其他的配置保持不变&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;拷贝文件到hexo中&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;blog
-mkdir live2d_models &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;live2d_models &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir z16 
-&lt;span class=&quot;c&quot;&gt;#将live2d-widget-models目录下live2d-widget-model-z16/assets/下的文件拷贝到 blog/live2d_models/z16下&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;将目录拷贝到blog的live2d_models下后执行&lt;strong&gt;hexo serve&lt;/strong&gt;查看是否已经有了z16&lt;br /&gt;
-在blog目录，执行&lt;strong&gt;hexo deploy&lt;/strong&gt;&lt;br /&gt;
-生成的静态文件在blog/public/live2d下&lt;br /&gt;
-引用文件在index.html中&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;静态文件导入jeklly&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cp blog/public/live2d    jeklly-blog的根目录&lt;/code&gt;
-将hexo的index.html的引用文件添加到jeklly的footer.html中&lt;/p&gt;
-
-&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;L2Dwidget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginRootPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;live2dw/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginJsPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lib/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pluginModelPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;assets/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;tagMode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;debug&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;model&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jsonPath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/live2dw/assets/z16.model.json&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;display&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;position&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;right&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;width&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;show&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;log&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;完成。&lt;/p&gt;
-</description>
-        <pubDate>Thu, 01 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/11/live2d/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/11/live2d/</guid>
-        
-        <category>博客</category>
         
         
       </item>

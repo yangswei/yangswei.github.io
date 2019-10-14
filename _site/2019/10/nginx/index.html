@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>免费证书加密https</title>
-  <meta name="description" content="生成免费证书">
+  <title>Nginx生产实践</title>
+  <meta name="description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="免费证书加密https">
-  <meta name="twitter:description" content="生成免费证书">
+  <meta name="twitter:title" content="Nginx生产实践">
+  <meta name="twitter:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="免费证书加密https">
-  <meta property="og:description" content="生成免费证书">
+  <meta property="og:title" content="Nginx生产实践">
+  <meta property="og:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2018/10/https/">
+  <link rel="canonical" href="http://localhost:4000/2019/10/nginx/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -173,10 +173,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">免费证书加密https</h1>
+    <h1 class="post-title">Nginx生产实践</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2018-10-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-10-09</time>  
+      <time datetime="2019-10-14 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-10-14</time>  
       
       <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
       
@@ -187,47 +187,159 @@
   </header>
 
   <section class="post">
-    <h3 id="生成免费证书">生成免费证书</h3>
-
-<blockquote>
-  <p>GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)</p>
+    <blockquote>
+  <p>生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧</p>
 </blockquote>
 
-<p>生成方法：  <br />
-    <code class="highlighter-rouge">curl https://get.acme.sh | SH</code> <br />
-    执行完后，脚本位置在~/.acme.sh/下  <br />
-    <code class="highlighter-rouge">acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com</code>  <br />
-    [上面命令是github给出的，我在服务器上执行的是下面的命令行] 
-    ` sh  ~/.acme.sh/acme.sh    –issue –nginx  -d myucloud.com -d www.myucloud.com –force` <br />
-    执行完之后，屏幕上会显示生成证书的位置</p>
-
-<h3 id="配置nginx">配置nginx</h3>
+<p>常用的一些nginx配置</p>
 
 <ul>
-  <li>默认是https访问，当访问80端口时，指向https</li>
-  <li>在nginx/conf.d/下添加conf，只需要指定证书ssl_certificate/ssl_certificate_key位置，将www.xx.com替换成你的域名即可</li>
+  <li>测试环境本地项目调试</li>
+  <li>测试环境多端口调试</li>
+  <li>rewrite常用用法</li>
+  <li>root&amp;alias用法与区别</li>
+  <li>生产环境切换</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server {
-    listen  443 ssl;
-    ssl_certificate      ./ssl/youdomain.cer;
-    ssl_certificate_key  ./ssl/youdomain.key;
-    ssl_session_timeout  5m;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers         HIGH:!aNULL:!MD5;
-    server_name  www.xx.com;
+<h3 id="测试环境本地项目调试">测试环境本地项目调试</h3>
+
+<pre><code class="language-nginx-1">server {
+    listen 80;
+    server_name xxx;
+    error_page 502 503 504 = @backurl;
     location / {
-        root   /opt/html;
-        index  index.html index.htm index.php;
+        proxy_pass http://$remote_addr:8888;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location @backurl {
+        proxy_pass http://127.0.0.1:8888;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
     }
 }
+</code></pre>
 
-server {
-    listen 80;
-    server_name  www.xx.com;
-    rewrite ^(.*)$ https://${server_name}$1 permanent;
+<p>请求工作方法： 访问对应server时，首先找location对应的url,url则指向remote_addr(客户端IP,注意这里的remote_addr需要在nginx设置获取真实ip配置)，当客户端本地未监听8888时，则重新将location指向服务端的8888,即完成测试环境代理本地项目测试需求</p>
+
+<h3 id="测试环境多端口调试">测试环境多端口调试</h3>
+<p>同一服务在测试环境部署N个，那么如何在浏览器指定port请求对应服务？<br />
+通过cookie是一种方法,与测试项目本地调试的配置类似</p>
+
+<pre><code class="language-port-nginx">    location / {
+        if ($cookie_port) {
+          set $apiport $cookie_port;
+        }
+        proxy_pass http://$remote_addr:$apiport;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+</code></pre>
+
+<p>其实只需要nginx获取到客户端请求时传输的port变量即可，这里将port信息放到cookie中，同样可以放到请求的head中，nginx通过http_x_port来进行反代即可</p>
+
+<h3 id="rewrite常用用法">rewrite常用用法</h3>
+
+<p>rewrite为了改写请求url,改变浏览器中的请求地址<br />
+有四个标签：</p>
+
+<ul>
+  <li>last      匹配后继续匹配其他规则</li>
+  <li>break     匹配后不匹配其他规则</li>
+  <li>redirect  临时重定向</li>
+  <li>permanent 永久重定向</li>
+</ul>
+
+<p>用法1：location中直接将url第一个根路径以前的url替换成rewrite指定的url,正则有很多，具体参考nginx-rewrite正则相关的文章</p>
+
+<pre><code class="language-rewrite">  rewrite ^/(.*) http://www.taobao.com/$1 permanent;
+</code></pre>
+
+<p>用法2：例如请求的url是<code class="highlighter-rouge">taobao.com/xxx/aa</code>则rewrite成<code class="highlighter-rouge">taobao.com/aa</code>并执行pass的跳转并且不会继续匹配aa对应的location</p>
+
+<pre><code class="language-rewrite2">location /xxx {
+    rewrite ^/xxx(.*) $1 break;
+    proxy_pass http://xx.xx.xx.xx:port;
 }
-</code></pre></div></div>
+location /aa {
+    dosomething
+}
+</code></pre>
+
+<p>用法3：在if判断中,例如如下防盗链配置请求资源。除none blocked域名外其他均rewrite掉</p>
+
+<pre><code class="language-ifrewrite">server {
+  listen 8080;
+  server_name xxx.abc.com
+  location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$ {                                   ## location /xx/ {
+                                                                                      ##    root /xxx/xx;
+    valid_referers none blocked www.xxx.com www.yyy.com *.baidu.com  *.tabobao.com;
+    if ($invalid_referer) {
+      rewrite ^/ http://www.xxx.com/images/forbidden.png;
+    }
+  }
+}
+</code></pre>
+
+<p>rewrite使用方面有很多场景官方文档有详细说明：<a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html">跳转</a></p>
+
+<h3 id="alias用法与区别">alias用法与区别</h3>
+
+<ul>
+  <li>root处理结果是将url指向location路径+root路径</li>
+  <li>alias的处理结果是：使用alias路径替换location路径</li>
+</ul>
+
+<p>alias目录名后面一定要加”/”，alias在使用正则匹配时，必须捕捉要匹配的内容并在指定的内容处使用，alias只用于location中</p>
+
+<pre><code class="language-location-alias">location ^~ /t/ {
+ alias /www/root/xxx/;
+}
+location = /favicon.ico {
+    alias /xxx/favicon.ico;
+    break;
+}
+location /xxx {
+    alias /xxx/dist;
+    index index.html;
+
+</code></pre>
+
+<h3 id="生产环境切换">生产环境切换</h3>
+
+<p>环境切换与端口切换类似，方法可以通过head或者cookie等进行传参，nginx中进行判断，根据不同的变量，进行不同的跳转</p>
+
+<ul>
+  <li>根据来源ip进行跳转</li>
+  <li>根据cookie是否包含version字段进行跳转</li>
+</ul>
+
+<pre><code class="language-change">        location /xxx/ {
+            set $xxxpassurl http://xxx-release;
+                if ($remote_addr ~ '(xx.xx.xx.x1|xx.xx.xx.x2)' ) {
+                        set $xxxpassurl http://xxx-test;
+                }
+                if ($http_cookie ~ version\=release) {
+                        set $xxxpassurl http://xxx-release;
+                }
+                if ($http_cookie ~ version\=ga) {
+                        set $xxxpassurl http://xxx-test;
+                }
+            rewrite ^/xxx(.*)$  $1 break;
+            proxy_pass $xxxpassurl;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $http_connection;
+            proxy_http_version 1.1;
+        }  
+</code></pre>
 
 
   </section>
@@ -298,15 +410,10 @@ server {
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2018/10/blog/" data-toggle="tooltip" data-placement="top" title="搭建个人博客+Gitpage">上一篇：  <span>搭建个人博客+Gitpage</span>
+            <a href="/2019/07/mkdisk/" data-toggle="tooltip" data-placement="top" title="云主机磁盘分区">上一篇：  <span>云主机磁盘分区</span>
             </a>
         </li>
         
-        
-        <li class="next">
-            <a href="/2018/10/baidudisk/" data-toggle="tooltip" data-placement="top" title="百度网盘Svip破解">下一篇：  <span>百度网盘Svip破解</span>
-            </a>
-        </li>
         
     </ul>
 </section>

@@ -1,6 +1,22 @@
 [
   
     {
+      "title"    : "Nginx生产实践",
+      "category" : "",
+      "tags"     : "Linux",
+      "url"      : "/2019/10/nginx/",
+      "date"     : "2019-10-14 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "云主机磁盘分区",
+      "category" : "",
+      "tags"     : "Linux",
+      "url"      : "/2019/07/mkdisk/",
+      "date"     : "2019-07-01 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "Openshift-生产环境部署",
       "category" : "",
       "tags"     : "Openshift",
@@ -17,7 +33,7 @@
     } ,
   
     {
-      "title"    : "Mysql学习笔记-安装",
+      "title"    : "Mysql最佳实践",
       "category" : "",
       "tags"     : "Mysql",
       "url"      : "/2019/01/learnmysql/",
@@ -49,7 +65,7 @@
     } ,
   
     {
-      "title"    : "Docker入门与生产配置",
+      "title"    : "Docker最佳实践",
       "category" : "",
       "tags"     : "Docker",
       "url"      : "/2018/12/docker/",
@@ -57,7 +73,7 @@
     } ,
   
     {
-      "title"    : "科学上网",
+      "title"    : "科学上网且用且珍惜",
       "category" : "",
       "tags"     : "Linux",
       "url"      : "/2018/11/netcon/",
@@ -97,7 +113,7 @@
     } ,
   
     {
-      "title"    : "Nginx免费证书加密https",
+      "title"    : "免费证书加密https",
       "category" : "",
       "tags"     : "工具",
       "url"      : "/2018/10/https/",

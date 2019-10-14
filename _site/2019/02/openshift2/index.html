@@ -36,17 +36,15 @@
   </script-->  
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <!-- 百度统计 -->
-  
-  <script>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
-      })();
-  </script>
-  
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eafc0f02d6fae754ca3948a5d19547c9";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
 <!-- google 统计 >
   
@@ -257,11 +255,10 @@
 
 <p>在Master节点启动EPEL安装ansible</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>yum -y install https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm  
-sed -i -e <span class="s2">"s/^enabled=1/enabled=0/"</span> /etc/yum.repos.d/epel.repo  
-yum -y --enablerepo<span class="o">=</span>epel install ansible pyopenSSL  
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nt">-y</span> <span class="nb">install </span>https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm  
+<span class="nb">sed</span> <span class="nt">-i</span> <span class="nt">-e</span> <span class="s2">"s/^enabled=1/enabled=0/"</span> /etc/yum.repos.d/epel.repo  
+yum <span class="nt">-y</span> <span class="nt">--enablerepo</span><span class="o">=</span>epel <span class="nb">install </span>ansible pyopenSSL  
+</code></pre></div></div>
 
 <p>在Master节点生成SSH密钥<br />
 <code class="highlighter-rouge">ssh-keygen -f /root/.ssh/id_rsa -N ''</code></p>
@@ -269,28 +266,25 @@ yum -y --enablerepo<span class="o">=</span>epel install ansible pyopenSSL
 <p>Ansible基于Agentless架构实现，不需要在目标主机安装agent依赖ssh远程控制协议，所以需要配置master和node节点互信<br />
 在Master节点执行：</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="k">for </span>host <span class="k">in </span>master.example.com <span class="se">\</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>host <span class="k">in </span>master.example.com <span class="se">\</span>
 node1.example.com <span class="se">\</span>
-node2.example.com; <span class="se">\</span>
-<span class="k">do </span>ssh-copy-id -i ~/.ssh/id_rsa.pub <span class="nv">$host</span>; <span class="se">\</span>
+node2.example.com<span class="p">;</span> <span class="se">\</span>
+<span class="k">do </span>ssh-copy-id <span class="nt">-i</span> ~/.ssh/id_rsa.pub <span class="nv">$host</span><span class="p">;</span> <span class="se">\</span>
 <span class="k">done</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>在Master节点安装Openshift的ansible Playbook</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>wget https://github.com/openshift/openshift-ansible/archive/openshift-ansible-3.3.26-1.tar.gz  
-tar zxf openshift-ansible-3.3.26-1.tar.gz  
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/openshift/openshift-ansible/archive/openshift-ansible-3.3.26-1.tar.gz  
+<span class="nb">tar </span>zxf openshift-ansible-3.3.26-1.tar.gz  
+</code></pre></div></div>
 
 <p>安装单master可以不单独安装etcd,这里选择安装单节点的etcd,生产环境安装3节点的etcd集群,确保高可用</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>yum install -y etcd  
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nb">install</span> <span class="nt">-y</span> etcd  
 systemctl <span class="nb">enable </span>etcd  
 systemctl start etcd  
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="配置ansible">配置ansible</h2>
 
@@ -353,10 +347,9 @@ Router是以容器的形式运行在Openshift平台，默认情况不知道容�
 <code class="highlighter-rouge">oc get node --show-labels</code><br />
 为Router使用的Service Account赋权</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>oadm policy add-scc-to-user privileged system:serviceaccount:default:router
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oadm policy add-scc-to-user privileged system:serviceaccount:default:router
 oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:default:router
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>部署router<br />
 <code class="highlighter-rouge">oadm router ose-router --replicas=1 --service-account=router --selector='infra=yes'</code></p>
@@ -440,6 +433,11 @@ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:defaul
             </a>
         </li>
         
+        
+        <li class="next">
+            <a href="/2019/07/mkdisk/" data-toggle="tooltip" data-placement="top" title="云主机磁盘分区">下一篇：  <span>云主机磁盘分区</span>
+            </a>
+        </li>
         
     </ul>
 </section>
