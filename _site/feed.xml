@@ -5,8 +5,8 @@
     <description>欢迎来到我的个人站~</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 14 Oct 2019 16:39:00 +0800</pubDate>
-    <lastBuildDate>Mon, 14 Oct 2019 16:39:00 +0800</lastBuildDate>
+    <pubDate>Thu, 17 Oct 2019 10:25:19 +0800</pubDate>
+    <lastBuildDate>Thu, 17 Oct 2019 10:25:19 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
     
       <item>
@@ -1912,8 +1912,12 @@ CMD [&quot;./app&quot;]
 &lt;h3 id=&quot;服务端安装&quot;&gt;服务端安装&lt;/h3&gt;
 
 &lt;p&gt;linux服务器服务端(在国外服务器上执行)&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh&lt;/code&gt;&lt;br /&gt;
-执行完成后监听端口为执行过程中的默认端口&lt;br /&gt;
+&lt;del&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh&lt;/code&gt;&lt;/del&gt;
+安装链接貌似已经失效了，最近使用的比较好用的是v2ray,一键脚本执行方法：&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;bash &amp;lt;(curl -s -L https://git.io/v2ray.sh)&lt;/code&gt;&lt;br /&gt;
+脚本下载下来看了一下，备注挺中二的…&lt;/p&gt;
+
+&lt;p&gt;执行完成后监听端口为执行过程中的默认端口&lt;br /&gt;
 在客户端按脚本输出信息配置连接信息&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
