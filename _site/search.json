@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "如何将服务运行在k8s中",
+      "category" : "",
+      "tags"     : "Linux",
+      "url"      : "/2019/11/appink8s/",
+      "date"     : "2019-11-14 00:00:00 +0800"
+    } ,
+  
+    {
       "title"    : "Nginx生产实践",
       "category" : "",
       "tags"     : "Linux",

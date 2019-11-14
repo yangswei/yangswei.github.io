@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>Nginx生产实践</title>
-  <meta name="description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <title>如何将服务运行在k8s中</title>
+  <meta name="description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Nginx生产实践">
-  <meta name="twitter:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <meta name="twitter:title" content="如何将服务运行在k8s中">
+  <meta name="twitter:description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Nginx生产实践">
-  <meta property="og:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <meta property="og:title" content="如何将服务运行在k8s中">
+  <meta property="og:description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2019/10/nginx/">
+  <link rel="canonical" href="http://localhost:4000/2019/11/appink8s/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -173,10 +173,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">Nginx生产实践</h1>
+    <h1 class="post-title">如何将服务运行在k8s中</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2019-10-14 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-10-14</time>  
+      <time datetime="2019-11-14 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-11-14</time>  
       
       <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
       
@@ -188,158 +188,225 @@
 
   <section class="post">
     <blockquote>
-  <p>生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧</p>
+  <p>距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了</p>
 </blockquote>
 
-<p>常用的一些nginx配置</p>
+<h1 id="如何将服务运行在k8s中">如何将服务运行在k8s中</h1>
+
+<h2 id="环境准备">环境准备</h2>
+
+<p>这篇文章建立在，已经准备好了如下的环境的基础上，如果没有可以找找教程，自行测试k8s太重的话可以弄轻量的k3s都可以</p>
 
 <ul>
-  <li>测试环境本地项目调试</li>
-  <li>测试环境多端口调试</li>
-  <li>rewrite常用用法</li>
-  <li>root&amp;alias用法与区别</li>
-  <li>生产环境切换</li>
+  <li>python3，docker</li>
+  <li>k8s，私有仓库</li>
 </ul>
 
-<h3 id="测试环境本地项目调试">测试环境本地项目调试</h3>
+<h3 id="开发过程">开发过程</h3>
 
-<pre><code class="language-nginx-1">server {
-    listen 80;
-    server_name xxx;
-    error_page 502 503 504 = @backurl;
-    location / {
-        proxy_pass http://$remote_addr:8888;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-NginX-Proxy true;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-    location @backurl {
-        proxy_pass http://127.0.0.1:8888;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-NginX-Proxy true;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
+<p>因为刚写python，所以这里以python的代码为例，其他语言的均类似<br />
+下面是简单的Hello world进程，程序默认的监听端口是8080<br />
+（当然在我们生产上会有很多复杂的场景，这里只介绍基本情况，就是服务只监听一个端口的情形）</p>
+
+<pre><code class="language-app.py">from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "Hello world!"
+
+if __name__ == "__main__":
+    app.run()
 </code></pre>
 
-<p>请求工作方法： 访问对应server时，首先找location对应的url,url则指向remote_addr(客户端IP,注意这里的remote_addr需要在nginx设置获取真实ip配置)，当客户端本地未监听8888时，则重新将location指向服务端的8888,即完成测试环境代理本地项目测试需求</p>
+<h3 id="容器化">容器化</h3>
 
-<h3 id="测试环境多端口调试">测试环境多端口调试</h3>
-<p>同一服务在测试环境部署N个，那么如何在浏览器指定port请求对应服务？<br />
-通过cookie是一种方法,与测试项目本地调试的配置类似</p>
+<p>接下来就是怎么将各种语言写的代码容器化的操作了<br />
+以python为例,dockerfile很简单</p>
 
-<pre><code class="language-port-nginx">    location / {
-        if ($cookie_port) {
-          set $apiport $cookie_port;
-        }
-        proxy_pass http://$remote_addr:$apiport;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-NginX-Proxy true;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> python:3.6.4</span>
+<span class="k">RUN </span><span class="nb">mkdir</span> /code <span class="se">\
+</span>    <span class="o">&amp;&amp;</span>apt-get update <span class="se">\
+</span>    <span class="o">&amp;&amp;</span>apt-get <span class="nt">-y</span> <span class="nb">install </span>freetds-dev <span class="se">\
+</span>    <span class="o">&amp;&amp;</span>apt-get <span class="nt">-y</span> <span class="nb">install </span>unixodbc-dev
+<span class="k">COPY</span><span class="s"> . /code </span>
+<span class="k">COPY</span><span class="s"> requirements.txt /code</span>
+<span class="k">RUN </span>pip <span class="nb">install</span> <span class="nt">-r</span> /code/requirements.txt <span class="nt">-i</span> https://pypi.douban.com/simple
+<span class="k">WORKDIR</span><span class="s"> /code</span>
+<span class="k">CMD</span><span class="s"> ["python3","/code/xx.py","8060"]</span>
+</code></pre></div></div>
+
+<p>FROM一个基础环境，如果你是node开发from一个node的镜像作为基础环境<br />
+RUN 是构建镜像过程中执行指令，这里是运行安装一些基础依赖，这个根据应用来<br />
+基础依赖安装完成后，将代码，以及python依赖的库安装一下<br />
+CMD 则是运行这个容器的最后一条命令</p>
+
+<p>实际生产环境会要求镜像包最小化<br />
+有一些基础的技巧，可以使最终生成的包大小减少很多。</p>
+
+<ol>
+  <li>dockerfile每条命令相当于在基础镜像上包了一层，所以用连接符减少指令行数</li>
+  <li>multistage builds 这个很好用</li>
+</ol>
+
+<p>下面以实际生产中multistage为例:</p>
+
+<pre><code class="language-mutidockerfile">  FROM xxx/node:6.11.2 AS builder
+  WORKDIR /app
+  COPY package.json ./package.json
+  COPY yarn.lock ./
+  RUN yarn install  &amp;&amp; yarn cache clean
+  FROM node:6.11.2
+  WORKDIR /xxx
+  COPY --from=builder /xxx/node_modules /xxx/node_modules
+  COPY . .
+  EXPOSE 5000
+  CMD npm start
 </code></pre>
 
-<p>其实只需要nginx获取到客户端请求时传输的port变量即可，这里将port信息放到cookie中，同样可以放到请求的head中，nginx通过http_x_port来进行反代即可</p>
+<p>生产中尽量把构建过程拆分开，最终镜像只需要从过程镜像获取构建好的依赖</p>
 
-<h3 id="rewrite常用用法">rewrite常用用法</h3>
+<h3 id="私有仓库">私有仓库</h3>
 
-<p>rewrite为了改写请求url,改变浏览器中的请求地址<br />
-有四个标签：</p>
+<p>这里不过多介绍，镜像推送私有仓库很简单</p>
 
-<ul>
-  <li>last      匹配后继续匹配其他规则</li>
-  <li>break     匹配后不匹配其他规则</li>
-  <li>redirect  临时重定向</li>
-  <li>permanent 永久重定向</li>
-</ul>
-
-<p>用法1：location中直接将url第一个根路径以前的url替换成rewrite指定的url,正则有很多，具体参考nginx-rewrite正则相关的文章</p>
-
-<pre><code class="language-rewrite">  rewrite ^/(.*) http://www.taobao.com/$1 permanent;
+<pre><code class="language-cmd">docker build -t xxx:v0.0.1 .  
+docker push xxxx:v0.0.1  
 </code></pre>
 
-<p>用法2：例如请求的url是<code class="highlighter-rouge">taobao.com/xxx/aa</code>则rewrite成<code class="highlighter-rouge">taobao.com/aa</code>并执行pass的跳转并且不会继续匹配aa对应的location</p>
+<h3 id="kubernetes创建应用">kubernetes创建应用</h3>
 
-<pre><code class="language-rewrite2">location /xxx {
-    rewrite ^/xxx(.*) $1 break;
-    proxy_pass http://xx.xx.xx.xx:port;
-}
-location /aa {
-    dosomething
-}
+<p>下面我先附上deploy文件,再介绍下里面的内容</p>
+
+<pre><code class="language-deployment">apiVersion: v1
+kind: Service
+metadata:
+  name: xxx(应用名)
+  namespace: release(namespace名)
+  labels:
+    app: xxx(应用名)
+    service: xxx(应用名)
+spec:
+  ports:
+  - port: 8060
+    name: http
+  selector:
+    app: xxx(应用名)
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: xxx(应用名)
+  namespace: release(namespace名)
+  labels:
+    app: xxx(应用名)
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: xxx(应用名)
+        version: v1
+    spec:
+      containers:
+      - name: xxx(应用名)
+        image: xxx:v0.0.1(这里是我们刚推送到私有仓库的地址)
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8060
 </code></pre>
 
-<p>用法3：在if判断中,例如如下防盗链配置请求资源。除none blocked域名外其他均rewrite掉</p>
+<p>这里我创建了两个资源，kind分别是service和deployment<br />
+service用于将port映射出去<br />
+deployment描述pod信息<br />
+因为我这里服务只需要内部调用，所以这里没有将端口暴露出去<br />
+实际生产环境中，除了需要暴露端口，类似证书，配置文件均可以通过configmap的形式挂载到pod中去</p>
 
-<pre><code class="language-ifrewrite">server {
-  listen 8080;
-  server_name xxx.abc.com
-  location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$ {                                   ## location /xx/ {
-                                                                                      ##    root /xxx/xx;
-    valid_referers none blocked www.xxx.com www.yyy.com *.baidu.com  *.tabobao.com;
-    if ($invalid_referer) {
-      rewrite ^/ http://www.xxx.com/images/forbidden.png;
-    }
-  }
-}
+<pre><code class="language-deploymentrelease">apiVersion: v1
+kind: Service
+metadata:
+  name: appnamexx
+  namespace: namespacexx
+  labels:
+    app: appnamexx
+spec:
+  selector:
+    app: appnamexx
+  type: NodePort
+  ports:
+  - name: appnamexx
+    port: portxx
+    nodePort: nodeportxx
+    protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  appnamexx
+  namespace: namespacexx
+spec:
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: replicas
+  template:
+    metadata:
+      labels:
+        app:  appnamexx
+    spec:
+      securityContext:
+        runAsUser: someuserxx
+        fsGroup: somegroupxx
+      containers:
+      - name: appnamexx
+        image: imageaddrxx
+        resources:
+          limits:
+            cpu: 100m
+            memory: 1000Mi
+          requests:
+            cpu: 100m
+            memory: 500Mi
+        livenessProbe:
+          httpGet:
+            path: /checkalive
+            port: portxx
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /probe
+            port: portxx
+            scheme: HTTP
+          initialDelaySeconds: 3
+          timeoutSeconds: 5
+        ports:
+        - containerPort: portxx
+          name: http
+          protocol: TCP
+        env:
+          - name: SOME_ENVXX
+            value: xxx
+        volumeMounts:
+          - name: configvolumexx
+            mountPath: configpathxx
+      volumes:
+      - name: configvolumexx
+        configMap:
+          name: app's config
+
 </code></pre>
 
-<p>rewrite使用方面有很多场景官方文档有详细说明：<a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html">跳转</a></p>
+<p>可以看到生产环境多了很多配置，除了nodeport将应用的端口映射出去，还增加了类似pod内存，cpu资源分配的限制，配置文件的挂载，注意volumes和volumeMounts对应的name要一致，并且这个名字和k8s的configmap的资源名都保持一致。这里才能将congfigmap挂载到对应的pod中去</p>
 
-<h3 id="alias用法与区别">alias用法与区别</h3>
+<h3 id="上线调试">上线&amp;调试</h3>
 
-<ul>
-  <li>root处理结果是将url指向location路径+root路径</li>
-  <li>alias的处理结果是：使用alias路径替换location路径</li>
-</ul>
-
-<p>alias目录名后面一定要加”/”，alias在使用正则匹配时，必须捕捉要匹配的内容并在指定的内容处使用，alias只用于location中</p>
-
-<pre><code class="language-location-alias">location ^~ /t/ {
- alias /www/root/xxx/;
-}
-location = /favicon.ico {
-    alias /xxx/favicon.ico;
-    break;
-}
-location /xxx {
-    alias /xxx/dist;
-    index index.html;
-
-</code></pre>
-
-<h3 id="生产环境切换">生产环境切换</h3>
-
-<p>环境切换与端口切换类似，方法可以通过head或者cookie等进行传参，nginx中进行判断，根据不同的变量，进行不同的跳转</p>
-
-<ul>
-  <li>根据来源ip进行跳转</li>
-  <li>根据cookie是否包含version字段进行跳转</li>
-</ul>
-
-<pre><code class="language-change">        location /xxx/ {
-            set $xxxpassurl http://xxx-release;
-                if ($remote_addr ~ '(xx.xx.xx.x1|xx.xx.xx.x2)' ) {
-                        set $xxxpassurl http://xxx-test;
-                }
-                if ($http_cookie ~ version\=release) {
-                        set $xxxpassurl http://xxx-release;
-                }
-                if ($http_cookie ~ version\=ga) {
-                        set $xxxpassurl http://xxx-test;
-                }
-            rewrite ^/xxx(.*)$  $1 break;
-            proxy_pass $xxxpassurl;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $http_connection;
-            proxy_http_version 1.1;
-        }  
-</code></pre>
+<p>上线就是apply对应的资源，最终调试可以参考上一篇讲nginx时讲到的本地调试方式进行本地调试，本地开发环境并不需要打包到镜像并发送到k8s的pod才能调试。只需在nginxcallback到本地的端口即可</p>
 
 
   </section>
@@ -410,15 +477,10 @@ location /xxx {
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2019/07/mkdisk/" data-toggle="tooltip" data-placement="top" title="云主机磁盘分区">上一篇：  <span>云主机磁盘分区</span>
+            <a href="/2019/10/nginx/" data-toggle="tooltip" data-placement="top" title="Nginx生产实践">上一篇：  <span>Nginx生产实践</span>
             </a>
         </li>
         
-        
-        <li class="next">
-            <a href="/2019/11/appink8s/" data-toggle="tooltip" data-placement="top" title="如何将服务运行在k8s中">下一篇：  <span>如何将服务运行在k8s中</span>
-            </a>
-        </li>
         
     </ul>
 </section>
