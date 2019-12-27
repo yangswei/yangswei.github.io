@@ -176,6 +176,48 @@
   <ol class="post-list">
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/12/zabbix/" title="访问 zabbix生产实践">zabbix生产实践</a></h2>
+      <p class="excerpt">  背景:目前项目上k8s集群的监控采用标准的prometheus+altermanager+hook(hook是我这边收集处理告警的程序后续如果想写的话专门写一篇来介绍)但宿主机的各项指标监控prometheus覆盖不完全,针对windows、mac等各类平台的监控目前还是开源的zabbix比较完善服务端部署本篇文章是基于github作者jangaraj的项目进行部署的,上一个版本的xxl持续使用了很久,效果不错,本次是基于新的项目docbix-xxl进行部署的项目地址server端的部...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-12-25 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-12-25</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">zabbix</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/12/zabbix/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2019/12/somdiff/" title="访问 19年圣诞,一些感想">19年圣诞,一些感想</a></h2>
+      <p class="excerpt">最近（负能量较多，谨慎观看…）突然想写点什么，很多想写的，不知道怎么全部表达出来，等慢慢输出到屏幕，又忘记要说的核心内容有哪些，就随笔写写吧时隔上次写博客，一个月10天，上次博客还是在碧波路888号畅兴大厦完成的，随着teambition融入阿里巴巴，投入到一顿天昏地暗的忙碌中，直到今天才算缓一口气这段时间的一顿消耗，整个人都非常嗜睡外加一些精神敏感，尤其是连续的加班到凌晨，顶着红眼睛睡觉，闭上眼感觉眼球干涩到没办法转动，迫于无奈，滴点眼药水赶紧转动一下眼球快速入眠早上又不得不准点到公司，...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2019-12-24 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2019-12-24</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">diary</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2019/12/somdiff/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2019/11/appink8s/" title="访问 如何将服务运行在k8s中">如何将服务运行在k8s中</a></h2>
       <p class="excerpt">  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了如何将服务运行在k8s中环境准备这篇文章建立在，已经准备好了如下的环境的基础上，如果没有可以找找教程，自行测试k8s太重的话可以弄轻量的k3s都可以  python3，docker  k8s...&hellip;</p>
       <div class="post-list__meta">        
@@ -343,48 +385,6 @@
       <hr class="post-list__divider" />
     </li>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/12/smtp/" title="访问 Smtp邮件服务原理与拍错">Smtp邮件服务原理与拍错</a></h2>
-      <p class="excerpt">  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题终端测试:telnet xxx 25  --&gt;220HELO xxx  --&gt;250auth login  --&gt;334(等待服务器返回后输入账号密码对应的base64码)mail from: xxx --&gt;250rcpt to: xxx, xxxdataSubject: xxxHello...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-12-11 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-12-11</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">Linux</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/12/smtp/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/12/docker/" title="访问 Docker最佳实践">Docker最佳实践</a></h2>
-      <p class="excerpt">Get Started with Docker我都不喜欢照搬官网教程,就从一些示例来说,这样比较快速了解docker从nginx的官网docker镜像入门,理解dockerNginx-Docker镜像地址能看到,有很多tag的镜像版本：  镜像标注了nginx的版本：mainline和stable,分别表示开发版(主力版)和稳定版(生产环境建议版本)  标注了基础镜像版本：stretch(debain)和alpine主要讲一下基础镜像,所有的dockerfile第一段都是用FROM开头,标...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-12-11 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-12-11</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">Docker</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/12/docker/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider " />
@@ -472,7 +472,7 @@
 
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
-        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "opacity": 1, "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
         </div>
 
         <script>

@@ -402,11 +402,17 @@ spec:
 
 </code></pre>
 
-<p>可以看到生产环境多了很多配置，除了nodeport将应用的端口映射出去，还增加了类似pod内存，cpu资源分配的限制，配置文件的挂载，注意volumes和volumeMounts对应的name要一致，并且这个名字和k8s的configmap的资源名都保持一致。这里才能将congfigmap挂载到对应的pod中去</p>
+<p>可以看到生产环境多了很多配置，除了nodeport将应用的端口映射出去<br />
+还增加了类似pod内存，cpu资源分配的限制<br />
+配置文件的挂载，注意volumes和volumeMounts对应的name要一致，并且这个名字和k8s的configmap的资源名都保持一致才能将congfigmap挂载到对应的pod中去</p>
 
 <h3 id="上线调试">上线&amp;调试</h3>
 
 <p>上线就是apply对应的资源，最终调试可以参考上一篇讲nginx时讲到的本地调试方式进行本地调试，本地开发环境并不需要打包到镜像并发送到k8s的pod才能调试。只需在nginxcallback到本地的端口即可</p>
+
+<h3 id="欢迎大佬交流探讨">欢迎大佬交流探讨</h3>
+
+<p>页面中有邮箱和github联系方式，欢迎大佬们和我沟通交流，一起学习进步</p>
 
 
   </section>
@@ -481,6 +487,11 @@ spec:
             </a>
         </li>
         
+        
+        <li class="next">
+            <a href="/2019/12/somdiff/" data-toggle="tooltip" data-placement="top" title="19年圣诞,一些感想">下一篇：  <span>19年圣诞,一些感想</span>
+            </a>
+        </li>
         
     </ul>
 </section>
@@ -580,7 +591,7 @@ spec:
 
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
-        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "opacity": 1, "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
         </div>
 
         <script>
