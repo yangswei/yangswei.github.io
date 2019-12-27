@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>zabbix生产实践</title>
+  <meta name="description" content="  背景:目前项目上k8s集群的监控采用标准的prometheus+altermanager+hook(hook是我这边收集处理告警的程序后续如果想写的话专门写一篇来介绍)但宿主机的各项指标监控prometheus覆盖不完全,针对windows、mac等各类平台的监控目前还是开源的zabbix比较完善">
+  <meta name="author" content="yangshiwei">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="zabbix生产实践">
+  <meta name="twitter:description" content="  背景:目前项目上k8s集群的监控采用标准的prometheus+altermanager+hook(hook是我这边收集处理告警的程序后续如果想写的话专门写一篇来介绍)但宿主机的各项指标监控prometheus覆盖不完全,针对windows、mac等各类平台的监控目前还是开源的zabbix比较完善">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="zabbix生产实践">
+  <meta property="og:description" content="  背景:目前项目上k8s集群的监控采用标准的prometheus+altermanager+hook(hook是我这边收集处理告警的程序后续如果想写的话专门写一篇来介绍)但宿主机的各项指标监控prometheus覆盖不完全,针对windows、mac等各类平台的监控目前还是开源的zabbix比较完善">
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/default.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2019/12/zabbix/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+<!-- 站点统计 -->
+  <!--script    老的不算子过期了
+  async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script-->  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- 百度统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?0540f254ab6997034c20cc541ebaf08a";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<!-- google 统计 >
+  
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9005224472374751",
+    enable_page_level_ads: true
+  });
+</script-->
+
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      文章列表
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      标签
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/links" title="links" class="btn-mobile-menu__icon">
+                      友情链接
+                  </a>
+                </i>
+            
+          </nav>
+      </div>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">            
+            <a href="/#blog" title="前往 杨世威 的主页" class="blog-button">
+                <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+                <div class="info">
+                    <div class="info-back">
+                        <h2> 
+                            
+                                yangshiwei
+                            
+                        </h2>
+                        <p>
+                           
+                                devops
+                            
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 杨世威" class="blog-button">杨世威</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">个人站</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">欢迎来到我的个人站~</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                  <li class="navigation__item"><a href="/archive" title="archive">文章列表</a></li>
+                
+                  <li class="navigation__item"><a href="/tags" title="tags">标签</a></li>
+                
+                  <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+                  <li class="navigation__item"><a href="/links" title="links">友情链接</a></li>
+                
+              </ul>
+            </nav>
+            
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">zabbix生产实践</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/> 
+      <time datetime="2019-12-25 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-12-25</time>  
+      
+      <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
+      
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <blockquote>
+  <p>背景:目前项目上k8s集群的监控采用标准的prometheus+altermanager+hook(hook是我这边收集处理告警的程序后续如果想写的话专门写一篇来介绍)但宿主机的各项指标监控prometheus覆盖不完全,针对windows、mac等各类平台的监控目前还是开源的zabbix比较完善</p>
+</blockquote>
+
+<h3 id="服务端部署">服务端部署</h3>
+
+<p>本篇文章是基于github作者jangaraj的项目进行部署的,上一个版本的xxl持续使用了很久,效果不错,本次是基于新的项目docbix-xxl进行部署的<br />
+<a href="https://github.com/monitoringartist/dockbix-xxl/blob/master/Dockerfile/dockbix-xxl-4.0/docker-compose.yml">项目地址</a><br />
+server端的部署很简单,docker-compose文件如下:</p>
+
+<pre><code class="language-compose">version: '3.1'
+services:
+  zabbixdb:
+    image: monitoringartist/zabbix-db-mariadb:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /xxx/mysqldata:/var/lib/mysql
+      - /xxx/mysqlconf/myconf.cnf:/etc/my.cnf.d/myconf.cnf
+    environment:
+      - MARIADB_USER=zabbix
+      - MARIADB_PASS=xxxxxx
+  zabbixserver:
+    image: monitoringartist/dockbix-xxl:latest
+    depends_on:
+      - zabbixdb
+    ports:
+      - "1180:80"
+      - "10051:10051"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /xx/internalter:/usr/local/share/zabbix/alertscripts
+      - /xx/externalter:/usr/local/share/zabbix/externalscripts
+      - /xx/zabbix_server.conf:/usr/local/etc/zabbix_server.conf
+    environment:
+      - ZS_DBHost=zabbixdb
+      - ZS_DBUser=zabbix
+      - ZS_DBPassword=xxxxxxxxx
+      - XXL_zapix=true
+      - XXL_grapher=true
+</code></pre>
+
+<p>基于官方的文档做了一些调整</p>
+
+<ol>
+  <li>
+    <p>修改docbix,增加了python的requests库主要用于python脚本发送告警<br />
+[测试过程中貌似docbix的python已经装好了requests,这里为了后续方便添加,还是额外增加一下]</p>
+  </li>
+  <li>
+    <p>数据持久化<br />
+<code class="highlighter-rouge">/xxx/mysqldata:/var/lib/mysql</code>将mysql的数据落地到宿主机</p>
+  </li>
+  <li>
+    <p>增加自定义脚本<br />
+<code class="highlighter-rouge">/xx/internalter:/usr/local/share/zabbix/alertscripts</code>宿主机的告警脚本就能在前端-管理-告警媒介类型中直接添加后,让zabbix调用</p>
+  </li>
+  <li>
+    <p>增加配置文件解决报错<br />
+报错: <code class="highlighter-rouge">Aborted connection 111 to db: 'zabbix' user: 'zabbix' host: 'xx.5.5.5' (Got an error reading communication packets)</code><br />
+解决办法是先挂载mysql的配置文件和zabbix的配置文件,然后启动<code class="highlighter-rouge">docker-compose up -d</code> <br />
+启动后,zabbix的配置被初始化覆盖掉了,重新将配置写入/xx/zabbix_server.conf文件中,然后<code class="highlighter-rouge">docker-compose restart zabbixdb</code>即可</p>
+    <ul>
+      <li><code class="highlighter-rouge">/xx/zabbix_server.conf:/usr/local/etc/zabbix_server.conf</code></li>
+      <li><code class="highlighter-rouge">/xxx/mysqlconf/myconf.cnf:/etc/my.cnf.d/myconf.cnf</code></li>
+    </ul>
+  </li>
+</ol>
+
+<p>其中dockerfile如下:</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> monitoringartist/dockbix-xxl:latest</span>
+<span class="k">RUN </span>yum <span class="nb">install</span> <span class="nt">-y</span> python-pip <span class="o">&amp;&amp;</span> <span class="se">\
+</span>    pip <span class="nb">install  </span>requests
+</code></pre></div></div>
+
+<p>mysql的conf如下:</p>
+
+<pre><code class="language-mysqlconf">open_files_limit = 4800
+max_connections = 500
+innodb_log_buffer_size = 32M
+innodb_log_file_size = 2047M
+innodb_buffer_pool_instances = 18
+innodb_buffer_pool_size=18G
+max_allowed_packet = 1024M
+join_buffer_size = 1M
+log_warnings = 2
+log_error_verbosity = 3
+slow_query_log
+query_cache_size = 0
+query_cache_type = 0
+skip-name-resolve=1
+</code></pre>
+
+<p>zabbix_server.conf:</p>
+
+<pre><code class="language-zabbixconf">User=zabbix
+SSLKeyLocation=xxx/ssl/keys
+SSLCertLocation=/xxx/ssl/certs
+SNMPTrapperFile=/xxps.tmp
+PidFile=/xx.pid
+LogType=console
+LoadModulePath=/usr/lib/zabbix/modules
+JavaGatewayPort=10052
+JavaGateway=127.0.0.1
+ExternalScripts=/xxs
+DBUser=zabbix
+DBPort=3306
+DBPassword=xxx
+DBName=zabbix
+DBHost=zabbixdb
+AlertScriptsPath=/usr/local/share/zabbix/alertscripts
+---  以上部分是每次启动zabbix时自动覆盖的 ---
+LogFileSize=4
+DebugLevel=5
+StartPollers=102
+StartPreprocessors=72
+StartPollersUnreachable=14
+StartTrappers=64
+StartEscalators=2
+StartAlerters=4
+MaxHousekeeperDelete=8400
+CacheSize=72M
+StartDBSyncers=24
+HistoryCacheSize=64M
+HistoryIndexCacheSize=32M
+TrendCacheSize=42M
+ValueCacheSize=64M
+Timeout=30
+TrapperTimeout=300
+</code></pre>
+
+<h3 id="客户端">客户端</h3>
+<p>客户端如果使用默认只需要1.2.5步骤即可
+客户端用ansible批量分发到机器的</p>
+<ol>
+  <li>通过rpm包安装client.zabbix-agent-3.2.0-1.el7.x86_64.rpm</li>
+  <li>将配置文件覆盖/etc/zabbix/zabbix_agentd.conf</li>
+  <li>加载自定义监控键值</li>
+  <li>创建目录,放入自定义键值依赖的脚本以及zabbix-client的启动脚本等(需要有执行权限)</li>
+  <li>启动zabbix-client</li>
+</ol>
+
+<p>agent-conf,如果是像我批量推送,配置文件中ListenIP获取各机器的对应ip即可</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PidFile=xxx/xx/zabbix.pid
+LogFile=xxx/xxx/agent.log
+LogFileSize=0
+Server=xxx
+ServerActive=xxx
+HostnameItem=system.hostname
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+ListenIP=xxx
+StartAgents=5
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>自定义监控键值userparameter.conf,放入到Include的路径中,这里放入/etc/zabbix/zabbix_agentd.d/下<br />
+<code class="highlighter-rouge">UserParameter=tcp[*],/scripts/tcp_status_ss.sh $1</code></p>
+  </li>
+  <li>
+    <p>自定义脚本,4步骤生成/scripts目录后放入脚本<br />
+本脚本基于ss,监控各服务器连接状态监测脚本</p>
+  </li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="k">function </span>SYNRECV <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-s</span> | <span class="nb">grep</span> <span class="s1">'synrecv'</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span>
+<span class="o">}</span>
+<span class="k">function </span>ESTAB <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-s</span> | <span class="nb">grep</span> <span class="s1">'estab'</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span>
+<span class="o">}</span>
+<span class="k">function </span>FINWAIT1 <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-o</span> |  <span class="nb">grep</span> <span class="s1">'FIN-WAIT-1'</span>|wc <span class="nt">-l</span>
+<span class="o">}</span>
+<span class="k">function </span>FINWAIT2 <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-ant</span>| <span class="nb">grep</span> <span class="s1">'FIN-WAIT-2'</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+<span class="o">}</span>
+<span class="k">function </span>TIMEWAIT <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-ant</span> | <span class="nb">grep</span> <span class="s1">'TIME-WAIT'</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+<span class="o">}</span>
+<span class="k">function </span>LASTACK <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-ant</span> | <span class="nb">grep</span> <span class="s1">'LAST-ACK'</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+<span class="o">}</span>
+<span class="k">function </span>LISTEN <span class="o">{</span>
+/usr/sbin/ss <span class="nt">-ant</span> | <span class="nb">grep</span> <span class="s1">'LISTEN'</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+<span class="o">}</span>
+<span class="nv">$1</span>
+</code></pre></div></div>
+<ul>
+  <li>zabbix启停脚本</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">.</span> /etc/rc.d/init.d/functions
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-x</span> /usr/sbin/zabbix_agentd <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">exec</span><span class="o">=</span>zabbix_agentd
+<span class="k">else
+    </span><span class="nb">exit </span>5
+<span class="k">fi
+
+</span><span class="nv">prog</span><span class="o">=</span><span class="k">${</span><span class="nv">exec</span><span class="p">##*/</span><span class="k">}</span>
+<span class="nv">conf</span><span class="o">=</span>/xxx/zabbix_agentd.conf                                          <span class="c">#这里填写对应的zabbix配置文件全路径</span>
+<span class="nv">pidfile</span><span class="o">=</span><span class="si">$(</span><span class="nb">grep</span> <span class="nt">-e</span> <span class="s2">"^PidFile=.*$"</span> <span class="nv">$conf</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="o">=</span> <span class="nt">-f2</span> | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\r'</span><span class="si">)</span>    <span class="c">#这里从配置文件中取pid文件</span>
+<span class="nb">timeout</span><span class="o">=</span>10
+
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> /etc/sysconfig/zabbix-agent <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">.</span> /etc/sysconfig/zabbix-agent
+<span class="k">fi
+
+</span><span class="nv">lockfile</span><span class="o">=</span>/var/lock/subsys/zabbix-agent
+
+start<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">$"Starting Zabbix agent: "</span>
+    daemon <span class="nv">$exec</span> <span class="nt">-c</span> <span class="nv">$conf</span>
+    <span class="nv">rv</span><span class="o">=</span><span class="nv">$?</span>
+    <span class="nb">echo</span>
+    <span class="o">[</span> <span class="nv">$rv</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">touch</span> <span class="nv">$lockfile</span>
+    <span class="k">return</span> <span class="nv">$rv</span>
+<span class="o">}</span>
+
+stop<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">$"Shutting down Zabbix agent: "</span>
+    killproc <span class="nt">-p</span> <span class="nv">$pidfile</span> <span class="nt">-d</span> <span class="nv">$timeout</span> <span class="nv">$prog</span>
+    <span class="nv">rv</span><span class="o">=</span><span class="nv">$?</span>
+    <span class="nb">echo</span>
+    <span class="o">[</span> <span class="nv">$rv</span> <span class="nt">-eq</span> 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$lockfile</span>
+    <span class="k">return</span> <span class="nv">$rv</span>
+<span class="o">}</span>
+
+restart<span class="o">()</span>
+<span class="o">{</span>
+    stop
+    start
+<span class="o">}</span>
+
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="k">in
+    </span>start|stop|restart<span class="p">)</span>
+        <span class="nv">$1</span>
+        <span class="p">;;</span>
+    force-reload<span class="p">)</span>
+        restart
+        <span class="p">;;</span>
+    status<span class="p">)</span>
+        status <span class="nt">-p</span> <span class="nv">$pidfile</span> <span class="nv">$prog</span>
+        <span class="p">;;</span>
+    try-restart|condrestart<span class="p">)</span>
+        <span class="k">if </span>status <span class="nv">$prog</span> <span class="o">&gt;</span>/dev/null <span class="p">;</span> <span class="k">then
+            </span>restart
+        <span class="k">fi</span>
+        <span class="p">;;</span>
+    reload<span class="p">)</span>
+        action <span class="s2">$"Service </span><span class="k">${</span><span class="nv">0</span><span class="p">##*/</span><span class="k">}</span><span class="s2"> does not support the reload action: "</span> /bin/false
+        <span class="nb">exit </span>3
+        <span class="p">;;</span>
+    <span class="k">*</span><span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">$"Usage: </span><span class="nv">$0</span><span class="s2"> {start|stop|status|restart|try-restart|force-reload}"</span>
+        <span class="nb">exit </span>2
+        <span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div></div>
+
+<h3 id="前端">前端</h3>
+<p>zabbix启动后暴露的端口是10050 <br />
+在nginx层将域名请求转发到10050,即可通过域名登录,默认账号Admin密码zabbix<br />
+前端主要做几件事情:</p>
+
+<ol>
+  <li>自动发现-ip范围-检查（端口范围10050,键值system.uname）</li>
+  <li>配置-动作,右上角事件源选择自动注册-创建动作,将主机自动注册到对应的监控模板上</li>
+  <li>管理-报警媒介类型,这里添加告警脚本即对应服务端部署中<code class="highlighter-rouge">/xx/internalter:/usr/local/share/zabbix/alertscripts</code>下的脚本名</li>
+  <li>自定义监控键值(可选择主机添加或模板添加),这里键值对应的是client端的userparameter.conf,创建监控项-键值tcp[xxx]这里xxx是传参到<code class="highlighter-rouge">/scripts/tcp_status_ss.sh</code></li>
+</ol>
+
+<p>文章没有添加截图,欢迎大家交流,另外github那个问题周末找时间给作者提个issue看是否可以直接处理掉~</p>
+
+
+  </section>
+</article>
+
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2019/12/somdiff/" data-toggle="tooltip" data-placement="top" title="19年圣诞,一些感想">上一篇：  <span>19年圣诞,一些感想</span>
+            </a>
+        </li>
+        
+        
+    </ul>
+</section>
+
+<section class="post-comments">
+
+  
+
+  <!-- gitalk -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  <div id="gitalk-container"></div>
+  
+  <script>
+    const gitalk = new Gitalk({
+        clientID: '0844b01363e9a9909aa0',
+        clientSecret: '60c5758709cbe4e1defc936376400e4e3bd1161f',
+        repo: 'yangswei.github.io',
+        owner: 'yangswei',
+        admin: ['yangswei',],
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+  </script>
+
+</section>
+
+
+            <section class="footer">
+    <footer>
+        <div class = "footer_div">  
+        <nav class="cover-navigation navigation--social">
+          <ul class="navigation">
+
+          
+
+          
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/yangswei" title="@yangswei 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+          
+          
+          
+
+          
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:ysw5056@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+          <!-- Friend Links -->
+          <li class="navigation__item_social">
+            <a href="/links/" title="Contact me">
+              <i class='social fa fa-link fa-2x'></i>
+              <span class="label">Link</span>
+            </a>
+          </li>
+
+          </ul>
+        </nav>
+
+        </div>
+
+        <div class = "footer_div">  
+        	<div align="right">
+    			<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+          <!-- 访问统计 -->
+          <!-- pv的方式，单个用户连续点击n篇文章，记录n次访问量 -->
+          <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+          </span>
+
+        </div>
+
+        <div>
+        <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "opacity": 1, "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
+        </div>
+
+        <script>
+          function myFunction() {
+          var x = document.getElementById("live2d-widget");
+          var y = document.getElementById("fashu1");
+          if (x.style.display === "none") {
+          x.style.display = "block";
+          y.innerHTML = "隐藏"
+          } else {
+          x.style.display = "none";
+          y.innerHTML = "召唤"
+          }
+        }
+        </script>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script src="https://unpkg.com/simple-jekyll-search@1.5.0/dest/simple-jekyll-search.min.js"></script>
+<script>
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('results-container'),
+        json: '/search.json',
+        searchResultTemplate: '<li><a href="{url}" title="{desc}">{title}</a></li>', // 文章列表模板
+        noResultsText: '没有搜索到文章', // 无搜索数据提示语
+        limit: 20, // 返回最大文章数
+        fuzzy: false // 是否模糊匹配
+    })
+</script>
+
+
+
+    
+  </body>
+
+</html>

@@ -192,7 +192,7 @@
 <h2 id="下载live2d-models-库">下载live2d models 库</h2>
 
 <p><a href="https://github.com/xiazeyu/live2d-widget-models">github地址</a><br />
-下载live2d库，<a href="https://huaji8.top/post/live2d-plugin-2.0/">查看预览图</a><br />
+下载live2d库，<a href="https://github.com/EYHN/hexo-helper-live2d">查看预览图</a><br />
 选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 
 在live2d-widget-models目录下，npm install live2d-widget-model-z16</p>
 
@@ -229,7 +229,32 @@ npm <span class="nb">install</span>
     <span class="na">show</span><span class="pi">:</span> <span class="no">true</span>
 </code></pre></div></div>
 
-<p>除了model.use的名字，根据选择的model名外，其他的配置保持不变</p>
+<p>除了model.use的名字，根据选择的model名外，其他的配置保持不变,参考如下model选择添加到配置中</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>live2d-widget-model-chitose
+live2d-widget-model-epsilon2_1
+live2d-widget-model-gf
+live2d-widget-model-haru/01 (use npm install --save live2d-widget-model-haru)
+live2d-widget-model-haru/02 (use npm install --save live2d-widget-model-haru)
+live2d-widget-model-haruto
+live2d-widget-model-hibiki
+live2d-widget-model-hijiki
+live2d-widget-model-izumi
+live2d-widget-model-koharu
+live2d-widget-model-miku
+live2d-widget-model-ni-j
+live2d-widget-model-nico
+live2d-widget-model-nietzsche
+live2d-widget-model-nipsilon
+live2d-widget-model-nito
+live2d-widget-model-shizuku
+live2d-widget-model-tororo
+live2d-widget-model-tsumiki
+live2d-widget-model-unitychan
+live2d-widget-model-wanko
+live2d-widget-model-z16
+</code></pre></div></div>
+<p>目前github仓库支持这些动态小图，按自己喜好添加</p>
 
 <ul>
   <li>拷贝文件到hexo中</li>
@@ -257,6 +282,12 @@ npm <span class="nb">install</span>
 </code></pre></div></div>
 
 <p>完成。</p>
+
+<ul>
+  <li>修改透明度
+进入live2dw-lib-L2Dwidget.min.js
+修改pacityDefault:1参数,例如默认的设置是pacityDefault:.7</li>
+</ul>
 
 
   </section>
@@ -435,7 +466,7 @@ npm <span class="nb">install</span>
 
         <div>
         <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script>
-        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
+        <script>L2Dwidget.init({ "pluginRootPath": "live2dw/", "pluginJsPath": "lib/", "pluginModelPath": "assets/", "tagMode": false, "debug": false, "model": { "jsonPath": "/live2dw/assets/shizuku.model.json" }, "display": { "position": "right", "opacity": 1, "width": 150, "height": 300, "right": 300 }, "mobile": { "show": true, "width": 75, "height": 150 }, "log": false });</script>
         </div>
 
         <script>
