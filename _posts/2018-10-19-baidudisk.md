@@ -13,4 +13,4 @@ tag: 工具
 `cd ~/Downloads && git clone https://github.com/CodeTips/BaiduNetdiskPlugin-macOS.git && ./BaiduNetdiskPlugin-macOS/Other/Install.sh`
 
 一键安装即可完成
-测试了一下，没有提速，但是解除了限速~
+测试了一下,没有提速,但是解除了限速~
