@@ -6,16 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>Smtp邮件服务原理与拍错</title>
+  <title>Smtp邮件服务原理与排错</title>
   <meta name="description" content="  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Smtp邮件服务原理与拍错">
+  <meta name="twitter:title" content="Smtp邮件服务原理与排错">
   <meta name="twitter:description" content="  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Smtp邮件服务原理与拍错">
+  <meta property="og:title" content="Smtp邮件服务原理与排错">
   <meta property="og:description" content="  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
@@ -173,7 +173,7 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">Smtp邮件服务原理与拍错</h1>
+    <h1 class="post-title">Smtp邮件服务原理与排错</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
       <time datetime="2018-12-11 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-12-11</time>  
@@ -194,17 +194,31 @@
 
 <h3 id="终端测试">终端测试:</h3>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>telnet xxx 25  <span class="nt">--</span><span class="o">&gt;</span>220
-HELO xxx  <span class="nt">--</span><span class="o">&gt;</span>250
-auth login  <span class="nt">--</span><span class="o">&gt;</span>334<span class="o">(</span>等待服务器返回后输入账号密码对应的base64码<span class="o">)</span>
-mail from: xxx <span class="nt">--</span><span class="o">&gt;</span>250
-rcpt to: xxx, xxx
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>telnet smtp.qq.com 25
+220 smtp.qq.com Esmtp QQ Mail Server
+helo sis（这里随意写helo xxx）
+250 smtp.qq.com//服务器返回250 smtp.qq.com
+STARTTLS
+220 Ready to start TLS//服务器返回 220 准备开启TLS通讯
+auth login
+334 VXNlcm5hbWU6//服务器返回334 VXNlcm5hbWU6<span class="o">(</span>即Username:<span class="o">)</span>
+<span class="k">***</span>/<span class="k">*</span>此处输入base64编码后的qq邮箱名<span class="k">*</span>/
+334 UGFzc3dvcmQ6
+<span class="k">***</span>/<span class="k">*</span>此处输入base64编码后的授权码，需要到qq邮箱申请，自己百度一下<span class="k">*</span>/
+235 Authentication successful
+mail from: &lt;3463684353@qq.com&gt;//发件邮箱
+250 Ok
+rcpt to: &lt;3463684353@qq.com&gt;//发件邮箱
+250 Ok
 data
-Subject: xxx
-Hello,
-xxx
+354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+to: hello//
+from: nian//
+subject: this is a <span class="nb">test </span>telnet smtp mail
+hello,telnet//消息内容
+
 <span class="nb">.</span>
- 发送成功会返回success
+250 Ok: queued as
 </code></pre></div></div>
 
 <p><a href="https://base64.supfree.net/">base64加密解密</a><br />

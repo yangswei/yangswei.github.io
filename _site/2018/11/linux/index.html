@@ -201,10 +201,10 @@ chkconfig <span class="nt">--list</span>|grep 3:on
 
 </code></pre></div></div>
 <p><br />
-其他开机启动服务原则是：只保留使用的服务，清楚系统上每个服务的角色，最小化系统服务。</p>
+其他开机启动服务原则是：只保留使用的服务,清楚系统上每个服务的角色,最小化系统服务。</p>
 
 <h3 id="防火墙">防火墙</h3>
-<p>防火墙个人学习或者企业级高并发高流量服务器一般都不开启，因为开启防火墙会有较大的性能损耗，解决此类问题及在更前端用硬件防火墙进行安全防护
+<p>防火墙个人学习或者企业级高并发高流量服务器一般都不开启,因为开启防火墙会有较大的性能损耗,解决此类问题及在更前端用硬件防火墙进行安全防护
 <br />
 <code class="highlighter-rouge">/etc/init.d/iptables stop</code>
 <br /></p>
@@ -212,12 +212,12 @@ chkconfig <span class="nt">--list</span>|grep 3:on
 <h3 id="远程连接">远程连接</h3>
 
 <ul>
-  <li>linux系统配置修改后恢复比较麻烦，建议修改配置前备份一份，如果容易忘记，则设置一下命令别名
+  <li>linux系统配置修改后恢复比较麻烦,建议修改配置前备份一份,如果容易忘记,则设置一下命令别名
 <br /></li>
 </ul>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /etc/profile
-<span class="c">#在末尾添加一行alias，这样每次vim会自动在vim的目录创建一个备份</span>
+<span class="c">#在末尾添加一行alias,这样每次vim会自动在vim的目录创建一个备份</span>
 <span class="nb">alias </span><span class="nv">vim</span><span class="o">=</span><span class="s1">'func() { cp -f  $1 $1-bk; vim $1;}; func'</span>
 <span class="nb">source</span> /etc/profile
 </code></pre></div></div>
@@ -241,7 +241,7 @@ chkconfig <span class="nt">--list</span>|grep 3:on
     </tr>
     <tr>
       <td>PermitEmptyPasswords</td>
-      <td style="text-align: right">远程用户空密码登录，设置为no</td>
+      <td style="text-align: right">远程用户空密码登录,设置为no</td>
     </tr>
     <tr>
       <td>PermitRootLogin</td>
@@ -266,8 +266,8 @@ chkconfig <span class="nt">--list</span>|grep 3:on
 在文件的98行给对应普通用户加权限
 用户名|机器<span class="o">=(</span>授权角色<span class="o">)</span>|可执行命令
 xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: ALL 
-表示xxx 可通过sudo 执行所以系统命令，并不需要密码提示
-最后的ALL表示所有命令，可指定某些命令，用逗号隔开
+表示xxx 可通过sudo 执行所以系统命令,并不需要密码提示
+最后的ALL表示所有命令,可指定某些命令,用逗号隔开
 xxx <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span> NOPASSWD: vim,cp,find
 </code></pre></div></div>
 
@@ -306,19 +306,19 @@ chattr <span class="nt">-i</span> /etc/passwd /etc/shadow /etc/group /etc/gshado
       <td>tcp_syn_retries</td>
       <td style="text-align: center">5</td>
       <td style="text-align: center">1</td>
-      <td style="text-align: left">对外TCP连接请求时,内核尝试发送syn请求的次数,默认5次大概180秒，对内请求是由参数tcp_retries1控制</td>
+      <td style="text-align: left">对外TCP连接请求时,内核尝试发送syn请求的次数,默认5次大概180秒,对内请求是由参数tcp_retries1控制</td>
     </tr>
     <tr>
       <td>tcp_synack_retries</td>
       <td style="text-align: center">5</td>
       <td style="text-align: center">1</td>
-      <td style="text-align: left">对外TCP的第二步，尝试发送SYN +ACK次数</td>
+      <td style="text-align: left">对外TCP的第二步,尝试发送SYN +ACK次数</td>
     </tr>
     <tr>
       <td>tcp_keepalive_time</td>
       <td style="text-align: center">7200</td>
       <td style="text-align: center">1800</td>
-      <td style="text-align: left">当网络两端建立了TCP连接之后，闲置tcp_keepalive_time时间后，内核会向客户端发送侦测包判断tcp连接情况</td>
+      <td style="text-align: left">当网络两端建立了TCP连接之后,闲置tcp_keepalive_time时间后,内核会向客户端发送侦测包判断tcp连接情况</td>
     </tr>
     <tr>
       <td>tcp_keepalive_probes</td>
@@ -348,13 +348,13 @@ chattr <span class="nt">-i</span> /etc/passwd /etc/shadow /etc/group /etc/gshado
       <td>tcp_orphan_retries</td>
       <td style="text-align: center">7</td>
       <td style="text-align: center">3</td>
-      <td style="text-align: left">在近端丢弃TCP前，重试多少次</td>
+      <td style="text-align: left">在近端丢弃TCP前,重试多少次</td>
     </tr>
     <tr>
       <td>tcp_fin_timeout</td>
       <td style="text-align: center">60</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: left">对于本端断开的socket连接，TCP保持的时间</td>
+      <td style="text-align: left">对于本端断开的socket连接,TCP保持的时间</td>
     </tr>
     <tr>
       <td>tcp_max_tw_buckets</td>
@@ -378,7 +378,7 @@ chattr <span class="nt">-i</span> /etc/passwd /etc/shadow /etc/group /etc/gshado
       <td>tcp_max_orphans</td>
       <td style="text-align: center">8192</td>
       <td style="text-align: center">32768</td>
-      <td style="text-align: left">系统所能处理不属于任何进程的TCP sockets最大数量,超过这个数量﹐那么不属于任何进程的连接会被立即reset，并同时显示警告信息</td>
+      <td style="text-align: left">系统所能处理不属于任何进程的TCP sockets最大数量,超过这个数量﹐那么不属于任何进程的连接会被立即reset,并同时显示警告信息</td>
     </tr>
     <tr>
       <td>tcp_syncookies</td>
@@ -432,13 +432,13 @@ chattr <span class="nt">-i</span> /etc/passwd /etc/shadow /etc/group /etc/gshado
       <td>netdev_max_backlog</td>
       <td style="text-align: center">1024</td>
       <td style="text-align: center">16384</td>
-      <td style="text-align: left">每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目，对重负载服务器而言，该值需要调高一点</td>
+      <td style="text-align: left">每个网络接口接收数据包的速率比内核处理这些包的速率快时,允许送到队列的数据包的最大数目,对重负载服务器而言,该值需要调高一点</td>
     </tr>
     <tr>
       <td>somaxconn</td>
       <td style="text-align: center">128</td>
       <td style="text-align: center">16384</td>
-      <td style="text-align: left">用来限制监听(LISTEN)队列最大数据包的数量，超过这个数量就会导致链接超时或者触发重传机制</td>
+      <td style="text-align: left">用来限制监听(LISTEN)队列最大数据包的数量,超过这个数量就会导致链接超时或者触发重传机制</td>
     </tr>
     <tr>
       <td>rmem_max</td>

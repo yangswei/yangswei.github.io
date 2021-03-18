@@ -225,7 +225,7 @@
 <h2 id="1配置主机名">1.配置主机名</h2>
 
 <p>hostnamectl set-hostname master.example.com<br />
-配置相关域名解析，使主机名可解析到对应ip地址</p>
+配置相关域名解析,使主机名可解析到对应ip地址</p>
 
 <pre><code class="language-host">192.168.172.168  master.example.com  
 192.168.172.169  node1.example.com  
@@ -263,7 +263,7 @@ yum <span class="nt">-y</span> <span class="nt">--enablerepo</span><span class="
 <p>在Master节点生成SSH密钥<br />
 <code class="highlighter-rouge">ssh-keygen -f /root/.ssh/id_rsa -N ''</code></p>
 
-<p>Ansible基于Agentless架构实现，不需要在目标主机安装agent依赖ssh远程控制协议，所以需要配置master和node节点互信<br />
+<p>Ansible基于Agentless架构实现,不需要在目标主机安装agent依赖ssh远程控制协议,所以需要配置master和node节点互信<br />
 在Master节点执行：</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>host <span class="k">in </span>master.example.com <span class="se">\</span>
@@ -319,9 +319,9 @@ openshift-test-master
 <p>执行安装<br />
 <code class="highlighter-rouge">ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml</code></p>
 
-<p>执行完成以后，通过oc get node 查看节点状态</p>
+<p>执行完成以后,通过oc get node 查看节点状态</p>
 
-<p>基础安装完毕以后，进行组件和功能的配置</p>
+<p>基础安装完毕以后,进行组件和功能的配置</p>
 
 <ul>
   <li>对接用户身份信息库</li>
@@ -335,12 +335,12 @@ openshift-test-master
 
 <p>用户身份信息库：<br />
 <code class="highlighter-rouge">openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]</code><br />
-定义了文件/etc/origin/master/htpasswd作为用户身份信息库，我们通过<code class="highlighter-rouge">htpasswd -b /etc/origin/master/htpasswd dev dev</code>来创建用户</p>
+定义了文件/etc/origin/master/htpasswd作为用户身份信息库,我们通过<code class="highlighter-rouge">htpasswd -b /etc/origin/master/htpasswd dev dev</code>来创建用户</p>
 
 <p>is和template用ansible部署时默认已经部署上了</p>
 
 <p>Router部署<br />
-Router是以容器的形式运行在Openshift平台，默认情况不知道容器运行在哪个node上<br />
+Router是以容器的形式运行在Openshift平台,默认情况不知道容器运行在哪个node上<br />
 为node打上标签(Label),然后通过节点选择器(NodeSelector)指定容器运行的node<br />
 <code class="highlighter-rouge">oc label node node1.example.com infra=yes</code><br />
 查看node节点<br />

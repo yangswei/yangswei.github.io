@@ -7,16 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>Nginx生产实践</title>
-  <meta name="description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <meta name="description" content="  生产环境nginx,主要接收最前端的流量,然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明,通过这篇文章,可以了解到生产上各种nginx的使用方法与基础技巧">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Nginx生产实践">
-  <meta name="twitter:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <meta name="twitter:description" content="  生产环境nginx,主要接收最前端的流量,然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明,通过这篇文章,可以了解到生产上各种nginx的使用方法与基础技巧">
   
   <meta property="og:type" content="article">
   <meta property="og:title" content="Nginx生产实践">
-  <meta property="og:description" content="  生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧">
+  <meta property="og:description" content="  生产环境nginx,主要接收最前端的流量,然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明,通过这篇文章,可以了解到生产上各种nginx的使用方法与基础技巧">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -188,7 +188,7 @@
 
   <section class="post">
     <blockquote>
-  <p>生产环境nginx，主要接收最前端的流量，然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明，通过这篇文章，可以了解到生产上各种nginx的使用方法与基础技巧</p>
+  <p>生产环境nginx,主要接收最前端的流量,然后负载均衡或者引流。记录下目前Nginx常用的一些配置与作用说明,通过这篇文章,可以了解到生产上各种nginx的使用方法与基础技巧</p>
 </blockquote>
 
 <p>常用的一些nginx配置</p>
@@ -224,10 +224,10 @@
 }
 </code></pre>
 
-<p>请求工作方法： 访问对应server时，首先找location对应的url,url则指向remote_addr(客户端IP,注意这里的remote_addr需要在nginx设置获取真实ip配置)，当客户端本地未监听8888时，则重新将location指向服务端的8888,即完成测试环境代理本地项目测试需求</p>
+<p>请求工作方法： 访问对应server时,首先找location对应的url,url则指向remote_addr(客户端IP,注意这里的remote_addr需要在nginx设置获取真实ip配置),当客户端本地未监听8888时,则重新将location指向服务端的8888,即完成测试环境代理本地项目测试需求</p>
 
 <h3 id="测试环境多端口调试">测试环境多端口调试</h3>
-<p>同一服务在测试环境部署N个，那么如何在浏览器指定port请求对应服务？<br />
+<p>同一服务在测试环境部署N个,那么如何在浏览器指定port请求对应服务？<br />
 通过cookie是一种方法,与测试项目本地调试的配置类似</p>
 
 <pre><code class="language-port-nginx">    location / {
@@ -242,7 +242,7 @@
     }
 </code></pre>
 
-<p>其实只需要nginx获取到客户端请求时传输的port变量即可，这里将port信息放到cookie中，同样可以放到请求的head中，nginx通过http_x_port来进行反代即可</p>
+<p>其实只需要nginx获取到客户端请求时传输的port变量即可,这里将port信息放到cookie中,同样可以放到请求的head中,nginx通过http_x_port来进行反代即可</p>
 
 <h3 id="rewrite常用用法">rewrite常用用法</h3>
 
@@ -256,7 +256,7 @@
   <li>permanent 永久重定向</li>
 </ul>
 
-<p>用法1：location中直接将url第一个根路径以前的url替换成rewrite指定的url,正则有很多，具体参考nginx-rewrite正则相关的文章</p>
+<p>用法1：location中直接将url第一个根路径以前的url替换成rewrite指定的url,正则有很多,具体参考nginx-rewrite正则相关的文章</p>
 
 <pre><code class="language-rewrite">  rewrite ^/(.*) http://www.taobao.com/$1 permanent;
 </code></pre>
@@ -296,7 +296,7 @@ location /aa {
   <li>alias的处理结果是：使用alias路径替换location路径</li>
 </ul>
 
-<p>alias目录名后面一定要加”/”，alias在使用正则匹配时，必须捕捉要匹配的内容并在指定的内容处使用，alias只用于location中</p>
+<p>alias目录名后面一定要加”/”,alias在使用正则匹配时,必须捕捉要匹配的内容并在指定的内容处使用,alias只用于location中</p>
 
 <pre><code class="language-location-alias">location ^~ /t/ {
  alias /www/root/xxx/;
@@ -313,7 +313,7 @@ location /xxx {
 
 <h3 id="生产环境切换">生产环境切换</h3>
 
-<p>环境切换与端口切换类似，方法可以通过head或者cookie等进行传参，nginx中进行判断，根据不同的变量，进行不同的跳转</p>
+<p>环境切换与端口切换类似,方法可以通过head或者cookie等进行传参,nginx中进行判断,根据不同的变量,进行不同的跳转</p>
 
 <ul>
   <li>根据来源ip进行跳转</li>

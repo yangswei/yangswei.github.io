@@ -176,8 +176,50 @@
   <ol class="post-list">
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/12/smtp/" title="访问 Smtp邮件服务原理与拍错">Smtp邮件服务原理与拍错</a></h2>
-      <p class="excerpt">  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题终端测试:telnet xxx 25  --&gt;220HELO xxx  --&gt;250auth login  --&gt;334(等待服务器返回后输入账号密码对应的base64码)mail from: xxx --&gt;250rcpt to: xxx, xxxdataSubject: xxxHello...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2018/12/useful/" title="访问 Linux常用快捷键【持续更新...】">Linux常用快捷键【持续更新...】</a></h2>
+      <p class="excerpt">  一些好用的命令每次要用的时候,不记得怎么用,用起来时区网上查找。死循环,决定整理一份自己常用且好用的一些整理,梳理Vim快捷键            文档操作      功能      备注                  :e!      重新加载当前文档,并丢弃已做的改动                     :f newname      相当于复制一个文件到新名字      保存退出则相当于创建一个新的文件                  光标屏幕移动      功能  ...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-12-27 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-12-27</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/12/useful/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/12/redis/" title="访问 Redis集群下生产实践">Redis集群下生产实践</a></h2>
+      <p class="excerpt">  背景：近期弄了一套集群环境的服务,其中包含mongo数据库集群,redis集群和其他的服务集群,高可用的架构,为了支持真正意义的高可用,而做了这篇博客集群高可用以6节点三主三从为例cluster-enabled指定启动集群模式cluster-config-file指定保存节点配置的文件,redis集群启动后会自动创建修改维护这些nodes.conf文件集群模式的最简节点配置文件如下port 7000cluster-enabled yescluster-config-file nodes...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2018-12-18 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2018-12-18</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">Linux</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2018/12/redis/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2018/12/smtp/" title="访问 Smtp邮件服务原理与排错">Smtp邮件服务原理与排错</a></h2>
+      <p class="excerpt">  背景：最近给一家客户安装服务,发现nodemailer邮件服务怎么发送都失败开始的报错是greeting never received,然后各种尝试添加各种配置项,并未解决问题终端测试:telnet smtp.qq.com 25220 smtp.qq.com Esmtp QQ Mail Serverhelo sis（这里随意写helo xxx）250 smtp.qq.com//服务器返回250 smtp.qq.comSTARTTLS220 Ready to start TLS//服务器...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-12-11 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -219,7 +261,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/11/netcon/" title="访问 科学上网且用且珍惜">科学上网且用且珍惜</a></h2>
-      <p class="excerpt">安装：服务端安装linux服务器服务端(在国外服务器上执行)wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh安装链接貌似已经失效了，最近使用的比较好用的是v2ray,一键脚本执行方法：bash &lt;(curl -s -L https://git.io/v2ray.sh)脚本下载下来看了一下，备注挺中二的…执行完成后监听端口为执行过程中的默认端口在客户端按脚本...&hellip;</p>
+      <p class="excerpt">安装：服务端安装linux服务器服务端(在国外服务器上执行)wget --no-check-certificate https://freed.ga/github/shadowsocksR.sh; bash shadowsocksR.sh安装链接貌似已经失效了,最近使用的比较好用的是v2ray,一键脚本执行方法：bash &lt;(curl -s -L https://git.io/v2ray.sh)脚本下载下来看了一下,备注挺中二的…执行完成后监听端口为执行过程中的默认端口在客户端按脚本...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-11-09 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -261,7 +303,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/11/live2d/" title="访问 博客添加live2d">博客添加live2d</a></h2>
-      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库，查看预览图选择一个models,记住名字，下面的models名字均以z16为例，选择其他名字替换z16即可 在live2d-widget-models目录下，npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录，安装hexo-helper-liv...&hellip;</p>
+      <p class="excerpt">为博客添加女朋友下载live2d models 库github地址下载live2d库,查看预览图选择一个models,记住名字,下面的models名字均以z16为例,选择其他名字替换z16即可 在live2d-widget-models目录下,npm install live2d-widget-model-z16生成静态的文件npm install hexo-cli -ghexo init blogcd blognpm install  进入blog目录,安装hexo-helper-liv...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-11-01 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -282,7 +324,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/10/fek/" title="访问 K8s集群-fek插件生产实践">K8s集群-fek插件生产实践</a></h2>
-      <p class="excerpt">安装插件前准备工作github地址: https://github.com/kubernetes/kubernetes路径为kubenetes/cluster/addons/fluentd-elasticsearch选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件，一共6个文件。在github上提供了官方的image地址:k8s.gcr.io/elasticsearch:v5.6.4k8s.gcr.io/fluentd-elasticsearch:v...&hellip;</p>
+      <p class="excerpt">安装插件前准备工作github地址: https://github.com/kubernetes/kubernetes路径为kubenetes/cluster/addons/fluentd-elasticsearch选择对应版本的k8s分支,然后下载对应的es,fluentd,kibana的yaml文件,一共6个文件。在github上提供了官方的image地址:k8s.gcr.io/elasticsearch:v5.6.4k8s.gcr.io/fluentd-elasticsearch:v...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-10-24 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -324,7 +366,7 @@
     
     <li>
       <h2 class="post-list__post-title post-title"><a href="/2018/10/https/" title="访问 免费证书加密https">免费证书加密https</a></h2>
-      <p class="excerpt">生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后，脚本位置在~/.acme.sh/下      acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com      [上面命令是github给出的，我...&hellip;</p>
+      <p class="excerpt">生成免费证书  GIthub地址：[acme]: https://github.com/Neilpang/acme.sh /(免费证书github地址)生成方法：      curl https://get.acme.sh | SH     执行完后,脚本位置在~/.acme.sh/下      acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com      [上面命令是github给出的,我...&hellip;</p>
       <div class="post-list__meta">        
         <time datetime="2018-10-09 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
@@ -343,27 +385,6 @@
       <hr class="post-list__divider" />
     </li>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2018/10/blog/" title="访问 搭建个人博客+Gitpage">搭建个人博客+Gitpage</a></h2>
-      <p class="excerpt">环境准备  说明：我使用的是jekyll+gitpage，然后在jekyll的模板中心挑选了[潘柏信]的模板 搭建过程:  参考博客  首先是github账号  准备一个域名  挑选一个喜欢的模板:  主题挑选  添加评论，统计插件步骤步骤在参考博客，有非常详细的介绍说下在部署时遇到的几个小问题：      提示ruby版本不对:   解决      另外我是在mac上安装ruby，发现再次打开终端，又提示版本不对。    原因是mac自带的ruby有个默认版本，执行rvm list查看已...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2018-10-06 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2018-10-06</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">博客</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2018/10/blog/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider " />
@@ -377,7 +398,9 @@
     
         <a class="newer-posts pagination__newer btn btn-small btn-tertiary" href="/#blog">&larr; 最近</a>
     
-    <span class="pagination__page-number">2 / 2</span>
+    <span class="pagination__page-number">2 / 3</span>
+    
+        <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/3/#blog">更早 &rarr;</a>
     
 </nav>
 

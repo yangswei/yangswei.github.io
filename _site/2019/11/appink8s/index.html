@@ -7,16 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>如何将服务运行在k8s中</title>
-  <meta name="description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
+  <meta name="description" content="  距离上次更新正好一个月,因为公司马上要搬家了,最近各种环境的迁移,进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来,多写写抓紧入门一下,这篇文章算是应用容器化+k8s上线的入门教程了">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="如何将服务运行在k8s中">
-  <meta name="twitter:description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
+  <meta name="twitter:description" content="  距离上次更新正好一个月,因为公司马上要搬家了,最近各种环境的迁移,进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来,多写写抓紧入门一下,这篇文章算是应用容器化+k8s上线的入门教程了">
   
   <meta property="og:type" content="article">
   <meta property="og:title" content="如何将服务运行在k8s中">
-  <meta property="og:description" content="  距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了">
+  <meta property="og:description" content="  距离上次更新正好一个月,因为公司马上要搬家了,最近各种环境的迁移,进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来,多写写抓紧入门一下,这篇文章算是应用容器化+k8s上线的入门教程了">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -188,25 +188,25 @@
 
   <section class="post">
     <blockquote>
-  <p>距离上次更新正好一个月，因为公司马上要搬家了，最近各种环境的迁移，进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来，全心投入到公有云的线上运维来了！开始找俊奇大佬要一些简单的需求，写一写接口，多写写抓紧入门一下，这篇文章算是应用容器化+k8s上线的入门教程了</p>
+  <p>距离上次更新正好一个月,因为公司马上要搬家了,最近各种环境的迁移,进公司以后除了负责线上的运维还需要分出精力去搞公司的私有客户,最近终于从私有客户那边抽出来,多写写抓紧入门一下,这篇文章算是应用容器化+k8s上线的入门教程了</p>
 </blockquote>
 
 <h1 id="如何将服务运行在k8s中">如何将服务运行在k8s中</h1>
 
 <h2 id="环境准备">环境准备</h2>
 
-<p>这篇文章建立在，已经准备好了如下的环境的基础上，如果没有可以找找教程，自行测试k8s太重的话可以弄轻量的k3s都可以</p>
+<p>这篇文章建立在,已经准备好了如下的环境的基础上,如果没有可以找找教程,自行测试k8s太重的话可以弄轻量的k3s都可以</p>
 
 <ul>
-  <li>python3，docker</li>
-  <li>k8s，私有仓库</li>
+  <li>python3,docker</li>
+  <li>k8s,私有仓库</li>
 </ul>
 
 <h3 id="开发过程">开发过程</h3>
 
-<p>因为刚写python，所以这里以python的代码为例，其他语言的均类似<br />
-下面是简单的Hello world进程，程序默认的监听端口是8080<br />
-（当然在我们生产上会有很多复杂的场景，这里只介绍基本情况，就是服务只监听一个端口的情形）</p>
+<p>因为刚写python,所以这里以python的代码为例,其他语言的均类似<br />
+下面是简单的Hello world进程,程序默认的监听端口是8080<br />
+（当然在我们生产上会有很多复杂的场景,这里只介绍基本情况,就是服务只监听一个端口的情形）</p>
 
 <pre><code class="language-app.py">from flask import Flask
 app = Flask(__name__)
@@ -236,16 +236,16 @@ if __name__ == "__main__":
 <span class="k">CMD</span><span class="s"> ["python3","/code/xx.py","8060"]</span>
 </code></pre></div></div>
 
-<p>FROM一个基础环境，如果你是node开发from一个node的镜像作为基础环境<br />
-RUN 是构建镜像过程中执行指令，这里是运行安装一些基础依赖，这个根据应用来<br />
-基础依赖安装完成后，将代码，以及python依赖的库安装一下<br />
+<p>FROM一个基础环境,如果你是node开发from一个node的镜像作为基础环境<br />
+RUN 是构建镜像过程中执行指令,这里是运行安装一些基础依赖,这个根据应用来<br />
+基础依赖安装完成后,将代码,以及python依赖的库安装一下<br />
 CMD 则是运行这个容器的最后一条命令</p>
 
 <p>实际生产环境会要求镜像包最小化<br />
-有一些基础的技巧，可以使最终生成的包大小减少很多。</p>
+有一些基础的技巧,可以使最终生成的包大小减少很多。</p>
 
 <ol>
-  <li>dockerfile每条命令相当于在基础镜像上包了一层，所以用连接符减少指令行数</li>
+  <li>dockerfile每条命令相当于在基础镜像上包了一层,所以用连接符减少指令行数</li>
   <li>multistage builds 这个很好用</li>
 </ol>
 
@@ -264,11 +264,11 @@ CMD 则是运行这个容器的最后一条命令</p>
   CMD npm start
 </code></pre>
 
-<p>生产中尽量把构建过程拆分开，最终镜像只需要从过程镜像获取构建好的依赖</p>
+<p>生产中尽量把构建过程拆分开,最终镜像只需要从过程镜像获取构建好的依赖</p>
 
 <h3 id="私有仓库">私有仓库</h3>
 
-<p>这里不过多介绍，镜像推送私有仓库很简单</p>
+<p>这里不过多介绍,镜像推送私有仓库很简单</p>
 
 <pre><code class="language-cmd">docker build -t xxx:v0.0.1 .  
 docker push xxxx:v0.0.1  
@@ -317,11 +317,11 @@ spec:
         - containerPort: 8060
 </code></pre>
 
-<p>这里我创建了两个资源，kind分别是service和deployment<br />
+<p>这里我创建了两个资源,kind分别是service和deployment<br />
 service用于将port映射出去<br />
 deployment描述pod信息<br />
-因为我这里服务只需要内部调用，所以这里没有将端口暴露出去<br />
-实际生产环境中，除了需要暴露端口，类似证书，配置文件均可以通过configmap的形式挂载到pod中去</p>
+因为我这里服务只需要内部调用,所以这里没有将端口暴露出去<br />
+实际生产环境中,除了需要暴露端口,类似证书,配置文件均可以通过configmap的形式挂载到pod中去</p>
 
 <pre><code class="language-deploymentrelease">apiVersion: v1
 kind: Service
@@ -402,17 +402,17 @@ spec:
 
 </code></pre>
 
-<p>可以看到生产环境多了很多配置，除了nodeport将应用的端口映射出去<br />
-还增加了类似pod内存，cpu资源分配的限制<br />
-配置文件的挂载，注意volumes和volumeMounts对应的name要一致，并且这个名字和k8s的configmap的资源名都保持一致才能将congfigmap挂载到对应的pod中去</p>
+<p>可以看到生产环境多了很多配置,除了nodeport将应用的端口映射出去<br />
+还增加了类似pod内存,cpu资源分配的限制<br />
+配置文件的挂载,注意volumes和volumeMounts对应的name要一致,并且这个名字和k8s的configmap的资源名都保持一致才能将congfigmap挂载到对应的pod中去</p>
 
 <h3 id="上线调试">上线&amp;调试</h3>
 
-<p>上线就是apply对应的资源，最终调试可以参考上一篇讲nginx时讲到的本地调试方式进行本地调试，本地开发环境并不需要打包到镜像并发送到k8s的pod才能调试。只需在nginxcallback到本地的端口即可</p>
+<p>上线就是apply对应的资源,最终调试可以参考上一篇讲nginx时讲到的本地调试方式进行本地调试,本地开发环境并不需要打包到镜像并发送到k8s的pod才能调试。只需在nginxcallback到本地的端口即可</p>
 
 <h3 id="欢迎大佬交流探讨">欢迎大佬交流探讨</h3>
 
-<p>页面中有邮箱和github联系方式，欢迎大佬们和我沟通交流，一起学习进步</p>
+<p>页面中有邮箱和github联系方式,欢迎大佬们和我沟通交流,一起学习进步</p>
 
 
   </section>
@@ -489,7 +489,7 @@ spec:
         
         
         <li class="next">
-            <a href="/2019/12/somdiff/" data-toggle="tooltip" data-placement="top" title="19年圣诞,一些感想">下一篇：  <span>19年圣诞,一些感想</span>
+            <a href="/2019/12/zabbix/" data-toggle="tooltip" data-placement="top" title="zabbix生产实践">下一篇：  <span>zabbix生产实践</span>
             </a>
         </li>
         

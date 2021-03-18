@@ -7,16 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>Openshift-测试环境AllInOne</title>
-  <meta name="description" content="  记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧">
+  <meta name="description" content="  记录Openshift笔记,刚准备熟悉一下mysql,boss要求看openshift相关的东西,所以mysql系列的后续再更新,边写openshift边学习沉淀吧">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Openshift-测试环境AllInOne">
-  <meta name="twitter:description" content="  记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧">
+  <meta name="twitter:description" content="  记录Openshift笔记,刚准备熟悉一下mysql,boss要求看openshift相关的东西,所以mysql系列的后续再更新,边写openshift边学习沉淀吧">
   
   <meta property="og:type" content="article">
   <meta property="og:title" content="Openshift-测试环境AllInOne">
-  <meta property="og:description" content="  记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧">
+  <meta property="og:description" content="  记录Openshift笔记,刚准备熟悉一下mysql,boss要求看openshift相关的东西,所以mysql系列的后续再更新,边写openshift边学习沉淀吧">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -188,7 +188,7 @@
 
   <section class="post">
     <blockquote>
-  <p>记录Openshift笔记，刚准备熟悉一下mysql，boss要求看openshift相关的东西，所以mysql系列的后续再更新，边写openshift边学习沉淀吧</p>
+  <p>记录Openshift笔记,刚准备熟悉一下mysql,boss要求看openshift相关的东西,所以mysql系列的后续再更新,边写openshift边学习沉淀吧</p>
 </blockquote>
 
 <h2 id="安装openshift-all-in-one">安装openshift-All in one</h2>
@@ -199,7 +199,7 @@
 
 <h3 id="oc命令行创建应用">oc命令行创建应用</h3>
 
-<p>因为oc命令带有权限管控，所以在使用oc命令前，需要通过oc login 登录<br />
+<p>因为oc命令带有权限管控,所以在使用oc命令前,需要通过oc login 登录<br />
 <code class="highlighter-rouge">oc login -u test https://10.50.64.34:8443</code><br />
 创建项目(这个项目类似在k8s创建一个namespace)<br />
 <code class="highlighter-rouge">oc new-project hello-world-oc</code><br />
@@ -222,10 +222,10 @@ oc get node
 
 <h3 id="添加route">添加route</h3>
 
-<p>类似kube-proxy,是外界访问openshift的入口，外部请求都会到达router<br />
+<p>类似kube-proxy,是外界访问openshift的入口,外部请求都会到达router<br />
 切换到default项目<br />
 <code class="highlighter-rouge">oc project default</code>
-router组件需要读取集群的信息，它关联一个系统账号service account并为这个账号赋权。<br />
+router组件需要读取集群的信息,它关联一个系统账号service account并为这个账号赋权。<br />
 (这个账号是专门供程序和组件使用的账号)<br />
 <code class="highlighter-rouge">oadm policy add-scc-to-user privileged system:serviceaccount:default:router</code>
 创建router实例</p>
@@ -241,13 +241,13 @@ oc get pod -n default
 oadm registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
 oc get pod  
 </code></pre></div></div>
-<p>因为registry没有启用https,所以需要修改docker配置，让docker以非https模式连接到registry.<br />
+<p>因为registry没有启用https,所以需要修改docker配置,让docker以非https模式连接到registry.<br />
 在OPTIONS变量值中添加参数’–insecure-registry=172.30.0.0/16’<br />
 重启docker systemctl restart docker</p>
 
 <h3 id="添加image-stream">添加Image Stream</h3>
 
-<p>is镜像集合，openshift并不一定要用到is，is是为了更加方便的将镜像管理和使用</p>
+<p>is镜像集合,openshift并不一定要用到is,is是为了更加方便的将镜像管理和使用</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 openshift version
 curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
@@ -256,7 +256,7 @@ oc get is -n openshift
 
 <h3 id="添加template">添加Template</h3>
 
-<p>openshift定义了一些template供用户使用，模板定义一个多个部署镜像的集合，定义部署依赖对象以及配置参数项</p>
+<p>openshift定义了一些template供用户使用,模板定义一个多个部署镜像的集合,定义部署依赖对象以及配置参数项</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
 oc get template -n openshift
