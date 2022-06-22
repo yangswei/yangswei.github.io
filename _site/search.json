@@ -1,19 +1,27 @@
 [
   
     {
-      "title"    : "檬檬美照合集",
+      "title"    : "Java 总结一",
       "category" : "",
-      "tags"     : "diary, 檬檬",
-      "url"      : "/2020/11/diary1/",
-      "date"     : "2020-11-12 00:00:00 +0800"
+      "tags"     : "java",
+      "url"      : "/2021/06/javalean1/",
+      "date"     : "2021-06-10 00:00:00 +0800"
     } ,
   
     {
-      "title"    : "20年,一些感想",
+      "title"    : "Django 项目相关汇总",
       "category" : "",
-      "tags"     : "diary",
-      "url"      : "/2020/11/diary/",
-      "date"     : "2020-11-03 00:00:00 +0800"
+      "tags"     : "python, django, mysql",
+      "url"      : "/2021/03/pylearn/",
+      "date"     : "2021-03-17 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "Flask 项目相关汇总",
+      "category" : "",
+      "tags"     : "python, flask, mysql",
+      "url"      : "/2021/03/pylearn/",
+      "date"     : "2021-03-17 00:00:00 +0800"
     } ,
   
     {

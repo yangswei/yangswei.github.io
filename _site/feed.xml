@@ -3,152 +3,605 @@
   <channel>
     <title>杨世威</title>
     <description>欢迎来到我的个人站~</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 22 Dec 2020 10:38:42 +0800</pubDate>
-    <lastBuildDate>Tue, 22 Dec 2020 10:38:42 +0800</lastBuildDate>
+    <link>http://yangshiwei.top/</link>
+    <atom:link href="http://yangshiwei.top/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 22 Jun 2022 10:11:05 +0800</pubDate>
+    <lastBuildDate>Wed, 22 Jun 2022 10:11:05 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
     
       <item>
-        <title>檬檬美照合集</title>
-        <description>&lt;h3 id=&quot;出壳啦&quot;&gt;出壳啦&lt;/h3&gt;
-&lt;p&gt;我叫杨语宸，小名叫檬檬。7月的尾巴我出生啦~&lt;/p&gt;
+        <title>Java 总结一</title>
+        <description>&lt;h1 id=&quot;java-项目相关技术点汇总&quot;&gt;Java 项目相关技术点汇总&lt;/h1&gt;
+
+&lt;h3 id=&quot;删除java环境&quot;&gt;删除Java环境&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo rm -rf“/ Library / Internet Plug-Ins / JavaAppletPlugin.plugin”
+sudo rm -rf“/Library/PreferencePanes/JavaControlPanel.prefPane”
+sudo rm -rf“〜/ Library / Application Support / Java”
+
+vim ~/.bash_profile
+JAVA_HOME=&quot;/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home&quot;
+export JAVA_HOME
+CLASS_PATH=&quot;$JAVA_HOME/lib&quot;
+PATH=&quot;.$PATH:$JAVA_HOME/bin&quot;
+
+source ~/.bash_profile
+echo $JAVA_HOME
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;idea&quot;&gt;IDEA&lt;/h3&gt;
+&lt;p&gt;编辑器 - 快捷键&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psvm  自动生成主函数方法
+sout  = System.out.println()
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;关键词&quot;&gt;关键词&lt;/h3&gt;
+
+&lt;p&gt;public class void main boolean case catch char  try super 
+引用类型 reference type&lt;/p&gt;
+
+&lt;p&gt;float 和 double 有限，离散，误差 不可以用于计算比较
+ // 计算 自定义类   BigDecimal 数学工具类&lt;/p&gt;
+
+&lt;p&gt;### 类型转换&lt;/p&gt;
+
+&lt;p&gt;低到高 自动转换
+高到低 需要强制转换
+ byte short char -&amp;gt;  int  long float double&lt;/p&gt;
+
+&lt;p&gt;运算中如果有一个变量是long ,运算结果为long 
+ 其他运算默认int&lt;/p&gt;
+
+&lt;p&gt;位运算，效率高,底层运算会用到&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;&amp;lt;  左移 *2 
+ &amp;gt;&amp;gt;  右移 /2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;### 三元运算
+ // x ? y : z
+ // 如果x==true,结果是y 否则结果为z&lt;/p&gt;
+
+&lt;p&gt;### 方法
+System.out.println()
+类 + 对象 + 方法&lt;/p&gt;
+
+&lt;p&gt;方法重载 方法名可以一样，参数不同（个数或类型）&lt;/p&gt;
+
+&lt;p&gt;如何执行包中的java文件？ 在包路径的根目录通过java 包路径+文件名 执行&lt;/p&gt;
+
+&lt;h3 id=&quot;可变参数&quot;&gt;可变参数&lt;/h3&gt;
+&lt;p&gt;一个方法只能一个可变参数，并且在方法参数的最后面&lt;/p&gt;
+
+&lt;h3 id=&quot;变量赋值定义&quot;&gt;变量赋值定义&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int [] nums;
+int nums[];            1.声明数组
+nums = new int[10];    2. 创建，分配内存 这里10是定义数组长度
+
+int[] nums = new int[10];    // 声明与创建
+ 
+xxx                    3. 赋值
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;循环&quot;&gt;循环&lt;/h3&gt;
+&lt;p&gt;if
+switch
+while
+for&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;========
+if (xx) {
+
+}else if(){
+
+}else{
+
+}
+========
+表达式exprission的值进行匹配
+switch(exprission){
+    case 'xx':
+      xxx;
+      break;
+    case 'yy':
+      yyy;
+      break;
+    default:
+      dddd;
+}
+========
+while(xx){
+  xxxx;
+}
+========
+do{
+  xxx;   
+}while(xx);
+========
+for(i=0; i&amp;lt;100; i++){
+    xxx;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;重载&quot;&gt;重载&lt;/h3&gt;
+
+&lt;p&gt;相同方法名，不同参数（类型，长度）
+调用时，java会根据不同的传参调用对应方法&lt;/p&gt;
+
+&lt;h3 id=&quot;可变参数-1&quot;&gt;可变参数&lt;/h3&gt;
+&lt;p&gt;不定项参数（可能一个方法需要写很多重载方法，可变参数解决这个可能的问题）&lt;/p&gt;
+
+&lt;p&gt;public calss xx{
+    pubilc static void main(String[] args){
+        xx values = new xx();
+        values.test(1,2,3,4,5); //这里传参数量可任意，方法可变传参可接收多个参数
+    }
+    public void test(int…i){
+        System.out.println(i[0]);
+    }
+}&lt;/p&gt;
+
+&lt;h3 id=&quot;数组&quot;&gt;数组&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int[] nums;
+int nums2[];  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
-        <pubDate>Thu, 12 Nov 2020 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2020/11/diary1/</link>
-        <guid isPermaLink="true">http://localhost:4000/2020/11/diary1/</guid>
+        <pubDate>Thu, 10 Jun 2021 00:00:00 +0800</pubDate>
+        <link>http://yangshiwei.top/2021/06/javalean1/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2021/06/javalean1/</guid>
         
-        <category>diary, 檬檬</category>
+        <category>java</category>
         
         
       </item>
     
       <item>
-        <title>20年,一些感想</title>
-        <description>&lt;h3 id=&quot;最近&quot;&gt;最近&lt;/h3&gt;
-&lt;p&gt;从今年疫情前开始说起吧,毕竟间隔了很久没有写博客
-（实际上感觉90后这代人就挺特别的,经历了很多罕见的事~）&lt;/p&gt;
+        <title>Django 项目相关汇总</title>
+        <description>&lt;h1 id=&quot;django-项目相关技术点汇总&quot;&gt;Django 项目相关技术点汇总&lt;/h1&gt;
 
-&lt;p&gt;&lt;strong&gt;1.22号回家前夕&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&quot;rest-framework-序列化&quot;&gt;rest framework 序列化&lt;/h3&gt;
+&lt;p&gt;首先想到的是，写restful接口，操作数据库
+urls文件&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from rest_framework.routers import DefaultRouter
+from .views import yyyEdit
+urlpatterns=[]
+# 创建路由对象
+routers = DefaultRouter()
+# 通过路由对象对视图进行路由生成
+routers.register('yyy',yyyEdit)
+urlpatterns += routers.urls
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;万万没想到疫情会这么严重的,当时整个周围的人对武汉疫情都不那么感冒,武汉当时都还没有封城&lt;br /&gt;
-至今,疫情的威力,再看1.22的那个朋友圈,我的直觉还是蛮准的&lt;br /&gt;
-说回来,疫情波及面还是始料未及的&lt;/p&gt;
+&lt;p&gt;对应的views&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+from .models import yyy
+from .serializers import yyy_Serializers
+from rest_framework.viewsets import ModelViewSet
+# Create your views here.
+class yyyEdit(ModelViewSet):
 
-&lt;p&gt;&lt;strong&gt;1.24除夕&lt;/strong&gt;&lt;/p&gt;
+    queryset = yyy.objects.all()
+    # 序列化
+    serializer_class = yyy_Serializers
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;serializers内容&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rest_framework&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy&lt;/span&gt;
 
-&lt;p&gt;也是最特别的一年春节了,按照和媳妇的约定,今年是在我家过年,于是我们在家足足待了快两个月&lt;/p&gt;
+&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy_Serializers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ModelSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'__all__'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;3.10日回沪前夕&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;最后在总视图中添加这个应用中的urls
+&lt;code class=&quot;highlighter-rouge&quot;&gt;path('api/', include('应用名.urls'))&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;在阿里最多的感受是变化,以前小公司的运维就是管好一亩三分地,系统维护搞搞好,顺带把各种挨边的事都做做&lt;br /&gt;
-阿里是没有运维的,所以从公有云的运维能力移交,公司Gaap需求不高的恶劣情况下,实际上挺佩服李洋的,因为搞不好,我们这个部门是要被清退的&lt;br /&gt;
-3月份公布了职级,直接按Teambition职级对标,定位P5,直接崩溃~&lt;br /&gt;
-当时已经下定决心要走了,当时看了下市面上跳槽的话基本涨薪在50%+还是蛮有诱惑的,加上之前已经有头条的hr挖过,信心还是蛮充分的 &lt;br /&gt;
-想法也很简单: 疫情期间好好干,等回上海就跳&lt;br /&gt;
-后面和李洋聊了很多,感受也蛮多的&lt;/p&gt;
+&lt;h3 id=&quot;jwt认证&quot;&gt;jwt认证&lt;/h3&gt;
+&lt;p&gt;原理很简单，客户端输入用户密码，获取token&lt;br /&gt;
+服务端签发时，获取用户名&amp;amp;密码，通过加SALT,生成token,token分为3个部分&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;headers部分&lt;/li&gt;
+  &lt;li&gt;payload部门&lt;/li&gt;
+  &lt;li&gt;signature部分&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;不是一个成熟的职场人&lt;/li&gt;
-  &lt;li&gt;情绪控制不好&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h4 id=&quot;token部分&quot;&gt;Token部分&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.models import User, AnonymousUser
+from rest_framework.authentication import BaseAuthentication
+from django.utils.deprecation import MiddlewareMixin
+from rest_framework.exceptions import AuthenticationFailed
+from django.shortcuts import redirect
+import jwt
+from django.conf import settings
+import datetime
+from jwt import exceptions
 
-&lt;p&gt;一直以来看不惯的人都会直接说,基本没什么保留,实际感觉这样的性格不好,容易得罪人,而我也不喜欢记仇,可能导致得罪过谁我不记得,别人记恨我几十年（哈哈,假想~~  &lt;br /&gt;
-不够成熟的职场人,这个当时发的一条朋友圈求内推,实际上除了发泄一点作用没有&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;过完工作以来最长的一个春节后&lt;br /&gt;
-疫情相对稳定了一些,回到上海,情绪也算稳定了（媳妇疫情被吓的也傻了,加上怀孕期间情绪崩溃,初一姑姑按惯例过来拜年,直接吓哭媳妇~ 回上海前一天去超超市买一次性雨衣,被我拒绝了 - -！）&lt;br /&gt;
-实际上我的5年规划中,从teambition离职后是准备跳大厂的,被阿里收购,也算间接完成了这个目标&lt;br /&gt;
-经过时间的消磨和与既定目标吻合等因素,导致到现在还在Teambition&lt;/p&gt;
-
-&lt;p&gt;其实职场中跳槽的涨薪是远远大于在一家公司的,刚到上海时这点我很有感触,一定要动起来.身边跳槽涨薪的例子很多,从概率来说如果工资不高,跳槽是最好的选择了（这也是仙鹤接下来一年给自己定的目标,跳槽至少3家公司）&lt;br /&gt;
-这样说的我在teambition待了3年多了,实际到teambition之前每家的周期是1-2年时间,一直保持大概的节奏,越来越感觉一个观点,&lt;strong&gt;“人”&lt;/strong&gt;对你跳槽的影响很有可能大于物质,就像前两天跟同事闲聊时说起的,部门如果没有李洋,估计很早就走了&lt;/p&gt;
-
-&lt;p&gt;今年很多老同事相继的离职了,问了下去向跟待遇,涨幅都很不错,同时由于职能的变化,已经有很多新面孔不认识了,这也算是变化中的一条了吧~&lt;/p&gt;
-
-&lt;p&gt;心态变化也蛮多的,以前看不惯直接就怼过去了,现在发现还能忍一忍,算是进步吧&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;7月份算是人生的另一条分界线吧,因为晋升当爸爸了~&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;7.23&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;妈妈到上海照顾了一个月,到了预产期,仙鹤还没有发动的迹象,检查指标全部正常,我们准备好待产包怀着忐忑的心情住进医院等待.&lt;br /&gt;
-因为中间隔着周末,周末一直在医院观察~  仙鹤禁吃的各种,这两天都吃了一遍：冰淇淋,汉堡包,烤鸭&lt;br /&gt;
-已经休陪产假在医院住了几天了&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;7.26&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;要催产了,已经孕周41周6天了,晚上塞了球.仙鹤腿部有血流出来了,当晚据她说,很难受.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;7.27&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;第二天一早我们就准备好,带好进产房的东西,开始生产了.早上同行下去的准爸爸有8个,估计心情都和我差不多,蛮激动的&lt;br /&gt;
-    开两指了,10点多就听里面传出消息.&lt;br /&gt;
-    挂无痛了 &lt;br /&gt;
-    …&lt;br /&gt;
-    然后直到晚上10点多,一直没有发动的消息,早上一行的准爸已经只剩下我和另外一个了,最后他们剖腹产,只剩下我了.  &lt;br /&gt;
-    当时已经预定好住院房间了,1000一晚.  &lt;br /&gt;
-    媳妇让我先回去睡觉,实际当晚哪能睡得着呀&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;7.28&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;很早就继续到产房外的凳子上坐着,实际都不知道是几点,当时天好像都没亮.&lt;br /&gt;
-    在发动了..&lt;br /&gt;
-    当听到里面叫到,仙鹤家属可以进来导乐了,实际心里放下了一口气  &lt;br /&gt;
-    进到产房,看到仙鹤特别虚弱,人都傻了  &lt;br /&gt;
-    然后看到很多血,当时一个踉跄,差点直接晕了过去,告诉自己要稳住 &lt;br /&gt;
-    先是握住仙鹤的手,和她说一下话,开始发动不算顺利,期间多次的发力,将本就虚弱的身体直接崩到极限了,整个嘴唇都是白的,是脱水的那种白,而这种脱水是通过发力造成的~&lt;br /&gt;
-    当时我脑子基本已经空白了只希望仙鹤坚持挺住就好,但是也只能握着仙鹤的手,实在晕的不行就到旁边坐下戳自己的太阳穴.&lt;br /&gt;
-    12.17分,看到宝宝的头出来了,然后整个拉出来,本来紧着的弦瞬间松了一下,实际不知道当时宝宝已经缺氧并且由于挤压羊水破裂有点污染了  &lt;br /&gt;
-    宝宝脖子上绕了两圈肚肌带,身上有点发紫,然后被护士放到旁边的台子上复苏.哇~哇的一声哭了出来,仙鹤的心瞬间放下了,她很累了.  &lt;br /&gt;
-    我看宝宝减掉了肌带,带上提前准备好的帽子,拍了照片然后送到了NICU  &lt;br /&gt;
-    仙鹤的麻醉结束之前要处理伤口,恢复&lt;br /&gt;
-    从产房出来.身体的脱力以及伤口的创伤,实际仙鹤是特别虚弱的&lt;br /&gt;
-    出血观察后,快接近傍晚,我们才回到产房,宝宝住到NICU我们悬着的心都放不下,又因为伤口当晚就需要冷敷,所以晚上基本都在担心着+处理伤口  &lt;br /&gt;
-&lt;strong&gt;7.29&lt;/strong&gt;&lt;br /&gt;
-先是报喜,但是不敢说宝宝在NICU,只是粗略说宝宝出生有点缺氧,要观察一下.&lt;br /&gt;
-仙鹤拖着脱力的身体,为宝宝准备初乳,开始是很久收集10ml,然后很高兴的送到NICU的小窗子.  &lt;br /&gt;
-想探头看一眼宝宝,根本看不到  &lt;br /&gt;
-前面几天都特别的艰难,一是身体已经疲惫到一定的程度了,二来宝宝那边的情况还是未知数~&lt;br /&gt;
-也不知道怎么样的坚持过来了,一直的担心也导致体重骤降接近10斤.  &lt;br /&gt;
-…&lt;/p&gt;
-
-&lt;p&gt;随着住院结束回家,宝宝炎症指标下降.终于一周后,接宝宝回家了. &lt;br /&gt;
-当天心情特别的激动,阴霾散去的感觉&lt;br /&gt;
-准备好衣服,尿不湿等等到医院,进到NICU.第一眼看到宝宝,很小很小的一只,差点老泪纵横~&lt;br /&gt;
-附一张宝宝的日常照片&lt;br /&gt;
-&lt;img src=&quot;/images/posts/2020-11-3-diary/yyc.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;宝爸篇&quot;&gt;宝爸篇&lt;/h3&gt;
-&lt;p&gt;宝爸的准备工作实际蛮重要的,在待产时就为宝宝,宝妈单独做了一个项目准备&lt;br /&gt;
-不得不说Teambition真的蛮好用的,日常旅行,各类攻略只要是生活中你觉得是个重要的事,都可以用&lt;br /&gt;
-&lt;img src=&quot;/images/posts/2020-11-3-diary/tb1.png&quot; alt=&quot;&quot; /&gt;
-虽然说teambition是个专门做项目管理的,做这个有点大材小用&lt;br /&gt;
-&lt;img src=&quot;/images/posts/2020-11-3-diary/tb2.png&quot; alt=&quot;&quot; /&gt;
-***&lt;br /&gt;
-然后就是出生后起夜的事了,一定要请月嫂&lt;br /&gt;
-刚开始真的不知道怎么弄宝宝,老一辈的带娃习惯实际很多都和现在有出入,加上对宝宝的无可下手&lt;br /&gt;
-月嫂给宝宝洗澡,给宝妈护理,第一个月基本算是享福了,除了抱宝宝玩基本不用怎么照料宝宝&lt;br /&gt;
-第二个月跟着月嫂学的,给宝宝洗澡换衣服等等,都有大概的概念了&lt;br /&gt;
-上手起来很快&lt;br /&gt;
-学习各种宝宝的护理,飞机抱啊,打嗝拍嗝呀,泪腺疏通啊等等&lt;/p&gt;
-
-&lt;p&gt;剩下就是各种买买买啦&lt;br /&gt;
-婴儿床,提篮（建议别买）,背带（babycare）都是咸鱼买的&lt;br /&gt;
-另外宝宝水咯,奶粉咯,各种好看的衣服&lt;br /&gt;
-现在沉迷给宝宝买衣服  购物车已经N宝宝衣服了&lt;br /&gt;
-希望宝宝快点长大,可以一起交流玩耍~&lt;/p&gt;
-
-</description>
-        <pubDate>Tue, 03 Nov 2020 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2020/11/diary/</link>
-        <guid isPermaLink="true">http://localhost:4000/2020/11/diary/</guid>
+###生成Token
+def GetJwtToken(username, password):
+    userobject = User.objects.filter(username=username).first()
+    if not userobject:
+        return False
+    else:
+        if not userobject.check_password(password):
+            return False
+    headers = {
+        'typ': 'jwt',
+        'alg': 'HS256'
+    } 
+    payload = {
+        &quot;username&quot;: username,
+        &quot;exp&quot;: datetime.datetime.utcnow() + datetime.timedelta(days=7)
+    }
+    SALT = settings.SECRET_KEY
+    token = jwt.encode(
+        payload=payload, 
+        key=SALT, 
+        algorithm=&quot;HS256&quot;
         
-        <category>diary</category>
+    )
+    return token
+   
+Token校验
+
+class QtsAuthenticationMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        user = AnonymousUser()
+        try:
+            token = request.COOKIES['token']
+        except Exception as e:
+            user = AnonymousUser()
+        SALT = settings.SECRET_KEY
+        try:
+            verified_payload = jwt.decode(
+                token, 
+                SALT, 
+                algorithms=['HS256'],
+                options={&quot;require_exp&quot;: True}
+            )
+            username = verified_payload.get('username', '')
+            user = User.objects.filter(username=username).first()
+        except Exception as e:
+            user = AnonymousUser()
+        request.user = user
+class Authentication(BaseAuthentication):
+    def authenticate(self, request):
+        try:
+            token = request.COOKIES['token']
+        except KeyError as e:
+            return AnonymousUser(), None
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+        except exceptions.ExpiredSignatureError:
+            return redirect('/login/')
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+
+        SALT = settings.SECRET_KEY
+        try:
+            verified_payload = jwt.decode(
+                token, 
+                SALT, 
+                algorithms=['HS256'],
+                options={&quot;require_exp&quot;: True}
+            )
+            
+        except exceptions.ExpiredSignatureError:
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+        except jwt.DecodeError:
+            raise AuthenticationFailed({'code': 445, 'error': 'token 认证失败'})
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed({'code': 446, 'error': '非法 token'})
+        return (verified_payload, token)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;setting添加app&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    'tes_alert_admin.文件名.QtsAuthenticationMiddleware',
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;view中&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.mixins import LoginRequiredMixin
+class IndexPage(LoginRequiredMixin, TemplateView):
+    pass
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;前端表单处理&quot;&gt;前端表单处理&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
+
+&amp;lt;form action=&quot;/url/&quot; method=&quot;POST&quot;&amp;gt;
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+      &amp;lt;input type=&quot;hidden&quot; name=&quot;xx&quot; value=&quot;yy&quot;&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+      xxx
+  &amp;lt;/div&amp;gt;
+&amp;lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&amp;gt;提交&amp;lt;/button&amp;gt;
+&amp;lt;/form&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;分页&quot;&gt;分页&lt;/h4&gt;
+
+&lt;p&gt;分页应该是有现成可用的库的&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.core.paginator import Paginator
+
+class xxxxxPage(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        per_page = 15
+        page = int(request.GET.get('page',1))
+        rulelist = DataQuery(page, per_page)    #数据库查询，返回一个list(list的元素是字典)，将list写入pagination。
+        pagination = Paginator(rulelist, per_page)
+        page_obj = pagination.get_page(page)
+        return render(request,
+                      'xx.html',
+                      {
+                        &quot;pagination&quot;: pagination,
+                        &quot;page_obj&quot;: page_obj
+                      }               
+        )
+
+前端对page_obj进行循环
+
+
+分页部分
+    &amp;lt;div id=&quot;pages&quot; class=&quot;text-center&quot; &amp;gt;
+      &amp;lt;nav&amp;gt;
+          &amp;lt;ul class=&quot;pagination&quot;&amp;gt;
+              &amp;lt;li class=&quot;step-links&quot;&amp;gt;
+              
+
+              &amp;lt;span class=&quot;current&quot;&amp;gt;
+                  Page  of &amp;lt;/span&amp;gt;
+
+              
+              &amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;/nav&amp;gt;
+      &amp;lt;/div&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;前端多选multiselect&quot;&gt;前端多选multiselect&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/bootstrap-multiselect.css&quot;&amp;gt;
+&amp;lt;script src=&quot;/static/js/bootstrap-multiselect.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+
+#多选项，通过xxlists的name传入后端，后端取值通过getlist，获取多选项的值
+&amp;lt;div class=&quot;form-group&quot;&amp;gt;
+  &amp;lt;label for=&quot;selecttemplate&quot; class=&quot;col-sm-2 control-label&quot;&amp;gt;xx项&amp;lt;/label&amp;gt;
+  &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
+      &amp;lt;select class=&quot;selectpicker&quot; multiple data-style=&quot;btn-info&quot; name=&quot;xxlists&quot;  data-live-search=&quot;true&quot;&amp;gt;
+        
+      &amp;lt;/select&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+
+#checkbox   循环后端传来的list,作为checkbox的选项
+
+
+#后端通过getlist获取多选的值
+
+xxlist = request.POST.getlist('xxlists')  
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;弹窗&quot;&gt;弹窗&lt;/h4&gt;
+&lt;p&gt;弹窗按钮绑定一个 data-target,在对应的弹窗modal中，包含fade/dialog/content/header/body这些元素&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle=&quot;modal&quot; data-target=&quot;#createButton&quot;&amp;gt;
+    按钮名
+&amp;lt;/button&amp;gt;
+
+&amp;lt;!-- Modal 包含 弹窗fade/dialog/content/header/body--&amp;gt;
+&amp;lt;div class=&quot;modal fade&quot; id=&quot;createButton&quot; tabindex=&quot;-1&quot; role=&quot;dialog&quot; aria-labelledby=&quot;createModalLabel&quot;&amp;gt;
+    &amp;lt;div class=&quot;modal-dialog&quot; role=&quot;document&quot;&amp;gt;
+      &amp;lt;div class=&quot;modal-content&quot;&amp;gt;
+        &amp;lt;div class=&quot;modal-header&quot;&amp;gt;
+          &amp;lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&amp;gt;&amp;lt;span aria-hidden=&quot;true&quot;&amp;gt;&amp;amp;times;&amp;lt;/span&amp;gt;&amp;lt;/button&amp;gt;
+          &amp;lt;h4 class=&quot;modal-title&quot; id=&quot;myModalLabel&quot;&amp;gt;Title名&amp;lt;/h4&amp;gt;
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div class=&quot;modal-body&quot;&amp;gt;
+            这里写弹窗的Body内容
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div class=&quot;modal-footer&quot;&amp;gt;
+          &amp;lt;button type=&quot;button&quot; class=&quot;btn cancel btn-default&quot; data-dismiss=&quot;modal&quot;&amp;gt;返回&amp;lt;/button&amp;gt;
+          &amp;lt;button type=&quot;button&quot; class=&quot;btn save btn-primary&quot;&amp;gt;保存&amp;lt;/button&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+
+&amp;lt;script&amp;gt;
+    $('.save.btn').on('click', function () {
+        $('.form').trigger('submit');
+    });
+&amp;lt;/script&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;models操作&quot;&gt;Models操作&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. M模型中XX字段包含yy信息的数据
+    M.objects.filter(XX__icontains='yy')
+2. M模型多条件查询A字段或B字段包含yy的数据
+    from django.db.models import Q
+    M.objects.filter(Q(XX__icontains='yy') | Q(YY__icontains='yy'))
+3. 范围查询
+    M.objects.filter(XX__gte='100')
+4. 多数据查询
+    lista
+    M.objects.filter(XX__in=lista)
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Wed, 17 Mar 2021 00:00:00 +0800</pubDate>
+        <link>http://yangshiwei.top/2021/03/pylearn/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2021/03/pylearn/</guid>
+        
+        <category>python, django, mysql</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Flask 项目相关汇总</title>
+        <description>&lt;h1 id=&quot;flask-项目相关技术点汇总&quot;&gt;Flask 项目相关技术点汇总&lt;/h1&gt;
+
+&lt;h3 id=&quot;gunicorn方式与apscheduler定时任务若干问题&quot;&gt;gunicorn方式与apscheduler定时任务若干问题&lt;/h3&gt;
+
+&lt;h4 id=&quot;1-构建镜像&quot;&gt;1. 构建镜像&lt;/h4&gt;
+
+&lt;p&gt;多进程方式运行python程序，实际只需要在requirements中添加gunicorn模块&lt;br /&gt;
+在通过dockerfile构建镜像时，通过gunicorn启动项目即可&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM python:3.6
+ENV BUILD_PACKAGES=&quot;curl build-essential python3-dev ca-certificates libssl-dev libffi-dev&quot;
+
+ADD . /code
+WORKDIR /code
+
+RUN apt-get update &amp;amp;&amp;amp; apt-get install -y $BUILD_PACKAGES \
+    &amp;amp;&amp;amp; pip3 install --no-cache-dir -U -I -r /code/requirements.txt -i https://pypi.douban.com/simple\
+    &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+EXPOSE 5000
+
+CMD [&quot;python3&quot;, &quot;main.py&quot;]
+#CMD [&quot;gunicorn&quot;, &quot;-w&quot;, &quot;3&quot;, &quot;-b&quot;, &quot;0.0.0.0:5000&quot;, &quot;main:app&quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;gunicorn下多个apscheduler&quot;&gt;gunicorn下多个apscheduler&lt;/h4&gt;
+
+&lt;p&gt;但是在flask中，多进程模式下（以及debug模式，会启动一个副进程），如果定义了定时调度任务，那么在项目运行时，定时调度任务会被多个进程重复执行&lt;br /&gt;
+通过引入socket锁的方式，处理多线程下，多个flask_apscheduler任务问题&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;try:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((&quot;127.0.0.1&quot;, 5002))
+except socket.error:
+    print(&quot;!!!scheduler already started, DO NOTHING&quot;)
+else:
+    do something init app 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;DEBUG模式下,多个apscheduler处理&lt;br /&gt;
+这里”WERKZEUG_RUN_MAIN”这个变量如果没有，可能会导致debug模式仍然启动多个apscheduler，需要结合具体环境进行处理，思路就是根据对应的DEBUG特有的值进行判断，只初始化一次apscheduler&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if os.environ.get(&quot;WERKZEUG_RUN_MAIN&quot;) == &quot;true&quot;:
+    scheduler.init_app(app)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;apscheduler继承app上下文&quot;&gt;apscheduler继承app上下文&lt;/h4&gt;
+
+&lt;p&gt;定时任务中，需要继承上下文时，需要把app传入定时任务（该场景主要用于在定时任务中，操作数据库等操作，需要获取app上下文）&lt;br /&gt;
+在添加job时，将app作为参数传递给定时任务xxx&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; scheduler.add_job(func=xxx trigger='interval',id='xx',args=[app], seconds=660)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;注意，在项目中引用cache模块时，由于gunicorn内存块是相互隔离的，会导致cache存储的数据是分散的&lt;/p&gt;
+
+&lt;h3 id=&quot;数据库模型引用&quot;&gt;数据库模型引用&lt;/h3&gt;
+
+&lt;p&gt;项目中，除了多线程下的调度问题，另外一块就是orm &lt;br /&gt;
+我的项目中,目录结构:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;code
+├── 项目名
+│   ├── 项目入口文件.py
+│   ├── bluepoint.py
+│   ├── cache.py
+│   ├── autotask.py
+│   ├── __init__.py
+│   ├── tasks.py
+│   └── util.py
+├── config.py
+├── db
+├── db.py
+├── dockerfile
+├── _init_.py
+├── main.py
+├── models.py
+├── rds.py
+├── readme.md
+├── requirements.txt
+├── static
+└── templates
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;因为项目中引用了redis，mysql以及cache模块，其中db.py定义orm模型&lt;br /&gt;
+db.py&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;因为redis使用时，用了多个分区，这里初始化了3个实例，配置文件中用REDIS_URL, REDIS2_URL来定义每个实例的连接&lt;br /&gt;
+rds.py&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_redis import FlaskRedis
+redis_client = FlaskRedis(decode_responses=True)
+redis_client2 = FlaskRedis(decode_responses=True, config_prefix='REDIS2')
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;cache模块是写在项目目录内的，这里在多进程时，发现cache使用的内存块是独立的，会导致写入的cache分散在三个进程，读取cache不一致&lt;br /&gt;
+没有继续研究这个问题，是不是要在初始化应用时写在外层init，最后cache用了外置的redis替代&lt;br /&gt;
+(当时把gunicorn改回单进程也是ok的)&lt;br /&gt;
+cache.py&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from cacheout import Cache
+cache = Cache(maxsize=1024000, ttl=600)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
+
+&lt;h4 id=&quot;前后端交互&quot;&gt;前后端交互&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;body&amp;gt;
+    &amp;lt;div class=&quot;panel panel-default&quot;&amp;gt;
+        &amp;lt;!--后端传入的值，通过进行接收，前端可以加入一些逻辑判断 --&amp;gt;
+        
+          &amp;lt;form action=&quot;/demo/view22?arg2=&quot; method=&quot;POST&quot;&amp;gt;
+              &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+                  &amp;lt;label class=&quot;col-sm-2 control-label&quot;&amp;gt;提示&amp;lt;/label&amp;gt;
+                  &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
+                    &amp;lt;p class=&quot;form-control-static&quot;&amp;gt;&amp;lt;/p&amp;gt;
+                  &amp;lt;/div&amp;gt;
+              &amp;lt;/div&amp;gt;
+              &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+                &amp;lt;label class=&quot;col-sm-2 control-label&quot;&amp;gt;选择框&amp;lt;/label&amp;gt;
+                &amp;lt;!-- 这里选择框和输入框的内容都会通过name，以request.from传到后端，后端通过request.from['name1']获取这些输入的值--&amp;gt;
+                &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
+                  &amp;lt;select  name='name1'&amp;gt;
+                    &amp;lt;option&amp;gt;1&amp;lt;/option&amp;gt;
+                    &amp;lt;option&amp;gt;2&amp;lt;/option&amp;gt;
+                    &amp;lt;option&amp;gt;3&amp;lt;/option&amp;gt;
+                  &amp;lt;/select&amp;gt;
+                &amp;lt;/div&amp;gt;
+              &amp;lt;/div&amp;gt;
+              &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+                &amp;lt;label class=&quot;col-sm-2 control-label&quot;&amp;gt;输入框&amp;lt;/label&amp;gt;
+                &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
+                  &amp;lt;input type=&quot;text&quot; class=&quot;form-control&quot; placeholder=&quot;Inputxxx&quot; name='name2'&amp;gt;
+                &amp;lt;/div&amp;gt;
+              &amp;lt;/div&amp;gt;            
+              &amp;lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&amp;gt;提交&amp;lt;/button&amp;gt;
+          &amp;lt;/form&amp;gt;
+        
+
+    &amp;lt;/div&amp;gt;
+    &amp;lt;script src=&quot;/static/jquery-2.1.4.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script src=&quot;/static/js/bootstrap.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+  &amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;前端submit-与后端的处理&quot;&gt;前端submit 与后端的处理&lt;/h4&gt;
+
+&lt;p&gt;前端button等提交submit调用后端相关视图后，后端处理完成刷新前端页面，引入redirect&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;return redirect(request.referrer)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;后端传参到前端&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  return render_template('index.html',
+                          A1=a1,
+                          B1=b1,
+                          C1=c1
+                          )
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Wed, 17 Mar 2021 00:00:00 +0800</pubDate>
+        <link>http://yangshiwei.top/2021/03/pylearn/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2021/03/pylearn/</guid>
+        
+        <category>python, flask, mysql</category>
         
         
       </item>
@@ -700,8 +1153,8 @@ subjects:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Wed, 02 Sep 2020 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2020/09/loki-1/</link>
-        <guid isPermaLink="true">http://localhost:4000/2020/09/loki-1/</guid>
+        <link>http://yangshiwei.top/2020/09/loki-1/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2020/09/loki-1/</guid>
         
         <category>loki</category>
         
@@ -990,8 +1443,8 @@ restart&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
 &lt;p&gt;文章没有添加截图,欢迎大家交流,另外github那个问题周末找时间给作者提个issue看是否可以直接处理掉~&lt;/p&gt;
 </description>
         <pubDate>Wed, 25 Dec 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/12/zabbix/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/12/zabbix/</guid>
+        <link>http://yangshiwei.top/2019/12/zabbix/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/12/zabbix/</guid>
         
         <category>zabbix</category>
         
@@ -1228,8 +1681,8 @@ spec:
 &lt;p&gt;页面中有邮箱和github联系方式,欢迎大佬们和我沟通交流,一起学习进步&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 Nov 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/11/appink8s/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/11/appink8s/</guid>
+        <link>http://yangshiwei.top/2019/11/appink8s/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/11/appink8s/</guid>
         
         <category>Linux</category>
         
@@ -1393,8 +1846,8 @@ location /xxx {
 &lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Mon, 14 Oct 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/10/nginx/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/10/nginx/</guid>
+        <link>http://yangshiwei.top/2019/10/nginx/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/10/nginx/</guid>
         
         <category>Linux</category>
         
@@ -1436,8 +1889,8 @@ mount /dev/vda2 /data&lt;br /&gt;
 &lt;img src=&quot;/images/posts/2019-07-01-mkdisk/mkdisk2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/07/mkdisk/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/07/mkdisk/</guid>
+        <link>http://yangshiwei.top/2019/07/mkdisk/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/07/mkdisk/</guid>
         
         <category>Linux</category>
         
@@ -1620,8 +2073,8 @@ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:defaul
 &lt;code class=&quot;highlighter-rouge&quot;&gt;oc get pod -n default|grep registry&lt;/code&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 Feb 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/02/openshift2/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/02/openshift2/</guid>
+        <link>http://yangshiwei.top/2019/02/openshift2/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/02/openshift2/</guid>
         
         <category>Openshift</category>
         
@@ -1708,359 +2161,10 @@ oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/m
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Sun, 20 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/openshift1/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/openshift1/</guid>
+        <link>http://yangshiwei.top/2019/01/openshift1/</link>
+        <guid isPermaLink="true">http://yangshiwei.top/2019/01/openshift1/</guid>
         
         <category>Openshift</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Mysql最佳实践</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;记录mysql读书日记&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;安装mysql&quot;&gt;安装mysql&lt;/h4&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm&lt;/code&gt;
-安装 mysql 源&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm&lt;/code&gt;
-检查 yum 源是否安装成功&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-a&quot;&gt;
-$ sudo yum repolist enabled | grep &quot;mysql.*-community.*&quot;
-mysql-connectors-community           MySQL Connectors Community              21
-mysql-tools-community                MySQL Tools Community                   38
-mysql57-community                    MySQL 5.7 Community Server             130
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;如上所示,找到了 mysql 的安装包&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;安装
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo yum install mysql-community-server
-$ sudo systemctl enable mysqld
-$ sudo systemctl start mysqld
-$ sudo systemctl status mysqld
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;修改root默认密码&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;MySQL 5.7 启动后，在&lt;code class=&quot;highlighter-rouge&quot;&gt;/var/log/mysqld.log&lt;/code&gt;文件中给 root 生成了一个默认密码,通过下面的方式找到 root 默认密码,然后登录 mysql 进行修改:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-b&quot;&gt;$ grep 'temporary password' /var/log/mysqld.log
-[Note] A temporary password is generated for root@localhost: **********
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;登录 MySQL 并修改密码&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Enter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;sc&quot;&gt;'@'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MyNewPass4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;注意：&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MySQL&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;默认安装了密码安全检查插件（&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;validate_password&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;）&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;并且长度不能少于&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;位。&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;通过 MySQL 环境变量可以查看密码策略的相关信息:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-e&quot;&gt;
-mysql&amp;gt; SHOW VARIABLES LIKE 'validate_password%';
-+--------------------------------------+--------+
-| Variable_name                        | Value  |
-+--------------------------------------+--------+
-| validate_password_check_user_name    | OFF    |
-| validate_password_dictionary_file    |        |
-| validate_password_length             | 8      |
-| validate_password_mixed_case_count   | 1      |
-| validate_password_number_count       | 1      |
-| validate_password_policy             | MEDIUM |
-| validate_password_special_char_count | 1      |
-+--------------------------------------+--------+
-7 rows in set (0.01 sec)
-具体修改,参见 http://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;指定密码校验策略&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-f&quot;&gt;$ sudo vi /etc/my.cnf
-
-[mysqld]
-# 添加如下键值对, 0=LOW, 1=MEDIUM, 2=STRONG
-validate_password_policy=0
-禁用密码策略
-
-$ sudo vi /etc/my.cnf
-	
-[mysqld]
-# 禁用密码校验策略
-validate_password = off
-重启 MySQL 服务,使配置生效
-
-$ sudo systemctl restart mysqld
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;添加远程登录用户&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;«««&amp;lt; HEAD
-MySQL 默认只允许 root 帐户在本地登录,如果要在其它机器上连接 MySQL,必须修改 root 允许远程连接,或者添加一个允许远程连接的帐户,为了安全起见,本例添加一个新的帐户：&lt;br /&gt;
-=======
-MySQL默认只允许 root 帐户在本地登录,如果要在其它机器上连接 MySQL,必须修改 root 允许远程连接,或者添加一个允许远程连接的帐户,为了安全起见,本例添加一个新的帐户:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;blockquote&gt;
-      &lt;blockquote&gt;
-        &lt;blockquote&gt;
-          &lt;blockquote&gt;
-            &lt;blockquote&gt;
-              &lt;p&gt;15c48c1efc412a51d26c29d001b91268389da2e4&lt;/p&gt;
-            &lt;/blockquote&gt;
-          &lt;/blockquote&gt;
-        &lt;/blockquote&gt;
-      &lt;/blockquote&gt;
-    &lt;/blockquote&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql&amp;gt; GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;&lt;/code&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;配置默认编码为 utf8&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;MySQL 默认为 latin1, 一般修改为 UTF-8&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ vi /etc/my.cnf
-[mysqld]
-# 在myslqd下添加如下键值对
-character_set_server=utf8
-init_connect='SET NAMES utf8'
-&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt; HEAD
-重启 MySQL 服务,使配置生效
-=======
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;重启 MySQL 服务，使配置生效&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;$ sudo systemctl restart mysqld&lt;/code&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;blockquote&gt;
-      &lt;blockquote&gt;
-        &lt;blockquote&gt;
-          &lt;blockquote&gt;
-            &lt;blockquote&gt;
-              &lt;p&gt;15c48c1efc412a51d26c29d001b91268389da2e4&lt;/p&gt;
-            &lt;/blockquote&gt;
-          &lt;/blockquote&gt;
-        &lt;/blockquote&gt;
-      &lt;/blockquote&gt;
-    &lt;/blockquote&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;查看字符集&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; SHOW VARIABLES LIKE 'character%';
-+--------------------------+----------------------------+
-| Variable_name            | Value                      |
-+--------------------------+----------------------------+
-| character_set_client     | utf8                       |
-| character_set_connection | utf8                       |
-| character_set_database   | utf8                       |
-| character_set_filesystem | binary                     |
-| character_set_results    | utf8                       |
-| character_set_server     | utf8                       |
-| character_set_system     | utf8                       |
-| character_sets_dir       | /usr/share/mysql/charsets/ |
-+--------------------------+----------------------------+
-8 rows in set (0.00 sec
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;开启端口&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
-$ sudo firewall-cmd --reload
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;简易方式快速启动&quot;&gt;简易方式快速启动&lt;/h3&gt;
-
-&lt;p&gt;宿主机上执行&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-yum install mysql-community-client -y 
-yum install  docker docker-compose -y
-mkdir -p /mysql
-mkdir -p /mysql/data
-mkdir -p /mysql/config
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;将my.conf复制到/mysql/config下&lt;br /&gt;
-将docker-compose.yml拷贝到/mysql下&lt;br /&gt;
-my.cnf配置如下（.cnf结尾）&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-my.cnf&quot;&gt;# The MySQL database server configuration file.
-#
-# You can copy this to one of:
-# - &quot;/etc/mysql/my.cnf&quot; to set global options,
-# - &quot;~/.my.cnf&quot; to set user-specific options.
-#
-# One can use all long options that the program supports.
-# Run program with --help to get a list of available options and with
-# --print-defaults to see which it would actually understand and use.
-#
-# For explanations see
-# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
-
-# This will be passed to all mysql clients
-# It has been reported that passwords should be enclosed with ticks/quotes
-# escpecially if they contain &quot;#&quot; chars...
-# Remember to edit /etc/mysql/debian.cnf when changing the socket location.
-
-# Here is entries for some specific programs
-# The following values assume you have at least 32M ram
-
-[mysqld_safe]
-socket		= /var/run/mysqld/mysqld.sock
-nice		= 0
-
-[mysqld]
-#
-# * Basic Settings
-#
-user		= mysql
-pid-file	= /var/run/mysqld/mysqld.pid
-socket		= /var/run/mysqld/mysqld.sock
-port		= 3306
-basedir		= /usr
-datadir		= /var/lib/mysql
-tmpdir		= /tmp
-lc-messages-dir	= /usr/share/mysql
-skip-external-locking
-skip-grant-tables
-#
-# Instead of skip-networking the default is now to listen only on
-# localhost which is more compatible and is not less secure.
-bind-address		= 0.0.0.0
-#
-# * Fine Tuning
-#
-key_buffer_size		= 16M
-max_allowed_packet	= 16M
-thread_stack		= 192K
-thread_cache_size       = 8
-# This replaces the startup script and checks MyISAM tables if needed
-# the first time they are touched
-myisam-recover-options  = BACKUP
-#max_connections        = 100
-#table_cache            = 64
-#thread_concurrency     = 10
-#
-# * Query Cache Configuration
-#
-query_cache_limit	= 1M
-query_cache_size        = 16M
-#
-# * Logging and Replication
-#
-# Both location gets rotated by the cronjob.
-# Be aware that this log type is a performance killer.
-# As of 5.1 you can enable the log at runtime!
-#general_log_file        = /var/log/mysql/mysql.log
-#general_log             = 1
-#
-# Error log - should be very few entries.
-#
-log_error = /var/log/mysql/error.log
-#
-# Here you can see queries with especially long duration
-#log_slow_queries	= /var/log/mysql/mysql-slow.log
-#long_query_time = 2
-#log-queries-not-using-indexes
-#
-# The following can be used as easy to replay backup logs or for replication.
-# note: if you are setting up a replication slave, see README.Debian about
-#       other settings you may need to change.
-#server-id		= 1
-#log_bin			= /var/log/mysql/mysql-bin.log
-expire_logs_days	= 10
-max_binlog_size   = 100M
-#binlog_do_db		= include_database_name
-#binlog_ignore_db	= include_database_name
-#
-# * InnoDB
-#
-# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
-# Read the manual for more InnoDB related options. There are many!
-#
-# * Security Features
-#
-# Read the manual, too, if you want chroot!
-# chroot = /var/lib/mysql/
-#
-# For generating SSL certificates I recommend the OpenSSL GUI &quot;tinyca&quot;.
-#
-# ssl-ca=/etc/mysql/cacert.pem
-# ssl-cert=/etc/mysql/server-cert.pem
-# ssl-key=/etc/mysql/server-key.pem
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;docker-compose文件&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-compose&quot;&gt;version: '3'
-services:
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
-    restart: always
-    ports:
-      - 6606:3306
-    volumes:
-      - &quot;/mysql/data:/var/lib/mysql&quot;
-      - &quot;/mysql/config:/etc/mysql/conf.d&quot;
-    environment:
-      MYSQL_ROOT_PASSWORD: &quot;123456&quot;   #root管理员用户密码
-      MYSQL_USER: test   #创建test用户
-      MYSQL_PASSWORD: test  #设置test用户的密码
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;docker-compose up -d 启动&lt;br /&gt;
-宿主机登录mysql: mysql -uroot -P6606 -p -h127.0.0.1&lt;/p&gt;
-
-&lt;p&gt;«««&amp;lt; HEAD
-报错&lt;code class=&quot;highlighter-rouge&quot;&gt;Access denied for user 'root'@'localhost' (using password: YES)&lt;/code&gt;
-配置文件添加：skip-grant-tables
-进入数据量,更新密码update mysql.user set authentication_string=password(‘&lt;strong&gt;**&lt;/strong&gt;&lt;em&gt;’) where user=’&lt;/em&gt;&lt;strong&gt;**&lt;/strong&gt;’
-=======
-报错&lt;code class=&quot;highlighter-rouge&quot;&gt;Access denied for user 'root'@'localhost' (using password: YES)&lt;/code&gt;&lt;br /&gt;
-配置文件添加:skip-grant-tables&lt;br /&gt;
-进入数据量,更新密码&lt;code class=&quot;highlighter-rouge&quot;&gt;update mysql.user set authentication_string=password('*******') where user='*******'&lt;/code&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;blockquote&gt;
-      &lt;blockquote&gt;
-        &lt;blockquote&gt;
-          &lt;blockquote&gt;
-            &lt;blockquote&gt;
-              &lt;p&gt;15c48c1efc412a51d26c29d001b91268389da2e4&lt;/p&gt;
-            &lt;/blockquote&gt;
-          &lt;/blockquote&gt;
-        &lt;/blockquote&gt;
-      &lt;/blockquote&gt;
-    &lt;/blockquote&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-</description>
-        <pubDate>Mon, 14 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/learnmysql/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/learnmysql/</guid>
-        
-        <category>Mysql</category>
         
         
       </item>

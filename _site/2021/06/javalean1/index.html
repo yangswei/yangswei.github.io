@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>云主机磁盘分区</title>
-  <meta name="description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <title>Java 总结一</title>
+  <meta name="description" content="Java 项目相关技术点汇总">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="云主机磁盘分区">
-  <meta name="twitter:description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <meta name="twitter:title" content="Java 总结一">
+  <meta name="twitter:description" content="Java 项目相关技术点汇总">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="云主机磁盘分区">
-  <meta property="og:description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <meta property="og:title" content="Java 总结一">
+  <meta property="og:description" content="Java 项目相关技术点汇总">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2019/07/mkdisk/">
+  <link rel="canonical" href="http://yangshiwei.top/2021/06/javalean1/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -173,10 +173,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">云主机磁盘分区</h1>
+    <h1 class="post-title">Java 总结一</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2019-07-01 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-07-01</time>  
+      <time datetime="2021-06-10 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2021-06-10</time>  
       
       <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
       
@@ -187,37 +187,142 @@
   </header>
 
   <section class="post">
-    <blockquote>
-  <p>去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊</p>
-</blockquote>
+    <h1 id="java-项目相关技术点汇总">Java 项目相关技术点汇总</h1>
 
-<p>去年这个时候,薅羊毛2c8g的伦敦节点,花了300+一年搞定<br />
-今年看到官网又出了海外节点2折的活动,果断入手<br />
-香港节点2c4g20G+2M带宽,价格550</p>
+<h3 id="删除java环境">删除Java环境</h3>
 
-<p>以上与本文无关<br />
-发现系统盘有点小,准备扩一下系统盘,20g到40g一年0.01元,呵呵呵,不买我是弟弟啊~<br />
-一顿操作加载系统盘,重装电脑,发现fdisk下面仅仅/dev/vda显示为40g。系统盘已经挂载上去的/dev/vda1对应系统的/目录仍然是20g</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rm -rf“/ Library / Internet Plug-Ins / JavaAppletPlugin.plugin”
+sudo rm -rf“/Library/PreferencePanes/JavaControlPanel.prefPane”
+sudo rm -rf“〜/ Library / Application Support / Java”
 
-<p><img src="/images/posts/2019-07-01-mkdisk/mkdisk1.png" alt="" /></p>
+vim ~/.bash_profile
+JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+export JAVA_HOME
+CLASS_PATH="$JAVA_HOME/lib"
+PATH=".$PATH:$JAVA_HOME/bin"
 
-<p>还有20g没有划入分区？那就分区呗</p>
+source ~/.bash_profile
+echo $JAVA_HOME
 
-<p>fdisk /dev/vda
-n p 2 新建分区-建立分区-分区编号（ucloud默认是2-4）
-剩下的默认回车就行了,大概意思是选择盘符的起始位置,结束位置,就是划分磁盘的大小
-w  最后w保存创建,退出交互模式</p>
+</code></pre></div></div>
 
-<p>分区建完,格式化磁盘<br />
-mkfs.ext4 /dev/vda2<br />
-如果报错,则在内核将刚创建的分区更新过去<br />
-partprobe<br />
-再格式化</p>
+<h3 id="idea">IDEA</h3>
+<p>编辑器 - 快捷键</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psvm  自动生成主函数方法
+sout  = System.out.println()
 
-<p>最后一步,挂载分区<br />
-mkdir /data (创建任意目录)<br />
-mount /dev/vda2 /data<br />
-<img src="/images/posts/2019-07-01-mkdisk/mkdisk2.png" alt="" /></p>
+</code></pre></div></div>
+
+<h3 id="关键词">关键词</h3>
+
+<p>public class void main boolean case catch char  try super 
+引用类型 reference type</p>
+
+<p>float 和 double 有限，离散，误差 不可以用于计算比较
+ // 计算 自定义类   BigDecimal 数学工具类</p>
+
+<p>### 类型转换</p>
+
+<p>低到高 自动转换
+高到低 需要强制转换
+ byte short char -&gt;  int  long float double</p>
+
+<p>运算中如果有一个变量是long ,运算结果为long 
+ 其他运算默认int</p>
+
+<p>位运算，效率高,底层运算会用到</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;&lt;  左移 *2 
+ &gt;&gt;  右移 /2
+</code></pre></div></div>
+
+<p>### 三元运算
+ // x ? y : z
+ // 如果x==true,结果是y 否则结果为z</p>
+
+<p>### 方法
+System.out.println()
+类 + 对象 + 方法</p>
+
+<p>方法重载 方法名可以一样，参数不同（个数或类型）</p>
+
+<p>如何执行包中的java文件？ 在包路径的根目录通过java 包路径+文件名 执行</p>
+
+<h3 id="可变参数">可变参数</h3>
+<p>一个方法只能一个可变参数，并且在方法参数的最后面</p>
+
+<h3 id="变量赋值定义">变量赋值定义</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int [] nums;
+int nums[];            1.声明数组
+nums = new int[10];    2. 创建，分配内存 这里10是定义数组长度
+
+int[] nums = new int[10];    // 声明与创建
+ 
+xxx                    3. 赋值
+</code></pre></div></div>
+
+<h3 id="循环">循环</h3>
+<p>if
+switch
+while
+for</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>========
+if (xx) {
+
+}else if(){
+
+}else{
+
+}
+========
+表达式exprission的值进行匹配
+switch(exprission){
+    case 'xx':
+      xxx;
+      break;
+    case 'yy':
+      yyy;
+      break;
+    default:
+      dddd;
+}
+========
+while(xx){
+  xxxx;
+}
+========
+do{
+  xxx;   
+}while(xx);
+========
+for(i=0; i&lt;100; i++){
+    xxx;
+}
+</code></pre></div></div>
+
+<h3 id="重载">重载</h3>
+
+<p>相同方法名，不同参数（类型，长度）
+调用时，java会根据不同的传参调用对应方法</p>
+
+<h3 id="可变参数-1">可变参数</h3>
+<p>不定项参数（可能一个方法需要写很多重载方法，可变参数解决这个可能的问题）</p>
+
+<p>public calss xx{
+    pubilc static void main(String[] args){
+        xx values = new xx();
+        values.test(1,2,3,4,5); //这里传参数量可任意，方法可变传参可接收多个参数
+    }
+    public void test(int…i){
+        System.out.println(i[0]);
+    }
+}</p>
+
+<h3 id="数组">数组</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int[] nums;
+int nums2[];  
+</code></pre></div></div>
 
 
   </section>
@@ -288,15 +393,10 @@ mount /dev/vda2 /data<br />
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2019/02/openshift2/" data-toggle="tooltip" data-placement="top" title="Openshift-生产环境部署">上一篇：  <span>Openshift-生产环境部署</span>
+            <a href="/2021/03/pylearn/" data-toggle="tooltip" data-placement="top" title="Django 项目相关汇总">上一篇：  <span>Django 项目相关汇总</span>
             </a>
         </li>
         
-        
-        <li class="next">
-            <a href="/2019/10/nginx/" data-toggle="tooltip" data-placement="top" title="Nginx生产实践">下一篇：  <span>Nginx生产实践</span>
-            </a>
-        </li>
         
     </ul>
 </section>

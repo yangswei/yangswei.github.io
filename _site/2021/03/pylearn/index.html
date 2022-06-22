@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>云主机磁盘分区</title>
-  <meta name="description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <title>Django 项目相关汇总</title>
+  <meta name="description" content="Django 项目相关技术点汇总">
   <meta name="author" content="yangshiwei">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="云主机磁盘分区">
-  <meta name="twitter:description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <meta name="twitter:title" content="Django 项目相关汇总">
+  <meta name="twitter:description" content="Django 项目相关技术点汇总">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="云主机磁盘分区">
-  <meta property="og:description" content="  去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊">
+  <meta property="og:title" content="Django 项目相关汇总">
+  <meta property="og:description" content="Django 项目相关技术点汇总">
   
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2019/07/mkdisk/">
+  <link rel="canonical" href="http://yangshiwei.top/2021/03/pylearn/">
   <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -173,10 +173,10 @@
         <div class="content-wrapper__inner">
             <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">云主机磁盘分区</h1>
+    <h1 class="post-title">Django 项目相关汇总</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/> 
-      <time datetime="2019-07-01 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2019-07-01</time>  
+      <time datetime="2021-03-17 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2021-03-17</time>  
       
       <button id="fashu1" class="myButton"  onclick="myFunction()">隐藏</button>
       
@@ -187,37 +187,274 @@
   </header>
 
   <section class="post">
-    <blockquote>
-  <p>去年云主机快到期了,对比各个云主机,挑选性价比最高的一家云主机,最后选了ucloud的,因为确实便宜到爆炸啊</p>
-</blockquote>
+    <h1 id="django-项目相关技术点汇总">Django 项目相关技术点汇总</h1>
 
-<p>去年这个时候,薅羊毛2c8g的伦敦节点,花了300+一年搞定<br />
-今年看到官网又出了海外节点2折的活动,果断入手<br />
-香港节点2c4g20G+2M带宽,价格550</p>
+<h3 id="rest-framework-序列化">rest framework 序列化</h3>
+<p>首先想到的是，写restful接口，操作数据库
+urls文件</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from rest_framework.routers import DefaultRouter
+from .views import yyyEdit
+urlpatterns=[]
+# 创建路由对象
+routers = DefaultRouter()
+# 通过路由对象对视图进行路由生成
+routers.register('yyy',yyyEdit)
+urlpatterns += routers.urls
+</code></pre></div></div>
 
-<p>以上与本文无关<br />
-发现系统盘有点小,准备扩一下系统盘,20g到40g一年0.01元,呵呵呵,不买我是弟弟啊~<br />
-一顿操作加载系统盘,重装电脑,发现fdisk下面仅仅/dev/vda显示为40g。系统盘已经挂载上去的/dev/vda1对应系统的/目录仍然是20g</p>
+<p>对应的views</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+from .models import yyy
+from .serializers import yyy_Serializers
+from rest_framework.viewsets import ModelViewSet
+# Create your views here.
+class yyyEdit(ModelViewSet):
 
-<p><img src="/images/posts/2019-07-01-mkdisk/mkdisk1.png" alt="" /></p>
+    queryset = yyy.objects.all()
+    # 序列化
+    serializer_class = yyy_Serializers
+</code></pre></div></div>
+<p>serializers内容</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">from</span> <span class="n">rest_framework</span> <span class="n">import</span> <span class="n">serializers</span>
+<span class="k">from</span> <span class="p">.</span><span class="n">models</span> <span class="n">import</span> <span class="n">yyy</span>
 
-<p>还有20g没有划入分区？那就分区呗</p>
+<span class="n">class</span> <span class="n">yyy_Serializers</span><span class="p">(</span><span class="n">serializers</span><span class="p">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="n">class</span> <span class="n">Meta</span><span class="p">:</span>
+        <span class="k">model</span> <span class="p">=</span> <span class="n">yyy</span>
+        <span class="n">fields</span> <span class="p">=</span> <span class="s1">'__all__'</span>
+</code></pre></div></div>
 
-<p>fdisk /dev/vda
-n p 2 新建分区-建立分区-分区编号（ucloud默认是2-4）
-剩下的默认回车就行了,大概意思是选择盘符的起始位置,结束位置,就是划分磁盘的大小
-w  最后w保存创建,退出交互模式</p>
+<p>最后在总视图中添加这个应用中的urls
+<code class="highlighter-rouge">path('api/', include('应用名.urls'))</code></p>
 
-<p>分区建完,格式化磁盘<br />
-mkfs.ext4 /dev/vda2<br />
-如果报错,则在内核将刚创建的分区更新过去<br />
-partprobe<br />
-再格式化</p>
+<h3 id="jwt认证">jwt认证</h3>
+<p>原理很简单，客户端输入用户密码，获取token<br />
+服务端签发时，获取用户名&amp;密码，通过加SALT,生成token,token分为3个部分</p>
+<ul>
+  <li>headers部分</li>
+  <li>payload部门</li>
+  <li>signature部分</li>
+</ul>
 
-<p>最后一步,挂载分区<br />
-mkdir /data (创建任意目录)<br />
-mount /dev/vda2 /data<br />
-<img src="/images/posts/2019-07-01-mkdisk/mkdisk2.png" alt="" /></p>
+<h4 id="token部分">Token部分</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.models import User, AnonymousUser
+from rest_framework.authentication import BaseAuthentication
+from django.utils.deprecation import MiddlewareMixin
+from rest_framework.exceptions import AuthenticationFailed
+from django.shortcuts import redirect
+import jwt
+from django.conf import settings
+import datetime
+from jwt import exceptions
+
+###生成Token
+def GetJwtToken(username, password):
+    userobject = User.objects.filter(username=username).first()
+    if not userobject:
+        return False
+    else:
+        if not userobject.check_password(password):
+            return False
+    headers = {
+        'typ': 'jwt',
+        'alg': 'HS256'
+    } 
+    payload = {
+        "username": username,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7)
+    }
+    SALT = settings.SECRET_KEY
+    token = jwt.encode(
+        payload=payload, 
+        key=SALT, 
+        algorithm="HS256"
+        
+    )
+    return token
+   
+Token校验
+
+class QtsAuthenticationMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        user = AnonymousUser()
+        try:
+            token = request.COOKIES['token']
+        except Exception as e:
+            user = AnonymousUser()
+        SALT = settings.SECRET_KEY
+        try:
+            verified_payload = jwt.decode(
+                token, 
+                SALT, 
+                algorithms=['HS256'],
+                options={"require_exp": True}
+            )
+            username = verified_payload.get('username', '')
+            user = User.objects.filter(username=username).first()
+        except Exception as e:
+            user = AnonymousUser()
+        request.user = user
+class Authentication(BaseAuthentication):
+    def authenticate(self, request):
+        try:
+            token = request.COOKIES['token']
+        except KeyError as e:
+            return AnonymousUser(), None
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+        except exceptions.ExpiredSignatureError:
+            return redirect('/login/')
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+
+        SALT = settings.SECRET_KEY
+        try:
+            verified_payload = jwt.decode(
+                token, 
+                SALT, 
+                algorithms=['HS256'],
+                options={"require_exp": True}
+            )
+            
+        except exceptions.ExpiredSignatureError:
+            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+        except jwt.DecodeError:
+            raise AuthenticationFailed({'code': 445, 'error': 'token 认证失败'})
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed({'code': 446, 'error': '非法 token'})
+        return (verified_payload, token)
+</code></pre></div></div>
+<p>setting添加app</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    'tes_alert_admin.文件名.QtsAuthenticationMiddleware',
+</code></pre></div></div>
+
+<p>view中</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.mixins import LoginRequiredMixin
+class IndexPage(LoginRequiredMixin, TemplateView):
+    pass
+</code></pre></div></div>
+
+<h4 id="前端表单处理">前端表单处理</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
+
+&lt;form action="/url/" method="POST"&gt;
+  &lt;div class="form-group"&gt;
+      &lt;input type="hidden" name="xx" value="yy"&gt;
+  &lt;/div&gt;
+  &lt;div class="form-group"&gt;
+      xxx
+  &lt;/div&gt;
+&lt;button type="submit" class="btn btn-default"&gt;提交&lt;/button&gt;
+&lt;/form&gt;
+
+</code></pre></div></div>
+
+<h4 id="分页">分页</h4>
+
+<p>分页应该是有现成可用的库的</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.core.paginator import Paginator
+
+class xxxxxPage(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        per_page = 15
+        page = int(request.GET.get('page',1))
+        rulelist = DataQuery(page, per_page)    #数据库查询，返回一个list(list的元素是字典)，将list写入pagination。
+        pagination = Paginator(rulelist, per_page)
+        page_obj = pagination.get_page(page)
+        return render(request,
+                      'xx.html',
+                      {
+                        "pagination": pagination,
+                        "page_obj": page_obj
+                      }               
+        )
+
+前端对page_obj进行循环
+
+
+分页部分
+    &lt;div id="pages" class="text-center" &gt;
+      &lt;nav&gt;
+          &lt;ul class="pagination"&gt;
+              &lt;li class="step-links"&gt;
+              
+
+              &lt;span class="current"&gt;
+                  Page  of &lt;/span&gt;
+
+              
+              &lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;
+      &lt;/div&gt;
+
+</code></pre></div></div>
+
+<h4 id="前端多选multiselect">前端多选multiselect</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;link rel="stylesheet" href="/static/css/bootstrap-multiselect.css"&gt;
+&lt;script src="/static/js/bootstrap-multiselect.js"&gt;&lt;/script&gt;
+
+#多选项，通过xxlists的name传入后端，后端取值通过getlist，获取多选项的值
+&lt;div class="form-group"&gt;
+  &lt;label for="selecttemplate" class="col-sm-2 control-label"&gt;xx项&lt;/label&gt;
+  &lt;div class="col-sm-10"&gt;
+      &lt;select class="selectpicker" multiple data-style="btn-info" name="xxlists"  data-live-search="true"&gt;
+        
+      &lt;/select&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+#checkbox   循环后端传来的list,作为checkbox的选项
+
+
+#后端通过getlist获取多选的值
+
+xxlist = request.POST.getlist('xxlists')  
+
+</code></pre></div></div>
+
+<h4 id="弹窗">弹窗</h4>
+<p>弹窗按钮绑定一个 data-target,在对应的弹窗modal中，包含fade/dialog/content/header/body这些元素</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;button type="button" class="btn" data-toggle="modal" data-target="#createButton"&gt;
+    按钮名
+&lt;/button&gt;
+
+&lt;!-- Modal 包含 弹窗fade/dialog/content/header/body--&gt;
+&lt;div class="modal fade" id="createButton" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"&gt;
+    &lt;div class="modal-dialog" role="document"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-header"&gt;
+          &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;&lt;/button&gt;
+          &lt;h4 class="modal-title" id="myModalLabel"&gt;Title名&lt;/h4&gt;
+        &lt;/div&gt;
+        &lt;div class="modal-body"&gt;
+            这里写弹窗的Body内容
+        &lt;/div&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;button type="button" class="btn cancel btn-default" data-dismiss="modal"&gt;返回&lt;/button&gt;
+          &lt;button type="button" class="btn save btn-primary"&gt;保存&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;script&gt;
+    $('.save.btn').on('click', function () {
+        $('.form').trigger('submit');
+    });
+&lt;/script&gt;
+
+</code></pre></div></div>
+
+<h4 id="models操作">Models操作</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. M模型中XX字段包含yy信息的数据
+    M.objects.filter(XX__icontains='yy')
+2. M模型多条件查询A字段或B字段包含yy的数据
+    from django.db.models import Q
+    M.objects.filter(Q(XX__icontains='yy') | Q(YY__icontains='yy'))
+3. 范围查询
+    M.objects.filter(XX__gte='100')
+4. 多数据查询
+    lista
+    M.objects.filter(XX__in=lista)
+
+</code></pre></div></div>
 
 
   </section>
@@ -288,13 +525,13 @@ mount /dev/vda2 /data<br />
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2019/02/openshift2/" data-toggle="tooltip" data-placement="top" title="Openshift-生产环境部署">上一篇：  <span>Openshift-生产环境部署</span>
+            <a href="/2021/03/pylearn/" data-toggle="tooltip" data-placement="top" title="Flask 项目相关汇总">上一篇：  <span>Flask 项目相关汇总</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2019/10/nginx/" data-toggle="tooltip" data-placement="top" title="Nginx生产实践">下一篇：  <span>Nginx生产实践</span>
+            <a href="/2021/06/javalean1/" data-toggle="tooltip" data-placement="top" title="Java 总结一">下一篇：  <span>Java 总结一</span>
             </a>
         </li>
         
