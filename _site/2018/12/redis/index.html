@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2018/12/redis/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2018/12/redis/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -223,7 +223,7 @@ logfile /xxx/log/redis/redis.log
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./redis-trib.rb create <span class="nt">--replicas</span> 1  ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">replicas 1</code>这个参数指定在6个节点中为每个主节点创建一个从节点,则执行完后会生成对应的三主三从节点配置。</p>
+<p><code class="language-plaintext highlighter-rouge">replicas 1</code>这个参数指定在6个节点中为每个主节点创建一个从节点,则执行完后会生成对应的三主三从节点配置。</p>
 
 <h3 id="哨兵高可用">哨兵高可用</h3>
 
@@ -286,7 +286,7 @@ masterauth   xxxxx　　  #主从认证密码,否则主从不能同步
 </code></pre>
 
 <p>一主两从,主节点使用上面默认配置启动<br />
-从节点在主节点配置基础上增加一条<code class="highlighter-rouge">slaveof 127.0.0.1 6380</code>  其中ip和端口写主节点的ip和端口<br />
+从节点在主节点配置基础上增加一条<code class="language-plaintext highlighter-rouge">slaveof 127.0.0.1 6380</code>  其中ip和端口写主节点的ip和端口<br />
 entinel 哨兵(执行文件和redis-server同目录下)<br />
 每个节点创建一个sentinel.conf文件,在默认的配置上只需修改port,其他的配置三个节点保持一致</p>
 
@@ -304,8 +304,8 @@ sentinel failover-timeout mymaster 180000
 </code></pre>
 
 <p>启动redis主从和哨兵
-<code class="highlighter-rouge">redis-server redis.conf &amp;</code>(如果不在一个文件夹下注意路径)<br />
-<code class="highlighter-rouge">redis-sentinel sentinel.conf &amp;</code>启动sentinel</p>
+<code class="language-plaintext highlighter-rouge">redis-server redis.conf &amp;</code>(如果不在一个文件夹下注意路径)<br />
+<code class="language-plaintext highlighter-rouge">redis-sentinel sentinel.conf &amp;</code>启动sentinel</p>
 
 <h3 id="集群高可用和哨兵高可用对比">集群高可用和哨兵高可用对比</h3>
 

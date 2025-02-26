@@ -63,6 +63,8 @@ nav:
     - {title: 关于我, description: about, url: '/about'}
     - {title: 友情链接, description: links, url: '/links'}            
     
+plugins:
+  - jekyll-paginate
 
 # Pagination
 gems: [jekyll-paginate,jekyll-sitemap]

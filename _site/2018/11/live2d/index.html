@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2018/11/live2d/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2018/11/live2d/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -206,19 +206,19 @@ npm <span class="nb">install</span>
 
 <ul>
   <li>进入blog目录,安装hexo-helper-live2d,<a href="https://github.com/EYHN/hexo-helper-live2d">链接</a><br />
-<code class="highlighter-rouge">npm install --save hexo-helper-live2d</code><br />
-如果不成功：<code class="highlighter-rouge">yarn add hexo-helper-live2d</code></li>
+<code class="language-plaintext highlighter-rouge">npm install --save hexo-helper-live2d</code><br />
+如果不成功：<code class="language-plaintext highlighter-rouge">yarn add hexo-helper-live2d</code></li>
   <li>修改_config.xml</li>
 </ul>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">live2d</span><span class="pi">:</span>
-  <span class="na">enable</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">enable</span><span class="pi">:</span> <span class="kc">true</span>
   <span class="na">scriptFrom</span><span class="pi">:</span> <span class="s">local</span>
   <span class="na">pluginRootPath</span><span class="pi">:</span> <span class="s">live2dw/</span>
   <span class="na">pluginJsPath</span><span class="pi">:</span> <span class="s">lib/</span>
   <span class="na">pluginModelPath</span><span class="pi">:</span> <span class="s">assets/</span>
-  <span class="na">tagMode</span><span class="pi">:</span> <span class="no">false</span>
-  <span class="na">debug</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">tagMode</span><span class="pi">:</span> <span class="kc">false</span>
+  <span class="na">debug</span><span class="pi">:</span> <span class="kc">false</span>
   <span class="na">model</span><span class="pi">:</span>
     <span class="na">use</span><span class="pi">:</span> <span class="s">z16</span>
   <span class="na">display</span><span class="pi">:</span>
@@ -226,12 +226,12 @@ npm <span class="nb">install</span>
     <span class="na">width</span><span class="pi">:</span> <span class="m">150</span>
     <span class="na">height</span><span class="pi">:</span> <span class="m">300</span>
   <span class="na">mobile</span><span class="pi">:</span>
-    <span class="na">show</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">show</span><span class="pi">:</span> <span class="kc">true</span>
 </code></pre></div></div>
 
 <p>除了model.use的名字,根据选择的model名外,其他的配置保持不变,参考如下model选择添加到配置中</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>live2d-widget-model-chitose
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>live2d-widget-model-chitose
 live2d-widget-model-epsilon2_1
 live2d-widget-model-gf
 live2d-widget-model-haru/01 (use npm install --save live2d-widget-model-haru)
@@ -274,11 +274,11 @@ live2d-widget-model-z16
   <li>静态文件导入jeklly</li>
 </ul>
 
-<p><code class="highlighter-rouge">cp blog/public/live2d    jeklly-blog的根目录</code>
+<p><code class="language-plaintext highlighter-rouge">cp blog/public/live2d    jeklly-blog的根目录</code>
 将hexo的index.html的引用文件添加到jeklly的footer.html中</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script&gt;</span><span class="nx">L2Dwidget</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span><span class="dl">"</span><span class="s2">pluginRootPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">live2dw/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">pluginJsPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">lib/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">pluginModelPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">assets/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">tagMode</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="dl">"</span><span class="s2">debug</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="dl">"</span><span class="s2">model</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">jsonPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">/live2dw/assets/z16.model.json</span><span class="dl">"</span><span class="p">},</span><span class="dl">"</span><span class="s2">display</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">position</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">right</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">width</span><span class="dl">"</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="dl">"</span><span class="s2">height</span><span class="dl">"</span><span class="p">:</span><span class="mi">300</span><span class="p">},</span><span class="dl">"</span><span class="s2">mobile</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">show</span><span class="dl">"</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span><span class="dl">"</span><span class="s2">log</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">});</span><span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span><span class="nx">L2Dwidget</span><span class="p">.</span><span class="nf">init</span><span class="p">({</span><span class="dl">"</span><span class="s2">pluginRootPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">live2dw/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">pluginJsPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">lib/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">pluginModelPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">assets/</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">tagMode</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="dl">"</span><span class="s2">debug</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="dl">"</span><span class="s2">model</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">jsonPath</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">/live2dw/assets/z16.model.json</span><span class="dl">"</span><span class="p">},</span><span class="dl">"</span><span class="s2">display</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">position</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">right</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="s2">width</span><span class="dl">"</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="dl">"</span><span class="s2">height</span><span class="dl">"</span><span class="p">:</span><span class="mi">300</span><span class="p">},</span><span class="dl">"</span><span class="s2">mobile</span><span class="dl">"</span><span class="p">:{</span><span class="dl">"</span><span class="s2">show</span><span class="dl">"</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span><span class="dl">"</span><span class="s2">log</span><span class="dl">"</span><span class="p">:</span><span class="kc">false</span><span class="p">});</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div></div>
 
 <p>完成。</p>

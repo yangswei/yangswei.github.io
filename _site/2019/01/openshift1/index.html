@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2019/01/openshift1/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2019/01/openshift1/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -200,19 +200,19 @@
 <h3 id="oc命令行创建应用">oc命令行创建应用</h3>
 
 <p>因为oc命令带有权限管控,所以在使用oc命令前,需要通过oc login 登录<br />
-<code class="highlighter-rouge">oc login -u test https://10.50.64.34:8443</code><br />
+<code class="language-plaintext highlighter-rouge">oc login -u test https://10.50.64.34:8443</code><br />
 创建项目(这个项目类似在k8s创建一个namespace)<br />
-<code class="highlighter-rouge">oc new-project hello-world-oc</code><br />
+<code class="language-plaintext highlighter-rouge">oc new-project hello-world-oc</code><br />
 部署应用<br />
-<code class="highlighter-rouge">oc new-app openshift/hello-openshift</code><br />
+<code class="language-plaintext highlighter-rouge">oc new-app openshift/hello-openshift</code><br />
 查看pod<br />
-<code class="highlighter-rouge">oc get pod</code><br />
+<code class="language-plaintext highlighter-rouge">oc get pod</code><br />
 查看pod详细信息<br />
-<code class="highlighter-rouge">oc describe pod hello-openshift-1-z8mki</code></p>
+<code class="language-plaintext highlighter-rouge">oc describe pod hello-openshift-1-z8mki</code></p>
 
 <h3 id="集群管理员账号登录">集群管理员账号登录</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir -p ~/.kube
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir -p ~/.kube
 cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
 登录  
 oc login -u system:admin
@@ -224,20 +224,20 @@ oc get node
 
 <p>类似kube-proxy,是外界访问openshift的入口,外部请求都会到达router<br />
 切换到default项目<br />
-<code class="highlighter-rouge">oc project default</code>
+<code class="language-plaintext highlighter-rouge">oc project default</code>
 router组件需要读取集群的信息,它关联一个系统账号service account并为这个账号赋权。<br />
 (这个账号是专门供程序和组件使用的账号)<br />
-<code class="highlighter-rouge">oadm policy add-scc-to-user privileged system:serviceaccount:default:router</code>
+<code class="language-plaintext highlighter-rouge">oadm policy add-scc-to-user privileged system:serviceaccount:default:router</code>
 创建router实例</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oadm router router --replicas=1 --service-account=router
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oadm router router --replicas=1 --service-account=router
 oc get pod -n default
 </code></pre></div></div>
 
 <h3 id="添加registry">添加registry</h3>
 <p>集群的docker registry内部docker镜像仓库</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project default
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project default
 oadm registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
 oc get pod  
 </code></pre></div></div>
@@ -248,7 +248,7 @@ oc get pod
 <h3 id="添加image-stream">添加Image Stream</h3>
 
 <p>is镜像集合,openshift并不一定要用到is,is是为了更加方便的将镜像管理和使用</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 openshift version
 curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
 oc get is -n openshift
@@ -257,7 +257,7 @@ oc get is -n openshift
 <h3 id="添加template">添加Template</h3>
 
 <p>openshift定义了一些template供用户使用,模板定义一个多个部署镜像的集合,定义部署依赖对象以及配置参数项</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc project openshift
 oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
 oc get template -n openshift
 oc get template cakephp-mysql-example -o json -n openshift

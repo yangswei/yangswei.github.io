@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2019/02/openshift2/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2019/02/openshift2/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -234,22 +234,22 @@
 
 <p>所有节点设置网络<br />
 查看网络链接<br />
-<code class="highlighter-rouge">nmcli con show</code>
+<code class="language-plaintext highlighter-rouge">nmcli con show</code>
 打开链接<br />
-<code class="highlighter-rouge">nmcli con up eth0</code><br />
+<code class="language-plaintext highlighter-rouge">nmcli con up eth0</code><br />
 设置开机自启动<br />
-<code class="highlighter-rouge">nmcli con mod eth0 connection.autoconnect yes</code><br />
+<code class="language-plaintext highlighter-rouge">nmcli con mod eth0 connection.autoconnect yes</code><br />
 重启网络服务<br />
-<code class="highlighter-rouge">systemctl restart NetworkManager</code></p>
+<code class="language-plaintext highlighter-rouge">systemctl restart NetworkManager</code></p>
 
 <h2 id="2安装及配置软件包">2.安装及配置软件包</h2>
 
 <p>所有节点安装openshift依赖软件包<br />
-<code class="highlighter-rouge">yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion</code><br />
+<code class="language-plaintext highlighter-rouge">yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion</code><br />
 所有节点安装容器引擎docker<br />
-<code class="highlighter-rouge">yum install -y docker</code><br />
+<code class="language-plaintext highlighter-rouge">yum install -y docker</code><br />
 修改配置存储<br />
-<code class="highlighter-rouge">vim /etc/sysconfig/docker-storage-setup</code><br />
+<code class="language-plaintext highlighter-rouge">vim /etc/sysconfig/docker-storage-setup</code><br />
 添加 ENVS=/dev/sdb
 执行docker-storage-setup</p>
 
@@ -261,7 +261,7 @@ yum <span class="nt">-y</span> <span class="nt">--enablerepo</span><span class="
 </code></pre></div></div>
 
 <p>在Master节点生成SSH密钥<br />
-<code class="highlighter-rouge">ssh-keygen -f /root/.ssh/id_rsa -N ''</code></p>
+<code class="language-plaintext highlighter-rouge">ssh-keygen -f /root/.ssh/id_rsa -N ''</code></p>
 
 <p>Ansible基于Agentless架构实现,不需要在目标主机安装agent依赖ssh远程控制协议,所以需要配置master和node节点互信<br />
 在Master节点执行：</p>
@@ -289,7 +289,7 @@ systemctl start etcd
 <h2 id="配置ansible">配置ansible</h2>
 
 <p>备份原有ansible的host<br />
-<code class="highlighter-rouge">cp /etc/ansible/hosts /etc/ansible/hosts-bk</code><br />
+<code class="language-plaintext highlighter-rouge">cp /etc/ansible/hosts /etc/ansible/hosts-bk</code><br />
 修改hosts:</p>
 
 <pre><code class="language-hosts文件">[OSEv3:children]
@@ -317,7 +317,7 @@ openshift-test-master
 </code></pre>
 
 <p>执行安装<br />
-<code class="highlighter-rouge">ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml</code></p>
+<code class="language-plaintext highlighter-rouge">ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml</code></p>
 
 <p>执行完成以后,通过oc get node 查看节点状态</p>
 
@@ -334,17 +334,17 @@ openshift-test-master
 </ul>
 
 <p>用户身份信息库：<br />
-<code class="highlighter-rouge">openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]</code><br />
-定义了文件/etc/origin/master/htpasswd作为用户身份信息库,我们通过<code class="highlighter-rouge">htpasswd -b /etc/origin/master/htpasswd dev dev</code>来创建用户</p>
+<code class="language-plaintext highlighter-rouge">openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]</code><br />
+定义了文件/etc/origin/master/htpasswd作为用户身份信息库,我们通过<code class="language-plaintext highlighter-rouge">htpasswd -b /etc/origin/master/htpasswd dev dev</code>来创建用户</p>
 
 <p>is和template用ansible部署时默认已经部署上了</p>
 
 <p>Router部署<br />
 Router是以容器的形式运行在Openshift平台,默认情况不知道容器运行在哪个node上<br />
 为node打上标签(Label),然后通过节点选择器(NodeSelector)指定容器运行的node<br />
-<code class="highlighter-rouge">oc label node node1.example.com infra=yes</code><br />
+<code class="language-plaintext highlighter-rouge">oc label node node1.example.com infra=yes</code><br />
 查看node节点<br />
-<code class="highlighter-rouge">oc get node --show-labels</code><br />
+<code class="language-plaintext highlighter-rouge">oc get node --show-labels</code><br />
 为Router使用的Service Account赋权</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oadm policy add-scc-to-user privileged system:serviceaccount:default:router
@@ -352,13 +352,13 @@ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:defaul
 </code></pre></div></div>
 
 <p>部署router<br />
-<code class="highlighter-rouge">oadm router ose-router --replicas=1 --service-account=router --selector='infra=yes'</code></p>
+<code class="language-plaintext highlighter-rouge">oadm router ose-router --replicas=1 --service-account=router --selector='infra=yes'</code></p>
 
 <p>Registry部署<br />
-<code class="highlighter-rouge">oadm registry --config='/etc/origin/master/admin.kubeconfig' --service-account=registry --selector='infra=yes' -n default</code></p>
+<code class="language-plaintext highlighter-rouge">oadm registry --config='/etc/origin/master/admin.kubeconfig' --service-account=registry --selector='infra=yes' -n default</code></p>
 
 <p>查看pod<br />
-<code class="highlighter-rouge">oc get pod -n default|grep registry</code></p>
+<code class="language-plaintext highlighter-rouge">oc get pod -n default|grep registry</code></p>
 
 
   </section>

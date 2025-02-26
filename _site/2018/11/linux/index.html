@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2018/11/linux/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2018/11/linux/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -191,7 +191,7 @@
 
 <h3 id="开机启动">开机启动</h3>
 
-<p><code class="highlighter-rouge">chkconfig --list|grep 3:on</code>查看当前开机开启服务
+<p><code class="language-plaintext highlighter-rouge">chkconfig --list|grep 3:on</code>查看当前开机开启服务
 <br />
 关闭其他开机启动的服务</p>
 
@@ -206,7 +206,7 @@ chkconfig <span class="nt">--list</span>|grep 3:on
 <h3 id="防火墙">防火墙</h3>
 <p>防火墙个人学习或者企业级高并发高流量服务器一般都不开启,因为开启防火墙会有较大的性能损耗,解决此类问题及在更前端用硬件防火墙进行安全防护
 <br />
-<code class="highlighter-rouge">/etc/init.d/iptables stop</code>
+<code class="language-plaintext highlighter-rouge">/etc/init.d/iptables stop</code>
 <br /></p>
 
 <h3 id="远程连接">远程连接</h3>
@@ -224,7 +224,7 @@ chkconfig <span class="nt">--list</span>|grep 3:on
 
 <ul>
   <li>修改配置<br />
-<code class="highlighter-rouge">vim /etc/ssh/sshd_config</code></li>
+<code class="language-plaintext highlighter-rouge">vim /etc/ssh/sshd_config</code></li>
 </ul>
 
 <table>
@@ -258,7 +258,7 @@ chkconfig <span class="nt">--list</span>|grep 3:on
   </tbody>
 </table>
 
-<p><code class="highlighter-rouge">/etc/init.d/sshd reload</code></p>
+<p><code class="language-plaintext highlighter-rouge">/etc/init.d/sshd reload</code></p>
 
 <h3 id="权限管理">权限管理</h3>
 

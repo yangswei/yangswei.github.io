@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2019/01/learnmysql/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2019/01/learnmysql/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -193,10 +193,10 @@
 
 <h4 id="安装mysql">安装mysql</h4>
 
-<p><code class="highlighter-rouge">$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</code>
+<p><code class="language-plaintext highlighter-rouge">$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</code>
 安装 mysql 源</p>
 
-<p><code class="highlighter-rouge">$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm</code>
+<p><code class="language-plaintext highlighter-rouge">$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm</code>
 检查 yum 源是否安装成功</p>
 
 <pre><code class="language-a">
@@ -210,7 +210,7 @@ mysql57-community                    MySQL 5.7 Community Server             130
 
 <ol>
   <li>安装
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum install mysql-community-server
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum install mysql-community-server
 $ sudo systemctl enable mysqld
 $ sudo systemctl start mysqld
 $ sudo systemctl status mysqld
@@ -219,7 +219,7 @@ $ sudo systemctl status mysqld
   <li>修改root默认密码</li>
 </ol>
 
-<p>MySQL 5.7 启动后，在<code class="highlighter-rouge">/var/log/mysqld.log</code>文件中给 root 生成了一个默认密码,通过下面的方式找到 root 默认密码,然后登录 mysql 进行修改:</p>
+<p>MySQL 5.7 启动后，在<code class="language-plaintext highlighter-rouge">/var/log/mysqld.log</code>文件中给 root 生成了一个默认密码,通过下面的方式找到 root 默认密码,然后登录 mysql 进行修改:</p>
 
 <pre><code class="language-b">$ grep 'temporary password' /var/log/mysqld.log
 [Note] A temporary password is generated for root@localhost: **********
@@ -295,7 +295,7 @@ MySQL默认只允许 root 帐户在本地登录,如果要在其它机器上连�
   </blockquote>
 </blockquote>
 
-<p><code class="highlighter-rouge">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;</code></p>
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;</code></p>
 
 <ol>
   <li>配置默认编码为 utf8</li>
@@ -303,7 +303,7 @@ MySQL默认只允许 root 帐户在本地登录,如果要在其它机器上连�
 
 <p>MySQL 默认为 latin1, 一般修改为 UTF-8</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vi /etc/my.cnf
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vi /etc/my.cnf
 [mysqld]
 # 在myslqd下添加如下键值对
 character_set_server=utf8
@@ -313,7 +313,7 @@ init_connect='SET NAMES utf8'
 =======
 </code></pre></div></div>
 <p>重启 MySQL 服务，使配置生效<br />
-<code class="highlighter-rouge">$ sudo systemctl restart mysqld</code></p>
+<code class="language-plaintext highlighter-rouge">$ sudo systemctl restart mysqld</code></p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -332,7 +332,7 @@ init_connect='SET NAMES utf8'
 
 <p>查看字符集</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; SHOW VARIABLES LIKE 'character%';
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; SHOW VARIABLES LIKE 'character%';
 +--------------------------+----------------------------+
 | Variable_name            | Value                      |
 +--------------------------+----------------------------+
@@ -352,14 +352,14 @@ init_connect='SET NAMES utf8'
   <li>开启端口</li>
 </ol>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
 $ sudo firewall-cmd --reload
 </code></pre></div></div>
 
 <h3 id="简易方式快速启动">简易方式快速启动</h3>
 
 <p>宿主机上执行</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 yum install mysql-community-client -y 
 yum install  docker docker-compose -y
 mkdir -p /mysql
@@ -501,13 +501,13 @@ services:
 宿主机登录mysql: mysql -uroot -P6606 -p -h127.0.0.1</p>
 
 <p>«««&lt; HEAD
-报错<code class="highlighter-rouge">Access denied for user 'root'@'localhost' (using password: YES)</code>
+报错<code class="language-plaintext highlighter-rouge">Access denied for user 'root'@'localhost' (using password: YES)</code>
 配置文件添加：skip-grant-tables
 进入数据量,更新密码update mysql.user set authentication_string=password(‘<strong>**</strong><em>’) where user=’</em><strong>**</strong>’
 =======
-报错<code class="highlighter-rouge">Access denied for user 'root'@'localhost' (using password: YES)</code><br />
+报错<code class="language-plaintext highlighter-rouge">Access denied for user 'root'@'localhost' (using password: YES)</code><br />
 配置文件添加:skip-grant-tables<br />
-进入数据量,更新密码<code class="highlighter-rouge">update mysql.user set authentication_string=password('*******') where user='*******'</code></p>
+进入数据量,更新密码<code class="language-plaintext highlighter-rouge">update mysql.user set authentication_string=password('*******') where user='*******'</code></p>
 <blockquote>
   <blockquote>
     <blockquote>

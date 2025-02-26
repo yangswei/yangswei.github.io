@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2021/03/pylearn/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2021/03/pylearn/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -192,7 +192,7 @@
 <h3 id="rest-framework-序列化">rest framework 序列化</h3>
 <p>首先想到的是，写restful接口，操作数据库
 urls文件</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from rest_framework.routers import DefaultRouter
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from rest_framework.routers import DefaultRouter
 from .views import yyyEdit
 urlpatterns=[]
 # 创建路由对象
@@ -203,7 +203,7 @@ urlpatterns += routers.urls
 </code></pre></div></div>
 
 <p>对应的views</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 from .models import yyy
 from .serializers import yyy_Serializers
 from rest_framework.viewsets import ModelViewSet
@@ -215,17 +215,17 @@ class yyyEdit(ModelViewSet):
     serializer_class = yyy_Serializers
 </code></pre></div></div>
 <p>serializers内容</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">from</span> <span class="n">rest_framework</span> <span class="n">import</span> <span class="n">serializers</span>
-<span class="k">from</span> <span class="p">.</span><span class="n">models</span> <span class="n">import</span> <span class="n">yyy</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from rest_framework import serializers
+from .models import yyy
 
-<span class="n">class</span> <span class="n">yyy_Serializers</span><span class="p">(</span><span class="n">serializers</span><span class="p">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
-    <span class="n">class</span> <span class="n">Meta</span><span class="p">:</span>
-        <span class="k">model</span> <span class="p">=</span> <span class="n">yyy</span>
-        <span class="n">fields</span> <span class="p">=</span> <span class="s1">'__all__'</span>
+class yyy_Serializers(serializers.ModelSerializer):
+    class Meta:
+        model = yyy
+        fields = '__all__'
 </code></pre></div></div>
 
 <p>最后在总视图中添加这个应用中的urls
-<code class="highlighter-rouge">path('api/', include('应用名.urls'))</code></p>
+<code class="language-plaintext highlighter-rouge">path('api/', include('应用名.urls'))</code></p>
 
 <h3 id="jwt认证">jwt认证</h3>
 <p>原理很简单，客户端输入用户密码，获取token<br />
@@ -237,7 +237,7 @@ class yyyEdit(ModelViewSet):
 </ul>
 
 <h4 id="token部分">Token部分</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.models import User, AnonymousUser
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.models import User, AnonymousUser
 from rest_framework.authentication import BaseAuthentication
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.exceptions import AuthenticationFailed
@@ -323,17 +323,17 @@ class Authentication(BaseAuthentication):
         return (verified_payload, token)
 </code></pre></div></div>
 <p>setting添加app</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    'tes_alert_admin.文件名.QtsAuthenticationMiddleware',
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    'tes_alert_admin.文件名.QtsAuthenticationMiddleware',
 </code></pre></div></div>
 
 <p>view中</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.mixins import LoginRequiredMixin
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib.auth.mixins import LoginRequiredMixin
 class IndexPage(LoginRequiredMixin, TemplateView):
     pass
 </code></pre></div></div>
 
 <h4 id="前端表单处理">前端表单处理</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
 
 &lt;form action="/url/" method="POST"&gt;
   &lt;div class="form-group"&gt;
@@ -350,7 +350,7 @@ class IndexPage(LoginRequiredMixin, TemplateView):
 <h4 id="分页">分页</h4>
 
 <p>分页应该是有现成可用的库的</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.core.paginator import Paginator
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.core.paginator import Paginator
 
 class xxxxxPage(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
@@ -387,7 +387,7 @@ class xxxxxPage(LoginRequiredMixin, TemplateView):
 </code></pre></div></div>
 
 <h4 id="前端多选multiselect">前端多选multiselect</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;link rel="stylesheet" href="/static/css/bootstrap-multiselect.css"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;link rel="stylesheet" href="/static/css/bootstrap-multiselect.css"&gt;
 &lt;script src="/static/js/bootstrap-multiselect.js"&gt;&lt;/script&gt;
 
 #多选项，通过xxlists的name传入后端，后端取值通过getlist，获取多选项的值
@@ -411,7 +411,7 @@ xxlist = request.POST.getlist('xxlists')
 
 <h4 id="弹窗">弹窗</h4>
 <p>弹窗按钮绑定一个 data-target,在对应的弹窗modal中，包含fade/dialog/content/header/body这些元素</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;button type="button" class="btn" data-toggle="modal" data-target="#createButton"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;button type="button" class="btn" data-toggle="modal" data-target="#createButton"&gt;
     按钮名
 &lt;/button&gt;
 
@@ -443,7 +443,7 @@ xxlist = request.POST.getlist('xxlists')
 </code></pre></div></div>
 
 <h4 id="models操作">Models操作</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. M模型中XX字段包含yy信息的数据
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. M模型中XX字段包含yy信息的数据
     M.objects.filter(XX__icontains='yy')
 2. M模型多条件查询A字段或B字段包含yy的数据
     from django.db.models import Q
@@ -454,6 +454,17 @@ xxlist = request.POST.getlist('xxlists')
     lista
     M.objects.filter(XX__in=lista)
 
+</code></pre></div></div>
+
+<h4 id="前端message">前端message</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>前端html添加（一般加到base中）
+
+视图中
+from django.contrib import messages
+
+messages.warning(request, "警告信息")
+messages.success(request, "成功信息")
 </code></pre></div></div>
 
 

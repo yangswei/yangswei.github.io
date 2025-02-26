@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2018/12/docker/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2018/12/docker/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -217,7 +217,7 @@ Alpine:优点 小,快,安全</p>
 </ul>
 
 <p>alpine仓库中很多<strong>已经编译好的二进制服务的软件包</strong>是依赖于alpine的musl libc库<br />
-安装这些服务包只需要<code class="highlighter-rouge">apk add xxx </code>直接安装<br />
+安装这些服务包只需要<code class="language-plaintext highlighter-rouge">apk add xxx </code>直接安装<br />
 仓库中没有的服务包,同时这些服务包依赖于glibc的软件,则需要提前在alpine基础镜像中安装glibc库  gs</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RUN apk <span class="nt">--no-cache</span> add ca-certificates <span class="o">&amp;&amp;</span> <span class="se">\</span>
@@ -267,7 +267,7 @@ ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span clas
 </code></pre></div></div>
 
 <p>上文dockerfile,RUN部分的代码省略了,下面做命令的简单解释:<br />
-<strong>RUN命令用<code class="highlighter-rouge">\ &amp;&amp;</code>连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN</strong></p>
+<strong>RUN命令用<code class="language-plaintext highlighter-rouge">\ &amp;&amp;</code>连接很多命令,因为docker是层的概念,每增加一个指令相当于在镜像上添加一层,所以用连接符将多个命令连接成一个RUN</strong></p>
 
 <ul>
   <li>FROM: 前面已经说了,声明基础镜像,声明这个dockerfile是基于哪个镜像来生成的</li>
@@ -284,7 +284,7 @@ ENTRYPOINT <span class="o">[</span><span class="s2">"dnsmasq"</span>, <span clas
 通过多阶段构建,解决依赖构建过程,造成镜像包大的问题,因为安装的构建服务只会使用一次<br />
 使用也很简单</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM golang:1.7.3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM golang:1.7.3
 WORKDIR /go/src/github.com/sparkdevo/href-counter/
 RUN go get -d -v golang.org/x/net/html
 COPY app.go .

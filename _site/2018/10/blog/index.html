@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2018/10/blog/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2018/10/blog/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -211,7 +211,7 @@
   <li>
     <p>提示ruby版本不对:   <a href="https://www.jianshu.com/p/48ad6365f3eb">解决</a>    <br />
   另外我是在mac上安装ruby,发现再次打开终端,又提示版本不对。  <br />
-  原因是mac自带的ruby有个默认版本,执行<code class="highlighter-rouge">rvm list</code>查看已经安装的ruby版本,可以通过<code class="highlighter-rouge">rvm remove</code>卸载掉老的版本,或者<code class="highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</p>
+  原因是mac自带的ruby有个默认版本,执行<code class="language-plaintext highlighter-rouge">rvm list</code>查看已经安装的ruby版本,可以通过<code class="language-plaintext highlighter-rouge">rvm remove</code>卸载掉老的版本,或者<code class="language-plaintext highlighter-rouge">rvm use xxx --default</code>将要使用的版本设置为默认版本</p>
   </li>
   <li>
     <p>在github上复制项目以后,会有提示报错,我按下图设置的  <br />
@@ -226,16 +226,16 @@
 我的博客用的是模板带的统计,busuanzi,在作者的主页有说明：             <br />
 因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初）,与客服沟通数次无果,即使我提出为此付费也不行,只能更换域名到『busuanzi.ibruce.info』
 所以遇到统计出不了,记得更换一下模板文件中服务的地址    <br />
-<code class="highlighter-rouge">&lt;script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code>    <br />
+<code class="language-plaintext highlighter-rouge">&lt;script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code>    <br />
 更换为：    <br />
-<code class="highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></p>
+<code class="language-plaintext highlighter-rouge">&lt;script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"&gt;&lt;/script&gt;</code></p>
   </li>
   <li>
     <p>新建issue评论,跳转链接提示error
-<code class="highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code>
+<code class="language-plaintext highlighter-rouge">https://www.yangshiwei.top/?error=redirect_uri_mismatch&amp;error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.&amp;error_uri=https%3A%2F%2Fdeveloper.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23redirect-uri-mismatch</code>
  原因是,我给自定义域名加上了https,而在创建gittalk的应用中callback地址未调整。
- 解决办法,登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="highlighter-rouge">https://www.yangshiwei.top/</code>
- 建议在创建gittalk评论插件时填写的回调地址填github自带的域名<code class="highlighter-rouge">youname.github.io</code></p>
+ 解决办法,登录github-&gt;setting-&gt; Developer settings -&gt; Authorization callback URL 修改为当前博客的访问地址即<code class="language-plaintext highlighter-rouge">https://www.yangshiwei.top/</code>
+ 建议在创建gittalk评论插件时填写的回调地址填github自带的域名<code class="language-plaintext highlighter-rouge">youname.github.io</code></p>
   </li>
 </ul>
 

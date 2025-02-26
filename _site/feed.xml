@@ -3,11 +3,97 @@
   <channel>
     <title>杨世威</title>
     <description>欢迎来到我的个人站~</description>
-    <link>http://yangshiwei.top/</link>
-    <atom:link href="http://yangshiwei.top/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 22 Jun 2022 10:11:05 +0800</pubDate>
-    <lastBuildDate>Wed, 22 Jun 2022 10:11:05 +0800</lastBuildDate>
-    <generator>Jekyll v3.8.6</generator>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 25 Feb 2025 10:40:44 +0800</pubDate>
+    <lastBuildDate>Tue, 25 Feb 2025 10:40:44 +0800</lastBuildDate>
+    <generator>Jekyll v4.4.1</generator>
+    
+      <item>
+        <title>Blog 恢复</title>
+        <description>&lt;h1 id=&quot;博客恢复&quot;&gt;博客恢复&lt;/h1&gt;
+
+&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
+
+&lt;p&gt;从21年最后一次更新博客到现在，博客停止更新近4年，相比于基于CSDN的博客，还是用GitHub Pages搭建的博客更符合倒腾的劲，加上知识体系随着大模型的深入，需要体系的熟悉和沉淀相关知识，所以决定恢复博客。&lt;/p&gt;
+
+&lt;h3 id=&quot;恢复步骤&quot;&gt;恢复步骤&lt;/h3&gt;
+
+&lt;p&gt;如果是从零开始搭建，可以参考我之前写的[博客搭建](https://blog.zhangyong.info/2021/05/23/%E5%8D
+本次恢复博客，主要是环境的搭建&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;github拉取代码&lt;/li&gt;
+  &lt;li&gt;本地搭建jekyll环境&lt;/li&gt;
+  &lt;li&gt;本地运行jekyll&lt;/li&gt;
+  &lt;li&gt;本地修改&lt;/li&gt;
+  &lt;li&gt;提交代码&lt;/li&gt;
+  &lt;li&gt;申请与更新域名&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;本地搭建jekyll环境，遇到了一些问题，但是现如今大模型很快就能解决这类问题
+首先是ruby的问题，mac自带的ruby权限比较低，需要安装rvm来管理ruby版本&lt;/p&gt;
+
+&lt;p&gt;’&apos;’bash
+brew install rbenv
+rbenv install 3.2.2  # 安装最新稳定版 Ruby
+rbenv global 3.2.2&lt;/p&gt;
+
+&lt;p&gt;gem install jekyll bundler
+‘’’&lt;/p&gt;
+
+&lt;p&gt;然后就是持续报错jekyll命令找不到的问题&lt;/p&gt;
+
+&lt;p&gt;’&apos;’bash
+gem environment    查看jekyll安装路径&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;EXECUTABLE DIRECTORY: /Users/yourname/.gem/ruby/3.2.0/bin&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;echo ‘export PATH=”/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH”’ » ~/.zshrc
+source ~/.zshrc
+jekyll -v
+‘’’&lt;/p&gt;
+
+&lt;p&gt;解决完上述问题后，接着就是依赖问题，jekyll的依赖文件在根目录下的Gemfile&lt;/p&gt;
+
+&lt;p&gt;’&apos;’bash
+source ‘https://rubygems.org’
+gem ‘jekyll’, ‘~&amp;gt; 4.4’
+gem ‘redcarpet’
+gem ‘jekyll-sitemap’, ‘~&amp;gt; 1.0’
+gem “listen”, “~&amp;gt; 3.7”
+gem ‘jekyll-paginate’
+‘’’&lt;/p&gt;
+
+&lt;p&gt;通过更新依赖，逐个解决
+‘&apos;’bash
+gem install xxx
+和
+bundle update
+‘’’&lt;/p&gt;
+
+&lt;p&gt;最后是md中引用了一段前端代码，导致jekyll编译出错，应该是jekyll对html的解析有问题，没有深究，去掉了这段代码&lt;/p&gt;
+
+&lt;p&gt;至此，博客本地搭建完成，接下来就是持续更新博客，和域名的申请了。&lt;/p&gt;
+
+&lt;h3 id=&quot;域名申请&quot;&gt;域名申请&lt;/h3&gt;
+&lt;p&gt;因为原先域名已经存在，所以直接在阿里云续费了一年
+yangshiwei.top&lt;/p&gt;
+
+&lt;h3 id=&quot;后续&quot;&gt;后续&lt;/h3&gt;
+&lt;p&gt;新建代码分支gh-pages，用于存放静态页面
+然后从github setting中设置pages，Cusom domain为yangshiwei.top&lt;/p&gt;
+
+&lt;p&gt;之后在域名上配置dns解析，CNAME指向yangshiwei.github.io&lt;/p&gt;
+</description>
+        <pubDate>Mon, 24 Feb 2025 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2025/02/blogrecover/</link>
+        <guid isPermaLink="true">http://localhost:4000/2025/02/blogrecover/</guid>
+        
+        <category>大模型</category>
+        
+        
+      </item>
     
       <item>
         <title>Java 总结一</title>
@@ -15,7 +101,7 @@
 
 &lt;h3 id=&quot;删除java环境&quot;&gt;删除Java环境&lt;/h3&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo rm -rf“/ Library / Internet Plug-Ins / JavaAppletPlugin.plugin”
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo rm -rf“/ Library / Internet Plug-Ins / JavaAppletPlugin.plugin”
 sudo rm -rf“/Library/PreferencePanes/JavaControlPanel.prefPane”
 sudo rm -rf“〜/ Library / Application Support / Java”
 
@@ -32,7 +118,7 @@ echo $JAVA_HOME
 
 &lt;h3 id=&quot;idea&quot;&gt;IDEA&lt;/h3&gt;
 &lt;p&gt;编辑器 - 快捷键&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psvm  自动生成主函数方法
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psvm  自动生成主函数方法
 sout  = System.out.println()
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -55,7 +141,7 @@ sout  = System.out.println()
  其他运算默认int&lt;/p&gt;
 
 &lt;p&gt;位运算，效率高,底层运算会用到&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;&amp;lt;  左移 *2 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;&amp;lt;  左移 *2 
  &amp;gt;&amp;gt;  右移 /2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -76,7 +162,7 @@ System.out.println()
 
 &lt;h3 id=&quot;变量赋值定义&quot;&gt;变量赋值定义&lt;/h3&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int [] nums;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int [] nums;
 int nums[];            1.声明数组
 nums = new int[10];    2. 创建，分配内存 这里10是定义数组长度
 
@@ -91,7 +177,7 @@ switch
 while
 for&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;========
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;========
 if (xx) {
 
 }else if(){
@@ -102,10 +188,10 @@ if (xx) {
 ========
 表达式exprission的值进行匹配
 switch(exprission){
-    case 'xx':
+    case &apos;xx&apos;:
       xxx;
       break;
-    case 'yy':
+    case &apos;yy&apos;:
       yyy;
       break;
     default:
@@ -144,13 +230,13 @@ for(i=0; i&amp;lt;100; i++){
 }&lt;/p&gt;
 
 &lt;h3 id=&quot;数组&quot;&gt;数组&lt;/h3&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int[] nums;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int[] nums;
 int nums2[];  
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Thu, 10 Jun 2021 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2021/06/javalean1/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2021/06/javalean1/</guid>
+        <link>http://localhost:4000/2021/06/javalean1/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/06/javalean1/</guid>
         
         <category>java</category>
         
@@ -164,18 +250,18 @@ int nums2[];
 &lt;h3 id=&quot;rest-framework-序列化&quot;&gt;rest framework 序列化&lt;/h3&gt;
 &lt;p&gt;首先想到的是，写restful接口，操作数据库
 urls文件&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from rest_framework.routers import DefaultRouter
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from rest_framework.routers import DefaultRouter
 from .views import yyyEdit
 urlpatterns=[]
 # 创建路由对象
 routers = DefaultRouter()
 # 通过路由对象对视图进行路由生成
-routers.register('yyy',yyyEdit)
+routers.register(&apos;yyy&apos;,yyyEdit)
 urlpatterns += routers.urls
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;对应的views&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
 from .models import yyy
 from .serializers import yyy_Serializers
 from rest_framework.viewsets import ModelViewSet
@@ -187,17 +273,17 @@ class yyyEdit(ModelViewSet):
     serializer_class = yyy_Serializers
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;serializers内容&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rest_framework&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy&lt;/span&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from rest_framework import serializers
+from .models import yyy
 
-&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy_Serializers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ModelSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yyy&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'__all__'&lt;/span&gt;
+class yyy_Serializers(serializers.ModelSerializer):
+    class Meta:
+        model = yyy
+        fields = &apos;__all__&apos;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;最后在总视图中添加这个应用中的urls
-&lt;code class=&quot;highlighter-rouge&quot;&gt;path('api/', include('应用名.urls'))&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path(&apos;api/&apos;, include(&apos;应用名.urls&apos;))&lt;/code&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;jwt认证&quot;&gt;jwt认证&lt;/h3&gt;
 &lt;p&gt;原理很简单，客户端输入用户密码，获取token&lt;br /&gt;
@@ -209,7 +295,7 @@ class yyyEdit(ModelViewSet):
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;token部分&quot;&gt;Token部分&lt;/h4&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.models import User, AnonymousUser
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.models import User, AnonymousUser
 from rest_framework.authentication import BaseAuthentication
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework.exceptions import AuthenticationFailed
@@ -228,8 +314,8 @@ def GetJwtToken(username, password):
         if not userobject.check_password(password):
             return False
     headers = {
-        'typ': 'jwt',
-        'alg': 'HS256'
+        &apos;typ&apos;: &apos;jwt&apos;,
+        &apos;alg&apos;: &apos;HS256&apos;
     } 
     payload = {
         &quot;username&quot;: username,
@@ -250,7 +336,7 @@ class QtsAuthenticationMiddleware(MiddlewareMixin):
     def process_request(self, request):
         user = AnonymousUser()
         try:
-            token = request.COOKIES['token']
+            token = request.COOKIES[&apos;token&apos;]
         except Exception as e:
             user = AnonymousUser()
         SALT = settings.SECRET_KEY
@@ -258,10 +344,10 @@ class QtsAuthenticationMiddleware(MiddlewareMixin):
             verified_payload = jwt.decode(
                 token, 
                 SALT, 
-                algorithms=['HS256'],
+                algorithms=[&apos;HS256&apos;],
                 options={&quot;require_exp&quot;: True}
             )
-            username = verified_payload.get('username', '')
+            username = verified_payload.get(&apos;username&apos;, &apos;&apos;)
             user = User.objects.filter(username=username).first()
         except Exception as e:
             user = AnonymousUser()
@@ -269,43 +355,43 @@ class QtsAuthenticationMiddleware(MiddlewareMixin):
 class Authentication(BaseAuthentication):
     def authenticate(self, request):
         try:
-            token = request.COOKIES['token']
+            token = request.COOKIES[&apos;token&apos;]
         except KeyError as e:
             return AnonymousUser(), None
-            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+            raise AuthenticationFailed({&apos;code&apos;: 444, &apos;error&apos;: &apos;token 失效&apos;})
         except exceptions.ExpiredSignatureError:
-            return redirect('/login/')
-            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+            return redirect(&apos;/login/&apos;)
+            raise AuthenticationFailed({&apos;code&apos;: 444, &apos;error&apos;: &apos;token 失效&apos;})
 
         SALT = settings.SECRET_KEY
         try:
             verified_payload = jwt.decode(
                 token, 
                 SALT, 
-                algorithms=['HS256'],
+                algorithms=[&apos;HS256&apos;],
                 options={&quot;require_exp&quot;: True}
             )
             
         except exceptions.ExpiredSignatureError:
-            raise AuthenticationFailed({'code': 444, 'error': 'token 失效'})
+            raise AuthenticationFailed({&apos;code&apos;: 444, &apos;error&apos;: &apos;token 失效&apos;})
         except jwt.DecodeError:
-            raise AuthenticationFailed({'code': 445, 'error': 'token 认证失败'})
+            raise AuthenticationFailed({&apos;code&apos;: 445, &apos;error&apos;: &apos;token 认证失败&apos;})
         except jwt.InvalidTokenError:
-            raise AuthenticationFailed({'code': 446, 'error': '非法 token'})
+            raise AuthenticationFailed({&apos;code&apos;: 446, &apos;error&apos;: &apos;非法 token&apos;})
         return (verified_payload, token)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;setting添加app&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    'tes_alert_admin.文件名.QtsAuthenticationMiddleware',
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &apos;tes_alert_admin.文件名.QtsAuthenticationMiddleware&apos;,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;view中&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.mixins import LoginRequiredMixin
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.contrib.auth.mixins import LoginRequiredMixin
 class IndexPage(LoginRequiredMixin, TemplateView):
     pass
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;前端表单处理&quot;&gt;前端表单处理&lt;/h4&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;表单处理，有时后端需要一些信息,可以通过hidden的form-group传递到后端
 
 &amp;lt;form action=&quot;/url/&quot; method=&quot;POST&quot;&amp;gt;
   &amp;lt;div class=&quot;form-group&quot;&amp;gt;
@@ -322,17 +408,17 @@ class IndexPage(LoginRequiredMixin, TemplateView):
 &lt;h4 id=&quot;分页&quot;&gt;分页&lt;/h4&gt;
 
 &lt;p&gt;分页应该是有现成可用的库的&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.core.paginator import Paginator
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from django.core.paginator import Paginator
 
 class xxxxxPage(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         per_page = 15
-        page = int(request.GET.get('page',1))
+        page = int(request.GET.get(&apos;page&apos;,1))
         rulelist = DataQuery(page, per_page)    #数据库查询，返回一个list(list的元素是字典)，将list写入pagination。
         pagination = Paginator(rulelist, per_page)
         page_obj = pagination.get_page(page)
         return render(request,
-                      'xx.html',
+                      &apos;xx.html&apos;,
                       {
                         &quot;pagination&quot;: pagination,
                         &quot;page_obj&quot;: page_obj
@@ -359,7 +445,7 @@ class xxxxxPage(LoginRequiredMixin, TemplateView):
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;前端多选multiselect&quot;&gt;前端多选multiselect&lt;/h4&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/bootstrap-multiselect.css&quot;&amp;gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/bootstrap-multiselect.css&quot;&amp;gt;
 &amp;lt;script src=&quot;/static/js/bootstrap-multiselect.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
 
 #多选项，通过xxlists的name传入后端，后端取值通过getlist，获取多选项的值
@@ -377,13 +463,13 @@ class xxxxxPage(LoginRequiredMixin, TemplateView):
 
 #后端通过getlist获取多选的值
 
-xxlist = request.POST.getlist('xxlists')  
+xxlist = request.POST.getlist(&apos;xxlists&apos;)  
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;弹窗&quot;&gt;弹窗&lt;/h4&gt;
 &lt;p&gt;弹窗按钮绑定一个 data-target,在对应的弹窗modal中，包含fade/dialog/content/header/body这些元素&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle=&quot;modal&quot; data-target=&quot;#createButton&quot;&amp;gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle=&quot;modal&quot; data-target=&quot;#createButton&quot;&amp;gt;
     按钮名
 &amp;lt;/button&amp;gt;
 
@@ -407,30 +493,41 @@ xxlist = request.POST.getlist('xxlists')
   &amp;lt;/div&amp;gt;
 
 &amp;lt;script&amp;gt;
-    $('.save.btn').on('click', function () {
-        $('.form').trigger('submit');
+    $(&apos;.save.btn&apos;).on(&apos;click&apos;, function () {
+        $(&apos;.form&apos;).trigger(&apos;submit&apos;);
     });
 &amp;lt;/script&amp;gt;
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;models操作&quot;&gt;Models操作&lt;/h4&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. M模型中XX字段包含yy信息的数据
-    M.objects.filter(XX__icontains='yy')
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. M模型中XX字段包含yy信息的数据
+    M.objects.filter(XX__icontains=&apos;yy&apos;)
 2. M模型多条件查询A字段或B字段包含yy的数据
     from django.db.models import Q
-    M.objects.filter(Q(XX__icontains='yy') | Q(YY__icontains='yy'))
+    M.objects.filter(Q(XX__icontains=&apos;yy&apos;) | Q(YY__icontains=&apos;yy&apos;))
 3. 范围查询
-    M.objects.filter(XX__gte='100')
+    M.objects.filter(XX__gte=&apos;100&apos;)
 4. 多数据查询
     lista
     M.objects.filter(XX__in=lista)
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;前端message&quot;&gt;前端message&lt;/h4&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;前端html添加（一般加到base中）
+
+视图中
+from django.contrib import messages
+
+messages.warning(request, &quot;警告信息&quot;)
+messages.success(request, &quot;成功信息&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Wed, 17 Mar 2021 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2021/03/pylearn/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2021/03/pylearn/</guid>
+        <link>http://localhost:4000/2021/03/pylearn/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/03/pylearn/</guid>
         
         <category>python, django, mysql</category>
         
@@ -448,7 +545,7 @@ xxlist = request.POST.getlist('xxlists')
 &lt;p&gt;多进程方式运行python程序，实际只需要在requirements中添加gunicorn模块&lt;br /&gt;
 在通过dockerfile构建镜像时，通过gunicorn启动项目即可&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM python:3.6
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM python:3.6
 ENV BUILD_PACKAGES=&quot;curl build-essential python3-dev ca-certificates libssl-dev libffi-dev&quot;
 
 ADD . /code
@@ -469,7 +566,7 @@ CMD [&quot;python3&quot;, &quot;main.py&quot;]
 &lt;p&gt;但是在flask中，多进程模式下（以及debug模式，会启动一个副进程），如果定义了定时调度任务，那么在项目运行时，定时调度任务会被多个进程重复执行&lt;br /&gt;
 通过引入socket锁的方式，处理多线程下，多个flask_apscheduler任务问题&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;try:
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((&quot;127.0.0.1&quot;, 5002))
 except socket.error:
@@ -480,7 +577,7 @@ else:
 &lt;p&gt;DEBUG模式下,多个apscheduler处理&lt;br /&gt;
 这里”WERKZEUG_RUN_MAIN”这个变量如果没有，可能会导致debug模式仍然启动多个apscheduler，需要结合具体环境进行处理，思路就是根据对应的DEBUG特有的值进行判断，只初始化一次apscheduler&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if os.environ.get(&quot;WERKZEUG_RUN_MAIN&quot;) == &quot;true&quot;:
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if os.environ.get(&quot;WERKZEUG_RUN_MAIN&quot;) == &quot;true&quot;:
     scheduler.init_app(app)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h4 id=&quot;apscheduler继承app上下文&quot;&gt;apscheduler继承app上下文&lt;/h4&gt;
@@ -488,7 +585,7 @@ else:
 &lt;p&gt;定时任务中，需要继承上下文时，需要把app传入定时任务（该场景主要用于在定时任务中，操作数据库等操作，需要获取app上下文）&lt;br /&gt;
 在添加job时，将app作为参数传递给定时任务xxx&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; scheduler.add_job(func=xxx trigger='interval',id='xx',args=[app], seconds=660)
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; scheduler.add_job(func=xxx trigger=&apos;interval&apos;,id=&apos;xx&apos;,args=[app], seconds=660)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;注意，在项目中引用cache模块时，由于gunicorn内存块是相互隔离的，会导致cache存储的数据是分散的&lt;/p&gt;
 
@@ -496,7 +593,7 @@ else:
 
 &lt;p&gt;项目中，除了多线程下的调度问题，另外一块就是orm &lt;br /&gt;
 我的项目中,目录结构:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;code
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;code
 ├── 项目名
 │   ├── 项目入口文件.py
 │   ├── bluepoint.py
@@ -521,15 +618,15 @@ else:
 &lt;p&gt;因为项目中引用了redis，mysql以及cache模块，其中db.py定义orm模型&lt;br /&gt;
 db.py&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_sqlalchemy import SQLAlchemy
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;因为redis使用时，用了多个分区，这里初始化了3个实例，配置文件中用REDIS_URL, REDIS2_URL来定义每个实例的连接&lt;br /&gt;
 rds.py&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_redis import FlaskRedis
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from flask_redis import FlaskRedis
 redis_client = FlaskRedis(decode_responses=True)
-redis_client2 = FlaskRedis(decode_responses=True, config_prefix='REDIS2')
+redis_client2 = FlaskRedis(decode_responses=True, config_prefix=&apos;REDIS2&apos;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;cache模块是写在项目目录内的，这里在多进程时，发现cache使用的内存块是独立的，会导致写入的cache分散在三个进程，读取cache不一致&lt;br /&gt;
@@ -537,14 +634,14 @@ redis_client2 = FlaskRedis(decode_responses=True, config_prefix='REDIS2')
 (当时把gunicorn改回单进程也是ok的)&lt;br /&gt;
 cache.py&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from cacheout import Cache
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from cacheout import Cache
 cache = Cache(maxsize=1024000, ttl=600)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;其他&quot;&gt;其他&lt;/h3&gt;
 
 &lt;h4 id=&quot;前后端交互&quot;&gt;前后端交互&lt;/h4&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;body&amp;gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;body&amp;gt;
     &amp;lt;div class=&quot;panel panel-default&quot;&amp;gt;
         &amp;lt;!--后端传入的值，通过进行接收，前端可以加入一些逻辑判断 --&amp;gt;
         
@@ -557,9 +654,9 @@ cache = Cache(maxsize=1024000, ttl=600)
               &amp;lt;/div&amp;gt;
               &amp;lt;div class=&quot;form-group&quot;&amp;gt;
                 &amp;lt;label class=&quot;col-sm-2 control-label&quot;&amp;gt;选择框&amp;lt;/label&amp;gt;
-                &amp;lt;!-- 这里选择框和输入框的内容都会通过name，以request.from传到后端，后端通过request.from['name1']获取这些输入的值--&amp;gt;
+                &amp;lt;!-- 这里选择框和输入框的内容都会通过name，以request.from传到后端，后端通过request.from[&apos;name1&apos;]获取这些输入的值--&amp;gt;
                 &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
-                  &amp;lt;select  name='name1'&amp;gt;
+                  &amp;lt;select  name=&apos;name1&apos;&amp;gt;
                     &amp;lt;option&amp;gt;1&amp;lt;/option&amp;gt;
                     &amp;lt;option&amp;gt;2&amp;lt;/option&amp;gt;
                     &amp;lt;option&amp;gt;3&amp;lt;/option&amp;gt;
@@ -569,7 +666,7 @@ cache = Cache(maxsize=1024000, ttl=600)
               &amp;lt;div class=&quot;form-group&quot;&amp;gt;
                 &amp;lt;label class=&quot;col-sm-2 control-label&quot;&amp;gt;输入框&amp;lt;/label&amp;gt;
                 &amp;lt;div class=&quot;col-sm-10&quot;&amp;gt;
-                  &amp;lt;input type=&quot;text&quot; class=&quot;form-control&quot; placeholder=&quot;Inputxxx&quot; name='name2'&amp;gt;
+                  &amp;lt;input type=&quot;text&quot; class=&quot;form-control&quot; placeholder=&quot;Inputxxx&quot; name=&apos;name2&apos;&amp;gt;
                 &amp;lt;/div&amp;gt;
               &amp;lt;/div&amp;gt;            
               &amp;lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&amp;gt;提交&amp;lt;/button&amp;gt;
@@ -586,11 +683,11 @@ cache = Cache(maxsize=1024000, ttl=600)
 
 &lt;p&gt;前端button等提交submit调用后端相关视图后，后端处理完成刷新前端页面，引入redirect&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;return redirect(request.referrer)
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;return redirect(request.referrer)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;后端传参到前端&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  return render_template('index.html',
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  return render_template(&apos;index.html&apos;,
                           A1=a1,
                           B1=b1,
                           C1=c1
@@ -598,8 +695,8 @@ cache = Cache(maxsize=1024000, ttl=600)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Wed, 17 Mar 2021 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2021/03/pylearn/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2021/03/pylearn/</guid>
+        <link>http://localhost:4000/2021/03/pylearn/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/03/pylearn/</guid>
         
         <category>python, flask, mysql</category>
         
@@ -633,7 +730,7 @@ helm upgrade --install promtail loki/promtail --set &quot;loki.serviceName=loki&
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;安装很简单,同时官方的Helm提供了很多的模板,通过配置环境变量开启功能.&lt;br /&gt;
 同时可以将Helm下载后，进行自定义配置，然后再生效，例如配置数据持久化等&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;helm pull loki/loki
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;helm pull loki/loki
 helm pull loki/promtail
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -650,13 +747,13 @@ promtail包含:&lt;/li&gt;
   &lt;li&gt;promtail-daemoset.yaml&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;注意该部分yaml中，磁盘是通过&lt;code class=&quot;highlighter-rouge&quot;&gt;emptyDir&lt;/code&gt;挂载，如需持久化，调整该部分即可&lt;/p&gt;
+&lt;p&gt;注意该部分yaml中，磁盘是通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;emptyDir&lt;/code&gt;挂载，如需持久化，调整该部分即可&lt;/p&gt;
 
 &lt;hr /&gt;
 
 &lt;p&gt;首先创建一个loki的namespace
 namespace.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
 kind: Namespace
 metadata:
   name: loki
@@ -664,7 +761,7 @@ metadata:
     name: loki
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;loki-secret.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
 data:
   loki.yaml: 1heF90cmFuc2Zlcl9yZXRyaWVzO9tZXRyaWNfbmFtZTogZmFsc2UKICByZWplY3Rfb2xkX3NhIGNodW5rX2Jsb2NrX3NpemU6IDI2MjE0NAogIGNodW5rX2lkbGVfcGVyaW9kOMzEwMApzdG9yYWdlX2NvbmZpZzoKICBib2x0ZGI6CiAgICBkaXJlY3Rvcnk6IC9kYmcmbXBsZXM6IHRa2kvaW5kZXgKICBmaWxlc3lzdGVtOgiAwCmxpbWl0c19jb25maWc6CiAgZW5mb3JjZVYS9sb2tpL2NodW5rcwp0YWJsZV9tYW5hZ2VyOgogIHJldGVudGiAzbQogIGNodW5rX3JldGFpbl9wZXJpb2Q6IDFtCiAgbGlmZWN5Y2xlcjoKICAgIHJpbmc6CiAgICAgIGt2c3RvcmU6CiAgICAgICAgc3RvcmU6IGlubWVtb3J5CiAgICAgIHJlcGxpY2F0aW9uX2ZhY3RvcjogMQogIGgMTY4aApzY2hlbWFfY29uZmlnOgogIGNvbmZpZ3M6CiAgLSBydWUKICByZWplY3Rfb2xkX3NhbXBsZXNfbWF4X2FnZToYXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDBzCmluZ2VzdGVyOgog9tOiAiMjAxIGJvbHRkYgpzZXJ2ZXI6CiAgaHR0cF9saXN0ZW5fcG9ydDoglvOC0wNC0xNSIKICAgIGluZGV4OgogICAgICBwZXJpb2Q6IDE2OGgKICAgICAgcHJlZml4OiBpbmRleF8KICAgIG9iamVjdF9zdG9yZTogZmlsZXN5c3RlbQogICAgc2NoZW1hOiB2OQogICAgc3RvcmU6bl9kZWxldGVzX2VuYWJsZWQ6IGZhbHNlCiAgcmV0ZW50aW9uX3BlcmlvZDogMHxxxx
 kind: Secret
@@ -677,7 +774,7 @@ type: Opaque
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;loki-service.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -695,7 +792,7 @@ spec:
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;loki-statefulset.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: apps/v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: loki
@@ -764,7 +861,7 @@ spec:
 
 &lt;hr /&gt;
 &lt;p&gt;promtail-configmap.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
 data:
   promtail.yaml: |
     client:
@@ -796,7 +893,7 @@ data:
         - __meta_kubernetes_pod_node_name
         target_label: __host__
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __service__
       - action: labelmap
@@ -843,7 +940,7 @@ data:
         - __meta_kubernetes_pod_node_name
         target_label: __host__
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __service__
       - action: labelmap
@@ -881,12 +978,12 @@ data:
       relabel_configs:
       - action: drop
         regex: .+
-        separator: ''
+        separator: &apos;&apos;
         source_labels:
         - __meta_kubernetes_pod_label_name
         - __meta_kubernetes_pod_label_app
       - action: drop
-        regex: '[0-9a-z-.]+-[0-9a-f]{8,10}'
+        regex: &apos;[0-9a-z-.]+-[0-9a-f]{8,10}&apos;
         source_labels:
         - __meta_kubernetes_pod_controller_name
       - source_labels:
@@ -896,7 +993,7 @@ data:
         - __meta_kubernetes_pod_node_name
         target_label: __host__
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __service__
       - action: labelmap
@@ -934,16 +1031,16 @@ data:
       relabel_configs:
       - action: drop
         regex: .+
-        separator: ''
+        separator: &apos;&apos;
         source_labels:
         - __meta_kubernetes_pod_label_name
         - __meta_kubernetes_pod_label_app
       - action: keep
-        regex: '[0-9a-z-.]+-[0-9a-f]{8,10}'
+        regex: &apos;[0-9a-z-.]+-[0-9a-f]{8,10}&apos;
         source_labels:
         - __meta_kubernetes_pod_controller_name
       - action: replace
-        regex: '([0-9a-z-.]+)-[0-9a-f]{8,10}'
+        regex: &apos;([0-9a-z-.]+)-[0-9a-f]{8,10}&apos;
         source_labels:
         - __meta_kubernetes_pod_controller_name
         target_label: __service__
@@ -951,7 +1048,7 @@ data:
         - __meta_kubernetes_pod_node_name
         target_label: __host__
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __service__
       - action: labelmap
@@ -988,7 +1085,7 @@ data:
       - role: pod
       relabel_configs:
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
       - action: replace
@@ -999,7 +1096,7 @@ data:
         - __meta_kubernetes_pod_node_name
         target_label: __host__
       - action: drop
-        regex: ''
+        regex: &apos;&apos;
         source_labels:
         - __service__
       - action: labelmap
@@ -1039,7 +1136,7 @@ metadata:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;promtail-daemoset.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: apps/v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: promtail
@@ -1117,7 +1214,7 @@ spec:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;promtail-role.yaml&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: promtail
@@ -1153,8 +1250,8 @@ subjects:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Wed, 02 Sep 2020 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2020/09/loki-1/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2020/09/loki-1/</guid>
+        <link>http://localhost:4000/2020/09/loki-1/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020/09/loki-1/</guid>
         
         <category>loki</category>
         
@@ -1173,7 +1270,7 @@ subjects:
 &lt;a href=&quot;https://github.com/monitoringartist/dockbix-xxl/blob/master/Dockerfile/dockbix-xxl-4.0/docker-compose.yml&quot;&gt;项目地址&lt;/a&gt;&lt;br /&gt;
 server端的部署很简单,docker-compose文件如下:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-compose&quot;&gt;version: '3.1'
+&lt;pre&gt;&lt;code class=&quot;language-compose&quot;&gt;version: &apos;3.1&apos;
 services:
   zabbixdb:
     image: monitoringartist/zabbix-db-mariadb:latest
@@ -1213,20 +1310,20 @@ services:
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;数据持久化&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;/xxx/mysqldata:/var/lib/mysql&lt;/code&gt;将mysql的数据落地到宿主机&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/xxx/mysqldata:/var/lib/mysql&lt;/code&gt;将mysql的数据落地到宿主机&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;增加自定义脚本&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;/xx/internalter:/usr/local/share/zabbix/alertscripts&lt;/code&gt;宿主机的告警脚本就能在前端-管理-告警媒介类型中直接添加后,让zabbix调用&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/xx/internalter:/usr/local/share/zabbix/alertscripts&lt;/code&gt;宿主机的告警脚本就能在前端-管理-告警媒介类型中直接添加后,让zabbix调用&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;增加配置文件解决报错&lt;br /&gt;
-报错: &lt;code class=&quot;highlighter-rouge&quot;&gt;Aborted connection 111 to db: 'zabbix' user: 'zabbix' host: 'xx.5.5.5' (Got an error reading communication packets)&lt;/code&gt;&lt;br /&gt;
-解决办法是先挂载mysql的配置文件和zabbix的配置文件,然后启动&lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose up -d&lt;/code&gt; &lt;br /&gt;
-启动后,zabbix的配置被初始化覆盖掉了,重新将配置写入/xx/zabbix_server.conf文件中,然后&lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose restart zabbixdb&lt;/code&gt;即可&lt;/p&gt;
+报错: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Aborted connection 111 to db: &apos;zabbix&apos; user: &apos;zabbix&apos; host: &apos;xx.5.5.5&apos; (Got an error reading communication packets)&lt;/code&gt;&lt;br /&gt;
+解决办法是先挂载mysql的配置文件和zabbix的配置文件,然后启动&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose up -d&lt;/code&gt; &lt;br /&gt;
+启动后,zabbix的配置被初始化覆盖掉了,重新将配置写入/xx/zabbix_server.conf文件中,然后&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose restart zabbixdb&lt;/code&gt;即可&lt;/p&gt;
     &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/xx/zabbix_server.conf:/usr/local/etc/zabbix_server.conf&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/xxx/mysqlconf/myconf.cnf:/etc/my.cnf.d/myconf.cnf&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/xx/zabbix_server.conf:/usr/local/etc/zabbix_server.conf&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/xxx/mysqlconf/myconf.cnf:/etc/my.cnf.d/myconf.cnf&lt;/code&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
@@ -1307,7 +1404,7 @@ TrapperTimeout=300
 
 &lt;p&gt;agent-conf,如果是像我批量推送,配置文件中ListenIP获取各机器的对应ip即可&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PidFile=xxx/xx/zabbix.pid
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PidFile=xxx/xx/zabbix.pid
 LogFile=xxx/xxx/agent.log
 LogFileSize=0
 Server=xxx
@@ -1321,7 +1418,7 @@ StartAgents=5
 &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;自定义监控键值userparameter.conf,放入到Include的路径中,这里放入/etc/zabbix/zabbix_agentd.d/下&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;UserParameter=tcp[*],/scripts/tcp_status_ss.sh $1&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UserParameter=tcp[*],/scripts/tcp_status_ss.sh $1&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;自定义脚本,4步骤生成/scripts目录后放入脚本&lt;br /&gt;
@@ -1329,103 +1426,103 @@ StartAgents=5
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;SYNRECV &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'synrecv'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;ESTAB &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'estab'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $2}'&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;FINWAIT1 &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; |  &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'FIN-WAIT-1'&lt;/span&gt;|wc &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;FINWAIT2 &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-ant&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'FIN-WAIT-2'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;wc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;TIMEWAIT &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-ant&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'TIME-WAIT'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;wc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;LASTACK &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-ant&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'LAST-ACK'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;wc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;LISTEN &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-/usr/sbin/ss &lt;span class=&quot;nt&quot;&gt;-ant&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'LISTEN'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;wc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#!/bin/bash
+function SYNRECV {
+/usr/sbin/ss -s | grep &apos;synrecv&apos; | awk &apos;{print $2}&apos;
+}
+function ESTAB {
+/usr/sbin/ss -s | grep &apos;estab&apos; | awk &apos;{print $2}&apos;
+}
+function FINWAIT1 {
+/usr/sbin/ss -o |  grep &apos;FIN-WAIT-1&apos;|wc -l
+}
+function FINWAIT2 {
+/usr/sbin/ss -ant| grep &apos;FIN-WAIT-2&apos; | wc -l
+}
+function TIMEWAIT {
+/usr/sbin/ss -ant | grep &apos;TIME-WAIT&apos; | wc -l
+}
+function LASTACK {
+/usr/sbin/ss -ant | grep &apos;LAST-ACK&apos; | wc -l
+}
+function LISTEN {
+/usr/sbin/ss -ant | grep &apos;LISTEN&apos; | wc -l
+}
+$1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;ul&gt;
   &lt;li&gt;zabbix启停脚本&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/rc.d/init.d/functions
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-x&lt;/span&gt; /usr/sbin/zabbix_agentd &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
-    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;zabbix_agentd
-&lt;span class=&quot;k&quot;&gt;else
-    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;5
-&lt;span class=&quot;k&quot;&gt;fi
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#!/bin/sh
+. /etc/rc.d/init.d/functions
+if [ -x /usr/sbin/zabbix_agentd ]; then
+    exec=zabbix_agentd
+else
+    exit 5
+fi
 
-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;prog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;##*/&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/xxx/zabbix_agentd.conf                                          &lt;span class=&quot;c&quot;&gt;#这里填写对应的zabbix配置文件全路径&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;pidfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;^PidFile=.*$&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$conf&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'\r'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;#这里从配置文件中取pid文件&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10
+prog=${exec##*/}
+conf=/xxx/zabbix_agentd.conf                                          #这里填写对应的zabbix配置文件全路径
+pidfile=$(grep -e &quot;^PidFile=.*$&quot; $conf | cut -d= -f2 | tr -d &apos;\r&apos;)    #这里从配置文件中取pid文件
+timeout=10
 
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; /etc/sysconfig/zabbix-agent &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/sysconfig/zabbix-agent
-&lt;span class=&quot;k&quot;&gt;fi
+if [ -f /etc/sysconfig/zabbix-agent ]; then
+    . /etc/sysconfig/zabbix-agent
+fi
 
-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lockfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/lock/subsys/zabbix-agent
+lockfile=/var/lock/subsys/zabbix-agent
 
-start&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;$&quot;Starting Zabbix agent: &quot;&lt;/span&gt;
-    daemon &lt;span class=&quot;nv&quot;&gt;$exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$conf&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;rv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rv&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;touch&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$lockfile&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rv&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+start()
+{
+    echo -n $&quot;Starting Zabbix agent: &quot;
+    daemon $exec -c $conf
+    rv=$?
+    echo
+    [ $rv -eq 0 ] &amp;amp;&amp;amp; touch $lockfile
+    return $rv
+}
 
-stop&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;$&quot;Shutting down Zabbix agent: &quot;&lt;/span&gt;
-    killproc &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$pidfile&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$timeout&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$prog&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;rv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rv&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$lockfile&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$rv&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+stop()
+{
+    echo -n $&quot;Shutting down Zabbix agent: &quot;
+    killproc -p $pidfile -d $timeout $prog
+    rv=$?
+    echo
+    [ $rv -eq 0 ] &amp;amp;&amp;amp; rm -f $lockfile
+    return $rv
+}
 
-restart&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+restart()
+{
     stop
     start
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+}
 
-&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in
-    &lt;/span&gt;start|stop|restart&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    force-reload&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+case &quot;$1&quot; in
+    start|stop|restart)
+        $1
+        ;;
+    force-reload)
         restart
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    status&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        status &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$pidfile&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$prog&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    try-restart|condrestart&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;status &lt;span class=&quot;nv&quot;&gt;$prog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;/dev/null &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
-            &lt;/span&gt;restart
-        &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    reload&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        action &lt;span class=&quot;s2&quot;&gt;$&quot;Service &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;##*/&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; does not support the reload action: &quot;&lt;/span&gt; /bin/false
-        &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;3
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;$&quot;Usage: &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; {start|stop|status|restart|try-restart|force-reload}&quot;&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;2
-        &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;esac&lt;/span&gt;
+        ;;
+    status)
+        status -p $pidfile $prog
+        ;;
+    try-restart|condrestart)
+        if status $prog &amp;gt;/dev/null ; then
+            restart
+        fi
+        ;;
+    reload)
+        action $&quot;Service ${0##*/} does not support the reload action: &quot; /bin/false
+        exit 3
+        ;;
+    *)
+        echo $&quot;Usage: $0 {start|stop|status|restart|try-restart|force-reload}&quot;
+        exit 2
+        ;;
+esac
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;前端&quot;&gt;前端&lt;/h3&gt;
@@ -1436,15 +1533,15 @@ restart&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
 &lt;ol&gt;
   &lt;li&gt;自动发现-ip范围-检查（端口范围10050,键值system.uname）&lt;/li&gt;
   &lt;li&gt;配置-动作,右上角事件源选择自动注册-创建动作,将主机自动注册到对应的监控模板上&lt;/li&gt;
-  &lt;li&gt;管理-报警媒介类型,这里添加告警脚本即对应服务端部署中&lt;code class=&quot;highlighter-rouge&quot;&gt;/xx/internalter:/usr/local/share/zabbix/alertscripts&lt;/code&gt;下的脚本名&lt;/li&gt;
-  &lt;li&gt;自定义监控键值(可选择主机添加或模板添加),这里键值对应的是client端的userparameter.conf,创建监控项-键值tcp[xxx]这里xxx是传参到&lt;code class=&quot;highlighter-rouge&quot;&gt;/scripts/tcp_status_ss.sh&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;管理-报警媒介类型,这里添加告警脚本即对应服务端部署中&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/xx/internalter:/usr/local/share/zabbix/alertscripts&lt;/code&gt;下的脚本名&lt;/li&gt;
+  &lt;li&gt;自定义监控键值(可选择主机添加或模板添加),这里键值对应的是client端的userparameter.conf,创建监控项-键值tcp[xxx]这里xxx是传参到&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/scripts/tcp_status_ss.sh&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;文章没有添加截图,欢迎大家交流,另外github那个问题周末找时间给作者提个issue看是否可以直接处理掉~&lt;/p&gt;
 </description>
         <pubDate>Wed, 25 Dec 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/12/zabbix/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/12/zabbix/</guid>
+        <link>http://localhost:4000/2019/12/zabbix/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/12/zabbix/</guid>
         
         <category>zabbix</category>
         
@@ -1664,7 +1761,7 @@ spec:
       volumes:
       - name: configvolumexx
         configMap:
-          name: app's config
+          name: app&apos;s config
 
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -1681,8 +1778,8 @@ spec:
 &lt;p&gt;页面中有邮箱和github联系方式,欢迎大佬们和我沟通交流,一起学习进步&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 Nov 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/11/appink8s/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/11/appink8s/</guid>
+        <link>http://localhost:4000/2019/11/appink8s/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/11/appink8s/</guid>
         
         <category>Linux</category>
         
@@ -1765,7 +1862,7 @@ spec:
 &lt;pre&gt;&lt;code class=&quot;language-rewrite&quot;&gt;  rewrite ^/(.*) http://www.taobao.com/$1 permanent;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;用法2：例如请求的url是&lt;code class=&quot;highlighter-rouge&quot;&gt;taobao.com/xxx/aa&lt;/code&gt;则rewrite成&lt;code class=&quot;highlighter-rouge&quot;&gt;taobao.com/aa&lt;/code&gt;并执行pass的跳转并且不会继续匹配aa对应的location&lt;/p&gt;
+&lt;p&gt;用法2：例如请求的url是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;taobao.com/xxx/aa&lt;/code&gt;则rewrite成&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;taobao.com/aa&lt;/code&gt;并执行pass的跳转并且不会继续匹配aa对应的location&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-rewrite2&quot;&gt;location /xxx {
     rewrite ^/xxx(.*) $1 break;
@@ -1826,7 +1923,7 @@ location /xxx {
 
 &lt;pre&gt;&lt;code class=&quot;language-change&quot;&gt;        location /xxx/ {
             set $xxxpassurl http://xxx-release;
-                if ($remote_addr ~ '(xx.xx.xx.x1|xx.xx.xx.x2)' ) {
+                if ($remote_addr ~ &apos;(xx.xx.xx.x1|xx.xx.xx.x2)&apos; ) {
                         set $xxxpassurl http://xxx-test;
                 }
                 if ($http_cookie ~ version\=release) {
@@ -1846,8 +1943,8 @@ location /xxx {
 &lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Mon, 14 Oct 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/10/nginx/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/10/nginx/</guid>
+        <link>http://localhost:4000/2019/10/nginx/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/nginx/</guid>
         
         <category>Linux</category>
         
@@ -1889,8 +1986,8 @@ mount /dev/vda2 /data&lt;br /&gt;
 &lt;img src=&quot;/images/posts/2019-07-01-mkdisk/mkdisk2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/07/mkdisk/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/07/mkdisk/</guid>
+        <link>http://localhost:4000/2019/07/mkdisk/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/07/mkdisk/</guid>
         
         <category>Linux</category>
         
@@ -1946,22 +2043,22 @@ mount /dev/vda2 /data&lt;br /&gt;
 
 &lt;p&gt;所有节点设置网络&lt;br /&gt;
 查看网络链接&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;nmcli con show&lt;/code&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nmcli con show&lt;/code&gt;
 打开链接&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;nmcli con up eth0&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nmcli con up eth0&lt;/code&gt;&lt;br /&gt;
 设置开机自启动&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;nmcli con mod eth0 connection.autoconnect yes&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nmcli con mod eth0 connection.autoconnect yes&lt;/code&gt;&lt;br /&gt;
 重启网络服务&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl restart NetworkManager&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemctl restart NetworkManager&lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;2安装及配置软件包&quot;&gt;2.安装及配置软件包&lt;/h2&gt;
 
 &lt;p&gt;所有节点安装openshift依赖软件包&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum install -y wget git net-tools bind-utils iptables-services bridge-utils bash-completion&lt;/code&gt;&lt;br /&gt;
 所有节点安装容器引擎docker&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;yum install -y docker&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum install -y docker&lt;/code&gt;&lt;br /&gt;
 修改配置存储&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/sysconfig/docker-storage-setup&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vim /etc/sysconfig/docker-storage-setup&lt;/code&gt;&lt;br /&gt;
 添加 ENVS=/dev/sdb
 执行docker-storage-setup&lt;/p&gt;
 
@@ -1973,7 +2070,7 @@ yum &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nt&quo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;在Master节点生成SSH密钥&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;ssh-keygen -f /root/.ssh/id_rsa -N ''&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh-keygen -f /root/.ssh/id_rsa -N &apos;&apos;&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Ansible基于Agentless架构实现,不需要在目标主机安装agent依赖ssh远程控制协议,所以需要配置master和node节点互信&lt;br /&gt;
 在Master节点执行：&lt;/p&gt;
@@ -2001,7 +2098,7 @@ systemctl start etcd
 &lt;h2 id=&quot;配置ansible&quot;&gt;配置ansible&lt;/h2&gt;
 
 &lt;p&gt;备份原有ansible的host&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;cp /etc/ansible/hosts /etc/ansible/hosts-bk&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cp /etc/ansible/hosts /etc/ansible/hosts-bk&lt;/code&gt;&lt;br /&gt;
 修改hosts:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-hosts文件&quot;&gt;[OSEv3:children]
@@ -2014,7 +2111,7 @@ ansible_ssh_user=root
 openshift_deployment_type=origin
 openshift_release=1.3.0
 
-openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+openshift_master_identity_providers=[{&apos;name&apos;: &apos;htpasswd_auth&apos;, &apos;login&apos;: &apos;true&apos;, &apos;challenge&apos;: &apos;true&apos;, &apos;kind&apos;: &apos;HTPasswdPasswordIdentityProvider&apos;, &apos;filename&apos;: &apos;/etc/origin/master/htpasswd&apos;}]
 
 [masters]
 openshift-test-master
@@ -2029,7 +2126,7 @@ openshift-test-master
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;执行安装&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ansible-playbook ~/openshift-ansible-3.3.26-1/playbooks/byo/config.yml&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;执行完成以后,通过oc get node 查看节点状态&lt;/p&gt;
 
@@ -2046,17 +2143,17 @@ openshift-test-master
 &lt;/ul&gt;
 
 &lt;p&gt;用户身份信息库：&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]&lt;/code&gt;&lt;br /&gt;
-定义了文件/etc/origin/master/htpasswd作为用户身份信息库,我们通过&lt;code class=&quot;highlighter-rouge&quot;&gt;htpasswd -b /etc/origin/master/htpasswd dev dev&lt;/code&gt;来创建用户&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openshift_master_identity_providers=[{&apos;name&apos;: &apos;htpasswd_auth&apos;, &apos;login&apos;: &apos;true&apos;, &apos;challenge&apos;: &apos;true&apos;, &apos;kind&apos;: &apos;HTPasswdPasswordIdentityProvider&apos;, &apos;filename&apos;: &apos;/etc/origin/master/htpasswd&apos;}]&lt;/code&gt;&lt;br /&gt;
+定义了文件/etc/origin/master/htpasswd作为用户身份信息库,我们通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;htpasswd -b /etc/origin/master/htpasswd dev dev&lt;/code&gt;来创建用户&lt;/p&gt;
 
 &lt;p&gt;is和template用ansible部署时默认已经部署上了&lt;/p&gt;
 
 &lt;p&gt;Router部署&lt;br /&gt;
 Router是以容器的形式运行在Openshift平台,默认情况不知道容器运行在哪个node上&lt;br /&gt;
 为node打上标签(Label),然后通过节点选择器(NodeSelector)指定容器运行的node&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc label node node1.example.com infra=yes&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oc label node node1.example.com infra=yes&lt;/code&gt;&lt;br /&gt;
 查看node节点&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc get node --show-labels&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oc get node --show-labels&lt;/code&gt;&lt;br /&gt;
 为Router使用的Service Account赋权&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router
@@ -2064,105 +2161,17 @@ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:defaul
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;部署router&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oadm router ose-router --replicas=1 --service-account=router --selector='infra=yes'&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oadm router ose-router --replicas=1 --service-account=router --selector=&apos;infra=yes&apos;&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Registry部署&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oadm registry --config='/etc/origin/master/admin.kubeconfig' --service-account=registry --selector='infra=yes' -n default&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oadm registry --config=&apos;/etc/origin/master/admin.kubeconfig&apos; --service-account=registry --selector=&apos;infra=yes&apos; -n default&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;查看pod&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc get pod -n default|grep registry&lt;/code&gt;&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oc get pod -n default|grep registry&lt;/code&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 Feb 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/02/openshift2/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/02/openshift2/</guid>
-        
-        <category>Openshift</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Openshift-测试环境AllInOne</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;记录Openshift笔记,刚准备熟悉一下mysql,boss要求看openshift相关的东西,所以mysql系列的后续再更新,边写openshift边学习沉淀吧&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;安装openshift-all-in-one&quot;&gt;安装openshift-All in one&lt;/h2&gt;
-
-&lt;p&gt;https://www.clouda.ca/blog/general/openshift-on-centos-7-quick-installation/&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;wget https://github.com/openshift/origin/releases/download/v1.3.0/openshift-origin-server-v1.3.0-3ab7af3d097b57f933eccef684a714f2368804e7-linux-64bit.tar.gz&quot;&gt;二进制下载地址&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;oc命令行创建应用&quot;&gt;oc命令行创建应用&lt;/h3&gt;
-
-&lt;p&gt;因为oc命令带有权限管控,所以在使用oc命令前,需要通过oc login 登录&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc login -u test https://10.50.64.34:8443&lt;/code&gt;&lt;br /&gt;
-创建项目(这个项目类似在k8s创建一个namespace)&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc new-project hello-world-oc&lt;/code&gt;&lt;br /&gt;
-部署应用&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc new-app openshift/hello-openshift&lt;/code&gt;&lt;br /&gt;
-查看pod&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc get pod&lt;/code&gt;&lt;br /&gt;
-查看pod详细信息&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc describe pod hello-openshift-1-z8mki&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;集群管理员账号登录&quot;&gt;集群管理员账号登录&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir -p ~/.kube
-cp /opt/openshift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
-登录  
-oc login -u system:admin
-查看集群节点  
-oc get node
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;添加route&quot;&gt;添加route&lt;/h3&gt;
-
-&lt;p&gt;类似kube-proxy,是外界访问openshift的入口,外部请求都会到达router&lt;br /&gt;
-切换到default项目&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oc project default&lt;/code&gt;
-router组件需要读取集群的信息,它关联一个系统账号service account并为这个账号赋权。&lt;br /&gt;
-(这个账号是专门供程序和组件使用的账号)&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;oadm policy add-scc-to-user privileged system:serviceaccount:default:router&lt;/code&gt;
-创建router实例&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oadm router router --replicas=1 --service-account=router
-oc get pod -n default
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;添加registry&quot;&gt;添加registry&lt;/h3&gt;
-&lt;p&gt;集群的docker registry内部docker镜像仓库&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project default
-oadm registry --config=/opt/openshift/openshift.local.config/master/admin.kubeconfig --service-account=registry
-oc get pod  
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;因为registry没有启用https,所以需要修改docker配置,让docker以非https模式连接到registry.&lt;br /&gt;
-在OPTIONS变量值中添加参数’–insecure-registry=172.30.0.0/16’&lt;br /&gt;
-重启docker systemctl restart docker&lt;/p&gt;
-
-&lt;h3 id=&quot;添加image-stream&quot;&gt;添加Image Stream&lt;/h3&gt;
-
-&lt;p&gt;is镜像集合,openshift并不一定要用到is,is是为了更加方便的将镜像管理和使用&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
-openshift version
-curl https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/image-streams/image-streams-centos7.json|oc create -f - -n openshift
-oc get is -n openshift
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;添加template&quot;&gt;添加Template&lt;/h3&gt;
-
-&lt;p&gt;openshift定义了一些template供用户使用,模板定义一个多个部署镜像的集合,定义部署依赖对象以及配置参数项&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oc project openshift
-oc create -f https://raw.githubusercontent.com/openshift/origin/v1.3.0/examples/quickstarts/cakephp-mysql.json -n openshift  
-oc get template -n openshift
-oc get template cakephp-mysql-example -o json -n openshift
-oc create -f https://raw.githubusercontent.com/nichochen/openshift-book-source/master/template/wildfly-basic-s2i.template.json -n openshift  
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</description>
-        <pubDate>Sun, 20 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://yangshiwei.top/2019/01/openshift1/</link>
-        <guid isPermaLink="true">http://yangshiwei.top/2019/01/openshift1/</guid>
+        <link>http://localhost:4000/2019/02/openshift2/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/02/openshift2/</guid>
         
         <category>Openshift</category>
         

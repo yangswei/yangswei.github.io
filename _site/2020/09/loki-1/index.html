@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/css/default.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://yangshiwei.top/2020/09/loki-1/">
-  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://yangshiwei.top/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/2020/09/loki-1/">
+  <link rel="alternate" type="application/rss+xml" title="杨世威" href="http://localhost:4000/feed.xml">
   
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
@@ -212,7 +212,7 @@ helm upgrade --install promtail loki/promtail --set "loki.serviceName=loki"
 </code></pre>
 <p>安装很简单,同时官方的Helm提供了很多的模板,通过配置环境变量开启功能.<br />
 同时可以将Helm下载后，进行自定义配置，然后再生效，例如配置数据持久化等</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm pull loki/loki
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm pull loki/loki
 helm pull loki/promtail
 </code></pre></div></div>
 
@@ -229,13 +229,13 @@ promtail包含:</li>
   <li>promtail-daemoset.yaml</li>
 </ul>
 
-<p>注意该部分yaml中，磁盘是通过<code class="highlighter-rouge">emptyDir</code>挂载，如需持久化，调整该部分即可</p>
+<p>注意该部分yaml中，磁盘是通过<code class="language-plaintext highlighter-rouge">emptyDir</code>挂载，如需持久化，调整该部分即可</p>
 
 <hr />
 
 <p>首先创建一个loki的namespace
 namespace.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
 kind: Namespace
 metadata:
   name: loki
@@ -243,7 +243,7 @@ metadata:
     name: loki
 </code></pre></div></div>
 <p>loki-secret.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
 data:
   loki.yaml: 1heF90cmFuc2Zlcl9yZXRyaWVzO9tZXRyaWNfbmFtZTogZmFsc2UKICByZWplY3Rfb2xkX3NhIGNodW5rX2Jsb2NrX3NpemU6IDI2MjE0NAogIGNodW5rX2lkbGVfcGVyaW9kOMzEwMApzdG9yYWdlX2NvbmZpZzoKICBib2x0ZGI6CiAgICBkaXJlY3Rvcnk6IC9kYmcmbXBsZXM6IHRa2kvaW5kZXgKICBmaWxlc3lzdGVtOgiAwCmxpbWl0c19jb25maWc6CiAgZW5mb3JjZVYS9sb2tpL2NodW5rcwp0YWJsZV9tYW5hZ2VyOgogIHJldGVudGiAzbQogIGNodW5rX3JldGFpbl9wZXJpb2Q6IDFtCiAgbGlmZWN5Y2xlcjoKICAgIHJpbmc6CiAgICAgIGt2c3RvcmU6CiAgICAgICAgc3RvcmU6IGlubWVtb3J5CiAgICAgIHJlcGxpY2F0aW9uX2ZhY3RvcjogMQogIGgMTY4aApzY2hlbWFfY29uZmlnOgogIGNvbmZpZ3M6CiAgLSBydWUKICByZWplY3Rfb2xkX3NhbXBsZXNfbWF4X2FnZToYXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDBzCmluZ2VzdGVyOgog9tOiAiMjAxIGJvbHRkYgpzZXJ2ZXI6CiAgaHR0cF9saXN0ZW5fcG9ydDoglvOC0wNC0xNSIKICAgIGluZGV4OgogICAgICBwZXJpb2Q6IDE2OGgKICAgICAgcHJlZml4OiBpbmRleF8KICAgIG9iamVjdF9zdG9yZTogZmlsZXN5c3RlbQogICAgc2NoZW1hOiB2OQogICAgc3RvcmU6bl9kZWxldGVzX2VuYWJsZWQ6IGZhbHNlCiAgcmV0ZW50aW9uX3BlcmlvZDogMHxxxx
 kind: Secret
@@ -256,7 +256,7 @@ type: Opaque
 
 </code></pre></div></div>
 <p>loki-service.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -274,7 +274,7 @@ spec:
 
 </code></pre></div></div>
 <p>loki-statefulset.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: apps/v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: loki
@@ -343,7 +343,7 @@ spec:
 
 <hr />
 <p>promtail-configmap.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
 data:
   promtail.yaml: |
     client:
@@ -618,7 +618,7 @@ metadata:
 </code></pre></div></div>
 
 <p>promtail-daemoset.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: apps/v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: promtail
@@ -696,7 +696,7 @@ spec:
 </code></pre></div></div>
 
 <p>promtail-role.yaml</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: promtail
